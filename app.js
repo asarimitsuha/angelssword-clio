@@ -3,9 +3,10 @@
 let currentSlideIndex = 0;
 let isTyping = false;
 let typewriterTimer = null;
-let soundEnabled = true;
+let soundEnabled = true; // Controls SFX Beeps
+let voiceEnabled = true; // Controls Voice Over
 let crtFilterEnabled = true;
-let bgmEnabled = true;
+let bgmVolumeLevel = 80; // BGM volume fader level (0-100)
 let bgmAudio = null;
 let audioCtx = null;
 let voiceAudio = new Audio(); // Reusable voiceover audio player
@@ -145,20 +146,19 @@ function initControls() {
     playMenuClickSound();
   });
 
-  // BGM Toggle Switch
-  const bgmToggle = document.getElementById("bgm-toggle");
-  bgmToggle.addEventListener("change", (e) => {
-    bgmEnabled = e.target.checked;
+  // BGM Volume Slider Control
+  const bgmVolumeSlider = document.getElementById("bgm-volume");
+  bgmVolumeSlider.addEventListener("input", (e) => {
+    bgmVolumeLevel = parseInt(e.target.value);
     if (bgmAudio) {
-      if (bgmEnabled) {
-        bgmAudio.play().catch(() => {});
-      }
       updateBGMVolume();
     }
+  });
+  bgmVolumeSlider.addEventListener("change", () => {
     playMenuClickSound();
   });
 
-  // Sound Toggle Switch
+  // Sound Toggle Switch (SFX Beep)
   const soundToggle = document.getElementById("sound-toggle");
   soundToggle.addEventListener("change", (e) => {
     soundEnabled = e.target.checked;
@@ -167,11 +167,29 @@ function initControls() {
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
-    } else {
-      // Stop active voiceover immediately if sound is turned off
+    }
+    playMenuClickSound();
+  });
+
+  // Voice Over Toggle Switch
+  const voiceToggle = document.getElementById("voice-toggle");
+  voiceToggle.addEventListener("change", (e) => {
+    voiceEnabled = e.target.checked;
+    if (!voiceEnabled) {
+      // Stop active voiceover immediately if voice is turned off
       if (voiceAudio) {
         voiceAudio.pause();
         voiceAudio.src = "";
+      }
+    } else {
+      // Instantly start playing voiceover for the current slide if enabled mid-slide
+      const slide = window.SLIDES[currentSlideIndex];
+      if (slide && slide.type !== "video" && slide.text) {
+        voiceAudio.src = `assets/voice/slide_${currentSlideIndex}.mp3`;
+        voiceAudio.volume = 0.8;
+        voiceAudio.play().catch(err => {
+          console.warn(`Voiceover play blocked or missing for slide ${currentSlideIndex}:`, err);
+        });
       }
     }
     playMenuClickSound();
@@ -377,8 +395,8 @@ function renderSlide(index) {
   // Trigger typewriter text entry
   startTypewriter(slide.text);
 
-  // Play voiceover if sound is enabled and it's not a video cutscene
-  if (soundEnabled && slide.type !== "video" && slide.text) {
+  // Play voiceover if voice is enabled and it's not a video cutscene
+  if (voiceEnabled && slide.type !== "video" && slide.text) {
     voiceAudio.src = `assets/voice/slide_${index}.mp3`;
     voiceAudio.volume = 0.8;
     voiceAudio.play().catch(e => {
@@ -698,16 +716,15 @@ function initBGM() {
 
 function updateBGMVolume() {
   if (!bgmAudio) return;
-  if (!bgmEnabled) {
-    bgmAudio.volume = 0;
-    return;
-  }
+  
+  // Calculate volume based on the slider fader level (limited to a max of 0.3 to prevent overpowering voiceover)
+  const baseVolume = (bgmVolumeLevel / 100) * 0.3;
   
   const video = document.getElementById("demo-video");
   // Duck background music if cutscene video is actively playing
   if (video && !video.paused && !video.ended && video.readyState >= 2) {
-    bgmAudio.volume = 0.05;
+    bgmAudio.volume = baseVolume * 0.2; // Ducked to 20% of base
   } else {
-    bgmAudio.volume = 0.25;
+    bgmAudio.volume = baseVolume;
   }
 }

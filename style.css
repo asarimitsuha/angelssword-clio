@@ -239,7 +239,7 @@ body {
 .system-controls {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px; /* Tightened from 10px */
   font-family: var(--font-mono);
   font-size: 0.8rem;
 }
@@ -249,6 +249,46 @@ body {
   justify-content: space-between;
   align-items: center;
   color: var(--pc98-text-muted);
+}
+
+/* Retro Volume Slider Styling */
+.volume-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.retro-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #121824;
+  border: 1px solid var(--pc98-border-light);
+  outline: none;
+  margin: 4px 0;
+}
+
+.retro-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 16px;
+  background: var(--pc98-text-cyan);
+  border: 1px solid var(--pc98-border-light);
+  cursor: pointer;
+  box-shadow: 1px 1px 0px #000;
+  border-radius: 0;
+}
+
+.retro-slider::-moz-range-thumb {
+  width: 12px;
+  height: 16px;
+  background: var(--pc98-text-cyan);
+  border: 1px solid var(--pc98-border-light);
+  cursor: pointer;
+  box-shadow: 1px 1px 0px #000;
+  border-radius: 0;
 }
 
 .control-group .label {

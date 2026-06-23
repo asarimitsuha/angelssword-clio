@@ -492,7 +492,7 @@ window.SLIDES = [
         width: "22%",
         height: "60%",
         title: "BLOCK (1 RP)",
-        desc: "• RP Cost: 1\n• Hit Check: Auto-hit (the attack hits you automatically)\n• Block Value: (2 x Toughness) + Armor Block Value\n• Crit Protection: Turns a Critical Hit into a normal hit\n• Best Against: Multi-strikes, quick attacks, or un-evadable blows\n• Mechanic: Automatically absorb the strike, reducing damage by your block value. Heavier armor dictates block strength."
+        desc: "• RP Cost: 1\n• Hit Check: Auto-hit (the attack hits you automatically)\n• Block Value: (2 x Toughness) + Armor Block Value\n• Crit Protection: Turns a Critical Hit into a normal hit\n• Best Against: Multi-strikes, quick attacks, or un-evadable blows\n• Mechanic: Automatically absorb the strike, reducing damage by your block value. You can Block almost all damage, even non-attacks like Save damage or the Axe passive!"
       },
       {
         id: "defense-takehit",
@@ -502,7 +502,7 @@ window.SLIDES = [
         width: "22%",
         height: "60%",
         title: "TAKE THE HIT (0 RP)",
-        desc: "• RP Cost: 0\n• Hit Check: Standard (only hits if attack accuracy meets your passive Evasion)\n• Damage Allocation: Subtracts directly from your HP pool\n• Best Against: Low-damage attacks or strikes without dangerous status effects\n• Usage: Saves your Reaction Points (RP). Conserve stamina for dodging critical boss strikes by taking safe attacks to HP."
+        desc: "• RP Cost: 0\n• Hit Check: Standard (only hits if attack accuracy meets your passive Evasion)\n• Damage Allocation: Subtracts directly from your HP pool (still reduced by passive Guard)\n• Best Against: Low-damage attacks or strikes without dangerous status effects\n• Usage: Saves your Reaction Points (RP). Conserve stamina for dodging critical boss strikes by taking safe attacks to HP."
       }
     ]
   },
@@ -700,7 +700,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "This attack resolves *before* the movement does! If you down or incapacitate the target with your AoO, their movement is cancelled.",
+    text: "This resolves first. If it hits and isn't blocked, it has **Crushing** (minimum damage equals Power). Downed targets stop moving!",
     type: "dialogue"
   },
   {
@@ -717,7 +717,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "You can also spend **1 RP** to upgrade your Attack of Opportunity to a **Heavy Attack**. Great for pushing offensive advantages!",
+    text: "You can also spend **1 RP** to upgrade your AoO to a **Heavy** or **Precise** attack, letting you pierce defenses on their turn!",
     type: "dialogue"
   },
   {
@@ -760,17 +760,17 @@ window.SLIDES = [
         width: "22%",
         height: "60%",
         title: "ATTACK OF OPPORTUNITY (FREE)",
-        desc: "• Resource Cost: Free (0 RP)\n• Trigger: Enemy leaves threatened range (5ft), or casts/shoots within it.\n• Attack: Immediate Basic Light Attack.\n• Special: Occurs before the enemy's action resolves. If they are downed/killed, their move is cancelled."
+        desc: "• Resource Cost: Free (0 RP)\n• Trigger: Enemy leaves threatened range (5ft), or casts/shoots within it.\n• Attack: Immediate Basic Light Attack.\n• Special: Has Crushing (minimum damage equals Power if not blocked). If they are downed/killed, their move is cancelled."
       },
       {
         id: "reaction-heavy-aoo",
-        label: "Heavy Opportunity",
+        label: "Heavy/Precise AoO",
         x: "41%",
         y: "20%",
         width: "22%",
         height: "60%",
-        title: "HEAVY OPPORTUNITY ATTACK (1 RP)",
-        desc: "• Resource Cost: 1 RP\n• Trigger: Same as standard Attack of Opportunity.\n• Attack: Upgrades standard AoO to a Heavy Attack.\n• Advice: Great for pushing offensive advantages, but save your RP for defense when things are neutral."
+        title: "HEAVY/PRECISE AOO (1 RP)",
+        desc: "• Resource Cost: 1 RP\n• Trigger: Same as standard Attack of Opportunity.\n• Attack: Upgrades standard AoO to a Heavy or Precise Attack.\n• Advice: Pierce high evasion targets with Precise, or punish armored/neutral targets with Heavy."
       },
       {
         id: "reaction-disengage",
@@ -815,7 +815,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "smug",
     background: "retro_classroom_bg.png",
-    text: "Because your reaction resolves first, you move 5ft away. Now they are out of range and their Heavy Attack fails! Devastating!",
+    text: "Your reaction resolves first, invalidating their target. Attacker costs are refunded, but you avoid a dangerous damage roll!",
     type: "dialogue"
   },
   {
@@ -941,7 +941,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "thoughtful",
     background: "retro_classroom_bg.png",
-    text: "Additionally, if you peek from High or Full Cover to shoot, your cover is downgraded to **Low Cover** during the attack.",
+    text: "Additionally, when you peek to shoot, your cover value reduction remains active until the start of your next turn!",
     type: "dialogue"
   },
   {
