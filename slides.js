@@ -1018,7 +1018,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "cheerful",
     background: "retro_classroom_bg.png",
-    text: "...but it allows you to **Dodge or Block for 0 RP** until your next turn! A powerful way to last as long as possible under focus fire.",
+    text: "...but it allows you to **Dodge or Block once for 0 RP** until your next turn! A powerful way to last as long as possible under focus fire.",
     type: "dialogue"
   },
 
