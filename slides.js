@@ -933,7 +933,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "surprised",
     background: "retro_classroom_bg.png",
-    text: "If your peeking space is in an enemy's melee range, their ranged attack or spell will trigger an Attack of Opportunity against you!",
+    text: "If your peeking space is in an enemy's melee range, your ranged attack or spell will trigger an Attack of Opportunity from the enemy against you!",
     type: "dialogue"
   },
   {
@@ -941,7 +941,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "thoughtful",
     background: "retro_classroom_bg.png",
-    text: "Additionally, when you peek to shoot, your cover value reduction remains active until the start of your next turn!",
+    text: "Additionally, when you peek to shoot from full cover, it is reduced to low cover until the start of your next turn!",
     type: "dialogue"
   },
   {
