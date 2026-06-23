@@ -8,6 +8,7 @@ let voiceEnabled = true; // Controls Voice Over
 let crtFilterEnabled = true;
 let bgmVolumeLevel = 80; // BGM volume fader level (0-100)
 let bgmAudio = null;
+let startBgmAudio = null; // Start screen BGM
 let audioCtx = null;
 let voiceAudio = new Audio(); // Reusable voiceover audio player
 
@@ -18,14 +19,47 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Set initial game startup state
   document.body.classList.add("game-not-started");
+
+  // Attempt to play start screen BGM
+  initStartBGM();
+
+  // Also try playing it on any initial page interaction in case autoplay is blocked
+  const playStartBgmOnInteract = () => {
+    if (document.body.classList.contains("game-not-started")) {
+      initStartBGM();
+    }
+    document.removeEventListener("mousedown", playStartBgmOnInteract);
+    document.removeEventListener("keydown", playStartBgmOnInteract);
+    document.removeEventListener("touchstart", playStartBgmOnInteract);
+  };
+  document.addEventListener("mousedown", playStartBgmOnInteract);
+  document.addEventListener("keydown", playStartBgmOnInteract);
+  document.addEventListener("touchstart", playStartBgmOnInteract);
   
   const startScreen = document.getElementById("start-screen");
   const startGame = () => {
     if (document.body.classList.contains("game-not-started")) {
       playGameStartSound();
+
+      // Stop and pause start screen BGM to release resources
+      if (startBgmAudio) {
+        startBgmAudio.pause();
+        startBgmAudio.src = "";
+        startBgmAudio.load();
+      }
+
       initBGM(); // Start background music
       document.body.classList.remove("game-not-started");
       startScreen.style.display = "none";
+      
+      // Stop and pause start video background to save resources
+      const startVideo = document.getElementById("start-bg-video");
+      if (startVideo) {
+        startVideo.pause();
+        startVideo.src = "";
+        startVideo.load();
+      }
+      
       renderSlide(0); // Immediately plays the first cutscene video!
     }
   };
@@ -78,6 +112,9 @@ function initTOC() {
     li.addEventListener("click", () => {
       jumpToSlide(sec.firstIndex);
     });
+    li.addEventListener("mouseenter", () => {
+      playMenuHoverSound();
+    });
     tocList.appendChild(li);
 
     // If section has subtabs, create a nested sublist
@@ -95,6 +132,9 @@ function initTOC() {
         subLi.addEventListener("click", (e) => {
           e.stopPropagation(); // Stop parent click event
           jumpToSlide(sub.index);
+        });
+        subLi.addEventListener("mouseenter", () => {
+          playMenuHoverSound();
         });
         subUl.appendChild(subLi);
       });
@@ -185,6 +225,7 @@ function initControls() {
       // Instantly start playing voiceover for the current slide if enabled mid-slide
       const slide = window.SLIDES[currentSlideIndex];
       if (slide && slide.type !== "video" && slide.text) {
+        flashFDDB(800); // Flash floppy drive B (Assets)
         voiceAudio.src = `assets/voice/slide_${currentSlideIndex}.mp3`;
         voiceAudio.volume = 0.8;
         voiceAudio.play().catch(err => {
@@ -234,6 +275,7 @@ function initControls() {
 
   playBtn.addEventListener("click", () => {
     if (video.paused) {
+      flashFDDB(1200); // Flash floppy drive B (Assets) for video load
       video.play().catch(e => {
         // If placeholder triggers error, just simulate time progress
         console.warn("Video failed to play, it is a placeholder:", e);
@@ -282,12 +324,36 @@ function initControls() {
     video.pause();
     nextSlide();
   });
+
+  // Add hover beep sounds to all retro buttons, sliders, checkboxes, close buttons, and zones
+  document.querySelectorAll(".retro-btn, .switch, .retro-slider, .popup-close, .footer-link, .nav-zone").forEach(el => {
+    el.addEventListener("mouseenter", () => {
+      playMenuHoverSound();
+    });
+  });
 }
 
 // 3. Render the current slide contents
 function renderSlide(index) {
   currentSlideIndex = index;
   const slide = window.SLIDES[currentSlideIndex];
+
+  // Flash Floppy Disk Drive A (SYSTEM) LED
+  const ledA = document.getElementById("fdd-led-a");
+  if (ledA) {
+    ledA.classList.add("accessing-sys");
+    setTimeout(() => {
+      ledA.classList.remove("accessing-sys");
+    }, 450);
+  }
+
+  // Trigger CRT screen flicker slide transition effect
+  const crtScreen = document.getElementById("crt-screen");
+  if (crtScreen) {
+    crtScreen.classList.remove("screen-transition");
+    void crtScreen.offsetWidth; // Trigger reflow to restart animation
+    crtScreen.classList.add("screen-transition");
+  }
 
   // Stop active voiceover if playing
   if (voiceAudio) {
@@ -380,6 +446,7 @@ function renderSlide(index) {
     errorOverlay.style.display = "none";
 
     // Play immediately on slide entry
+    flashFDDB(1200); // Flash floppy drive B (Assets) for video stream
     video.play().catch(e => {
       console.warn("Autoplay blocked or video missing, showing CRT static:", e);
       errorOverlay.style.display = "flex";
@@ -397,6 +464,7 @@ function renderSlide(index) {
 
   // Play voiceover if voice is enabled and it's not a video cutscene
   if (voiceEnabled && slide.type !== "video" && slide.text) {
+    flashFDDB(800); // Flash floppy drive B (Assets) for voiceover read
     voiceAudio.src = `assets/voice/slide_${index}.mp3`;
     voiceAudio.volume = 0.8;
     voiceAudio.play().catch(e => {
@@ -637,6 +705,42 @@ function playMenuClickSound() {
   } catch (e) {}
 }
 
+function playMenuHoverSound() {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(950, audioCtx.currentTime); // Snappy high click-beep
+
+    gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.03);
+  } catch (e) {}
+}
+
+function flashFDDB(duration = 800) {
+  const ledB = document.getElementById("fdd-led-b");
+  if (ledB) {
+    ledB.classList.add("accessing-voice");
+    setTimeout(() => {
+      ledB.classList.remove("accessing-voice");
+    }, duration);
+  }
+}
+
 function playPopupSound() {
   if (!soundEnabled) return;
   try {
@@ -703,6 +807,17 @@ function playGameStartSound() {
 }
 
 // BGM Music Controls (BGM ducking and loop play)
+function initStartBGM() {
+  if (!startBgmAudio) {
+    startBgmAudio = new Audio("assets/Aniela-Tutorial.mp3");
+    startBgmAudio.loop = true;
+  }
+  updateBGMVolume();
+  startBgmAudio.play().catch(e => {
+    console.warn("Start BGM autoplay blocked or failed:", e);
+  });
+}
+
 function initBGM() {
   if (!bgmAudio) {
     bgmAudio = new Audio("assets/Unmitigated-Tutorial.mp3");
@@ -715,16 +830,20 @@ function initBGM() {
 }
 
 function updateBGMVolume() {
-  if (!bgmAudio) return;
-  
   // Calculate volume based on the slider fader level (limited to a max of 0.3 to prevent overpowering voiceover)
   const baseVolume = (bgmVolumeLevel / 100) * 0.3;
   
-  const video = document.getElementById("demo-video");
-  // Duck background music if cutscene video is actively playing
-  if (video && !video.paused && !video.ended && video.readyState >= 2) {
-    bgmAudio.volume = baseVolume * 0.2; // Ducked to 20% of base
-  } else {
-    bgmAudio.volume = baseVolume;
+  if (startBgmAudio) {
+    startBgmAudio.volume = baseVolume;
+  }
+  
+  if (bgmAudio) {
+    const video = document.getElementById("demo-video");
+    // Duck background music if cutscene video is actively playing
+    if (video && !video.paused && !video.ended && video.readyState >= 2) {
+      bgmAudio.volume = baseVolume * 0.2; // Ducked to 20% of base
+    } else {
+      bgmAudio.volume = baseVolume;
+    }
   }
 }
