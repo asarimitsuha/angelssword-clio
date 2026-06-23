@@ -747,6 +747,48 @@ window.SLIDES = [
   {
     section: "Reactions",
     speaker: "Queri Lilibit",
+    expression: "defeated",
+    background: "retro_classroom_bg.png",
+    text: "\"So if I'm ranged, I'm just screwed if they get close?\" No, you have options! Always carry a melee weapon like a dagger to draw fast.",
+    type: "dialogue",
+    subtab: "Disengage & Kiting"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Disengaging is a great tool. If you spend 3 AP to disengage and run, forcing 5 enemies to chase you... you traded 3 AP for 5 AP!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "Let's talk about the Reaction Stack. If an enemy attacks, react with **RP movement abilities** (like the class skill **Evasive Maneuver**)! Safe!",
+    type: "dialogue",
+    subtab: "Stack Tactics"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "Your reaction resolves first, invalidating their target. Attacker costs are refunded, but you avoid a dangerous damage roll!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "thumbsup",
+    background: "retro_classroom_bg.png",
+    text: "Mastering reaction stacking is what makes you a true legend in Lyrian Chronicles. We'll practice more stack combos in later classes!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
     text: "Let's review the common reaction-related actions. Click the **basic ability cards on the screen** to study how they work!",
@@ -783,48 +825,6 @@ window.SLIDES = [
         desc: "• AP Cost: 2\n• Effect: Prevent your movement from provoking Attacks of Opportunity until your next turn.\n• Limitations: Does not prevent AoO triggered by your spells or ranged attacks.\n• Use Case: Perfect for kiting, escaping tanks, and trading action economy."
       }
     ]
-  },
-  {
-    section: "Reactions",
-    speaker: "Queri Lilibit",
-    expression: "defeated",
-    background: "retro_classroom_bg.png",
-    text: "\"So if I'm ranged, I'm just screwed if they get close?\" No, you have options! Always carry a melee weapon like a dagger to draw fast.",
-    type: "dialogue",
-    subtab: "Disengage & Kiting"
-  },
-  {
-    section: "Reactions",
-    speaker: "Queri Lilibit",
-    expression: "normal",
-    background: "retro_classroom_bg.png",
-    text: "Disengaging is a great tool. If you spend 3 AP to disengage and run, forcing 5 enemies to chase you... you traded 3 AP for 5 AP!",
-    type: "dialogue"
-  },
-  {
-    section: "Reactions",
-    speaker: "Queri Lilibit",
-    expression: "smug",
-    background: "retro_classroom_bg.png",
-    text: "Let's talk about the Reaction Stack. If an enemy attacks, react with **RP movement abilities** (like the class skill **Evasive Maneuver**)!Safe!",
-    type: "dialogue",
-    subtab: "Stack Tactics"
-  },
-  {
-    section: "Reactions",
-    speaker: "Queri Lilibit",
-    expression: "smug",
-    background: "retro_classroom_bg.png",
-    text: "Your reaction resolves first, invalidating their target. Attacker costs are refunded, but you avoid a dangerous damage roll!",
-    type: "dialogue"
-  },
-  {
-    section: "Reactions",
-    speaker: "Queri Lilibit",
-    expression: "thumbsup",
-    background: "retro_classroom_bg.png",
-    text: "Mastering reaction stacking is what makes you a true legend in Lyrian Chronicles. We'll practice more stack combos in later classes!",
-    type: "dialogue"
   },
 
   // SECTION 10: ADVANCED DEFENSES
