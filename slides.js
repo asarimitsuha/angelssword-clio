@@ -758,7 +758,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "normal",
     background: "retro_classroom_bg.png",
-    text: "Disengaging is a great tool. If you spend 3 AP to disengage and run, forcing 5 enemies to chase you... you traded 3 AP for 5 AP!",
+    text: "Disengaging is a great tool. Spend 2 AP to disengage plus 1 AP to run, forcing 5 enemies to chase you... trading 3 AP for 5 AP!",
     type: "dialogue"
   },
   {
