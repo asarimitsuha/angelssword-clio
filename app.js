@@ -8,6 +8,7 @@ let crtFilterEnabled = true;
 let bgmEnabled = true;
 let bgmAudio = null;
 let audioCtx = null;
+let voiceAudio = null; // Voiceover audio player
 
 // Initialize when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -166,6 +167,12 @@ function initControls() {
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+    } else {
+      // Stop active voiceover immediately if sound is turned off
+      if (voiceAudio) {
+        voiceAudio.pause();
+        voiceAudio = null;
+      }
     }
     playMenuClickSound();
   });
@@ -263,6 +270,12 @@ function initControls() {
 function renderSlide(index) {
   currentSlideIndex = index;
   const slide = window.SLIDES[currentSlideIndex];
+
+  // Stop active voiceover if playing
+  if (voiceAudio) {
+    voiceAudio.pause();
+    voiceAudio = null;
+  }
 
   // Update counters and headers
   document.getElementById("slide-counter").textContent = `${(index + 1).toString().padStart(2, '0')}/${window.SLIDES.length.toString().padStart(2, '0')}`;
@@ -363,6 +376,16 @@ function renderSlide(index) {
 
   // Trigger typewriter text entry
   startTypewriter(slide.text);
+
+  // Play voiceover if sound is enabled and it's not a video cutscene
+  if (soundEnabled && slide.type !== "video" && slide.text) {
+    voiceAudio = new Audio(`assets/voice/slide_${index}.mp3`);
+    voiceAudio.volume = 0.8;
+    voiceAudio.play().catch(e => {
+      // Ignore if voiceover file is missing or blocked by browser policy
+      console.warn(`Voiceover not found or blocked for slide ${index}:`, e);
+    });
+  }
 }
 
 // 4. Typewriter Dialogue Renderer

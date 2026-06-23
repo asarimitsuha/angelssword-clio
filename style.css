@@ -448,12 +448,26 @@ input:checked + .slider:before {
   background-position: center;
   transition: opacity 0.5s ease-in-out;
   z-index: 1;
+  filter: brightness(0.75) contrast(1.1); /* Darken slightly to pop the warm foreground sprite */
+}
+
+/* Sega Saturn / PC-98 Cool-Toned Color Grading Overlay */
+.stage-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(20, 28, 64, 0.7), rgba(40, 24, 72, 0.6));
+  mix-blend-mode: color;
+  pointer-events: none;
 }
 
 /* Queri Sprite Layer */
 .sprite-container {
   position: absolute;
-  bottom: -60px; /* Shifted down so lower body is hidden behind dialogue box */
+  bottom: -20px; /* Shifted up slightly to show more of her torso/waist above dialogue box */
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
