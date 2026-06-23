@@ -179,7 +179,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Let's review the mathematical details. Click the **Attack Cards** on the screen below to study their formulas and stat interactions!",
+    text: "Let's review the mathematical details. Click the **Attack Cards** on the screen to study their formulas and stat interactions!",
     type: "interactive",
     hotspots: [
       {
@@ -471,7 +471,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Let's review the defensive statistics. Click the **Defense Cards** on the screen below to study their mechanics and calculations!",
+    text: "Let's review the defensive statistics. Click the **Defense Cards** on the screen to study their mechanics and calculations!",
     type: "interactive",
     hotspots: [
       {
@@ -513,7 +513,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Let's study the three main armor types. Click the **Armor Cards** on the screen below to compare their benefits and penalties!",
+    text: "Let's study the three main armor types. Click the **Armor Cards** on the screen to compare their benefits and penalties!",
     type: "interactive",
     hotspots: [
       {
@@ -749,7 +749,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Let's review the common reaction-related actions. Click the **basic ability cards above** to study how they work!",
+    text: "Let's review the common reaction-related actions. Click the **basic ability cards on the screen** to study how they work!",
     type: "interactive",
     hotspots: [
       {
@@ -868,7 +868,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "There are three types of cover on the battlefield. Click the **Cover Cards above** to study their benefits!",
+    text: "There are three types of cover on the battlefield. Click the **Cover Cards on the screen** to study their benefits!",
     type: "interactive",
     hotspots: [
       {

@@ -18,26 +18,60 @@ if ([string]::IsNullOrEmpty($apiKey) -or [string]::IsNullOrEmpty($voiceId)) {
     Exit 1
 }
 
+# Function to get custom personality voice tags based on Queri's introverted/competent character
+function Get-VoiceTag ($expression, $index) {
+    if ($index -eq 1) { return "[softly, nervously] " } # Intro greeting
+    if ($index -eq 2) { return "[gently, cheerfully] " } # Welcome details
+    if ($index -eq 3) { return "[seriously, confidently] " } # Combat Rule 1
+    if ($index -eq 120) { return "[softly, smiling] " } # Farewell
+
+    switch ($expression) {
+        "cheerful" { return "[gently, cheerfully] " }
+        "thumbsup" { return "[gently, happy] " }
+        "normal"   { return "[gently] " }
+        "focused"  { return "[seriously, confidently] " }
+        "thoughtful" { return "[thoughtfully] " }
+        "surprised"  { return "[startled, gasp] " }
+        "smug"       { return "[softly, proudly] " }
+        "defeated"   { return "[sighs, softly] " }
+        default    { return "[gently] " }
+    }
+}
+
 $slidesFile = Join-Path $PSScriptRoot "slides.js"
 $lines = Get-Content -Path $slidesFile -Encoding utf8
 
 $slides = @()
-$currentSlide = @{ type="dialogue"; text=$null; section=$null }
+$currentSlide = @{ type="dialogue"; text=$null; section=$null; expression="normal" }
 $inSlide = $false
+$inHotspots = $false
 
 foreach ($line in $lines) {
     $trimmed = $line.Trim()
     
+    if ($trimmed.Contains("hotspots: [")) {
+        $inHotspots = $true
+    }
+    if ($trimmed -eq "]" -or $trimmed -eq "]," -or $trimmed.StartsWith("]")) {
+        $inHotspots = $false
+    }
+    
     if ($trimmed -eq "{" -or $trimmed.StartsWith("{")) {
+        if ($inHotspots) {
+            continue
+        }
         if ($inSlide) {
             $slides += $currentSlide
         }
-        $currentSlide = @{ type="dialogue"; text=$null; section=$null }
+        $currentSlide = @{ type="dialogue"; text=$null; section=$null; expression="normal" }
         $inSlide = $true
         continue
     }
     
     if ($trimmed -eq "}," -or $trimmed -eq "}") {
+        if ($inHotspots) {
+            continue
+        }
         if ($inSlide) {
             $slides += $currentSlide
             $inSlide = $false
@@ -49,11 +83,15 @@ foreach ($line in $lines) {
         if ($trimmed -match '^type:\s*"([^"]+)"') {
             $currentSlide.type = $Matches[1]
         }
-        elseif ($trimmed -match '^text:\s*"([^"]+)"') {
+        # Regex matches double-quoted strings and supports escaped double quotes (\")
+        elseif ($trimmed -match '^text:\s*"((?:[^"\\]|\\.)*)"') {
             $currentSlide.text = $Matches[1]
         }
         elseif ($trimmed -match '^section:\s*"([^"]+)"') {
             $currentSlide.section = $Matches[1]
+        }
+        elseif ($trimmed -match '^expression:\s*"([^"]+)"') {
+            $currentSlide.expression = $Matches[1]
         }
     }
 }
@@ -81,7 +119,15 @@ for ($i=0; $i -lt $slides.Count; $i++) {
         continue
     }
     
-    $cleanText = ($slide.text -replace '\*\*','') -replace '#','Number '
+    # Clean text payload (replace escaped quotes with normal ones, remove bold markers)
+    $cleanText = $slide.text -replace '\\"', '"'
+    $cleanText = $cleanText -replace '\*\*', ''
+    $cleanText = $cleanText -replace '#', 'Number '
+    
+    # Get personality tag based on index and expression, prepending it to payload
+    $voiceTag = Get-VoiceTag $slide.expression $i
+    $payloadText = $voiceTag + $cleanText
+    
     $logText = $cleanText.SubString(0, [System.Math]::Min(50, $cleanText.Length))
     Write-Host "[$($i + 1)/$($slides.Count)] Generating voice for: `"$logText`"..."
     
@@ -92,8 +138,8 @@ for ($i=0; $i -lt $slides.Count; $i++) {
     }
     
     $body = @{
-        text = $cleanText
-        model_id = "eleven_monolingual_v1"
+        text = $payloadText
+        model_id = "eleven_v3"
         voice_settings = @{
             stability = 0.5
             similarity_boost = 0.75

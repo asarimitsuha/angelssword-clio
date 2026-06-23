@@ -8,7 +8,7 @@ let crtFilterEnabled = true;
 let bgmEnabled = true;
 let bgmAudio = null;
 let audioCtx = null;
-let voiceAudio = null; // Voiceover audio player
+let voiceAudio = new Audio(); // Reusable voiceover audio player
 
 // Initialize when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,7 +171,7 @@ function initControls() {
       // Stop active voiceover immediately if sound is turned off
       if (voiceAudio) {
         voiceAudio.pause();
-        voiceAudio = null;
+        voiceAudio.src = "";
       }
     }
     playMenuClickSound();
@@ -274,7 +274,7 @@ function renderSlide(index) {
   // Stop active voiceover if playing
   if (voiceAudio) {
     voiceAudio.pause();
-    voiceAudio = null;
+    voiceAudio.src = "";
   }
 
   // Update counters and headers
@@ -379,7 +379,7 @@ function renderSlide(index) {
 
   // Play voiceover if sound is enabled and it's not a video cutscene
   if (soundEnabled && slide.type !== "video" && slide.text) {
-    voiceAudio = new Audio(`assets/voice/slide_${index}.mp3`);
+    voiceAudio.src = `assets/voice/slide_${index}.mp3`;
     voiceAudio.volume = 0.8;
     voiceAudio.play().catch(e => {
       // Ignore if voiceover file is missing or blocked by browser policy
@@ -395,8 +395,11 @@ function startTypewriter(text) {
   const container = document.getElementById("dialogue-text");
   container.innerHTML = "";
 
+  // Strip ElevenLabs emotional audio tags (e.g. [excited], [sighs])
+  const cleanText = text.replace(/\[.*?\]/g, "");
+
   // Parse double asterisks **bold** to <strong> tags for keyword highlight styling
-  const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  const formattedText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
   // Tokenize characters and HTML tag segments
   const chars = [];
@@ -444,7 +447,8 @@ function completeTypewriter() {
   
   const slide = window.SLIDES[currentSlideIndex];
   const container = document.getElementById("dialogue-text");
-  container.innerHTML = slide.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  const cleanText = slide.text.replace(/\[.*?\]/g, "");
+  container.innerHTML = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
   document.getElementById("next-indicator").style.display = "block";
 }
