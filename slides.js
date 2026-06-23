@@ -13,7 +13,7 @@ window.SLIDES = [
   {
     section: "Introduction",
     speaker: "Queri Lilibit",
-    expression: "normal",
+    expression: "thumbsup",
     background: "retro_classroom_bg.png",
     text: "Greetings, cadet! I am **Queri Lilibit**, your Pixie Faerie combat tutor. Welcome to **Queri's Combat School**!",
     type: "dialogue"
@@ -21,7 +21,7 @@ window.SLIDES = [
   {
     section: "Introduction",
     speaker: "Queri Lilibit",
-    expression: "cheerful",
+    expression: "thumbsup",
     background: "retro_classroom_bg.png",
     text: "This tutorial will teach you the basics of combat in **Lyrian Chronicles, Angel's Sword RPG**. Let's get you ready for action!",
     type: "dialogue"
@@ -124,7 +124,7 @@ window.SLIDES = [
   {
     section: "Attack Types",
     speaker: "Queri Lilibit",
-    expression: "thoughtful",
+    expression: "surprised",
     background: "retro_classroom_bg.png",
     text: "Additionally, you can only make **two heavy attacks** in a single round... making each miss much more devastating!",
     type: "dialogue"
@@ -294,7 +294,7 @@ window.SLIDES = [
   {
     section: "Defending",
     speaker: "Queri Lilibit",
-    expression: "focused",
+    expression: "defeated",
     background: "retro_classroom_bg.png",
     text: "But beware! When your HP reaches **0**, you are truly wounded and **downed**, drastically reducing your combat effectiveness.",
     type: "dialogue"
@@ -313,7 +313,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Your base RP is equal to **2 + Agility**, but it is reduced by wearing heavy armor and carrying certain heavy equipment.",
+    text: "Your base RP is equal to **2 + Agility**. Carrying certain heavy equipment can reduce it, but **wearing armor does not reduce your RP pool**!",
     type: "dialogue"
   },
   {
@@ -387,7 +387,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "normal",
     background: "retro_classroom_bg.png",
-    text: "Heavier armor increases your passive and active Guard, but it also reduces your maximum RP stamina pool. Let's look at the builds!",
+    text: "Heavier armor increases passive and active Guard, but it reduces your Evasion, Dodge, and Initiative. Let's look at the builds!",
     type: "dialogue",
     subtab: "Armor Weight"
   },
@@ -412,7 +412,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "**Heavy Armor** ignores small attacks completely (great for grunts!), but its low RP makes you vulnerable to massive boss strikes.",
+    text: "**Heavy Armor** ignores small attacks (great for grunts!), but its high Evasion/Dodge and Initiative penalties make you easier to hit.",
     type: "dialogue"
   },
   {
@@ -507,21 +507,646 @@ window.SLIDES = [
     ]
   },
 
-  // SECTION 7: SUMMARY
+  // SECTION 7: ARMOR STUDY (INTERACTIVE)
   {
-    section: "Summary",
+    section: "Armor Study",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Let's study the three main armor types. Click the **Armor Cards** on the screen below to compare their benefits and penalties!",
+    type: "interactive",
+    hotspots: [
+      {
+        id: "armor-light",
+        label: "Light Armor",
+        x: "15%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "LIGHT ARMOR",
+        desc: "• Guard: +1\n• Block Value: +4\n• Initiative: -1\n• Evasion: -2\n• Dodge: -2\n• Details: Offers minimal protection with almost no weight penalties, perfect for highly evasive skirmishers."
+      },
+      {
+        id: "armor-medium",
+        label: "Medium Armor",
+        x: "41%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "MEDIUM ARMOR",
+        desc: "• Guard: +2\n• Block Value: +8\n• Initiative: -2\n• Evasion: -4\n• Dodge: -4\n• Details: A balanced choice offering moderate protection. A standard for vanguard fighters who need both defense and mobility."
+      },
+      {
+        id: "armor-heavy",
+        label: "Heavy Armor",
+        x: "67%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "HEAVY ARMOR",
+        desc: "• Guard: +3\n• Block Value: +12\n• Initiative: -3\n• Evasion: -6\n• Dodge: -6\n• Details: Heavy plate armor that maximizes raw damage absorption, but severely hinders your reflexes and action speeds."
+      }
+    ]
+  },
+  {
+    section: "Armor Study",
     speaker: "Queri Lilibit",
     expression: "cheerful",
     background: "retro_classroom_bg.png",
-    text: "Fantastic work, cadet! You now understand the basic attacks: **Light (1 AP)**, **Heavy (2 AP)**, and **Precise (2 AP)**.",
+    text: "Note: there are **armor mods** that can modify these values! You can find details on these mods on the item entries in your **handbook**.",
+    type: "dialogue"
+  },
+
+  // SECTION 8: MOVEMENT
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Next up, let's talk about **Movement**. Navigating the battlefield is key to positioning your strikes!",
+    type: "dialogue",
+    subtab: "Movement Basics"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Movement is simple: it costs **1 AP** to move up to your character's base speed, which is usually **20 feet**.",
+    type: "dialogue"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "However, some races move faster than others, and things like **mounts** and active **buffs** can change your speed.",
+    type: "dialogue"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "You can spend anywhere from **1 to 4 AP** on movement per turn. You can do this as separate moves or a single larger movement.",
+    type: "dialogue"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "Unless you have a specific buff to exploit, it is generally better to chain **individual 1 AP movements** together.",
+    type: "dialogue",
+    subtab: "Interrupts"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "surprised",
+    background: "retro_classroom_bg.png",
+    text: "Why? Because if your movement gets interrupted (like by an enemy reaction), it interrupts the **ENTIRE movement action**!",
+    type: "dialogue"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "You can also break up your movement with other actions. Move for **1 AP**, attack, then move again if you have AP left!",
+    type: "dialogue",
+    subtab: "Tactics"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see a **Movement** tactics demo! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-Movement.mp4"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Also, you **do not have to move your FULL speed** each action. You can choose to move any distance up to that speed for **1 AP**.",
+    type: "dialogue"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Note: some classes/races have **Line Movement**, meaning they must move in a straight line for each movement. This is common for mounts.",
+    type: "dialogue",
+    subtab: "Special Moves"
+  },
+  {
+    section: "Movement",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Some airship mounts also have a **turning speed**... but that's an advanced topic we'll cover in a future class!",
+    type: "dialogue"
+  },
+
+  // SECTION 9: REACTIONS
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Now let's cover **Reactions**, the flagship mechanic of Lyrian Chronicles. In this game, your turn never truly ends!",
+    type: "dialogue",
+    subtab: "Reaction Basics"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Any action using **Reaction Points (RP)** as a resource can be played outside of your turn. This is how you defend or strike back!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "Reactions resolve on a **stack**—the latest reaction always resolves first! This allows for some very clever counter-plays.",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Let's talk about the most common reaction: the **Attack of Opportunity**. Understanding this is critical for battlefield control!",
+    type: "dialogue",
+    subtab: "Opportunity Attacks"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "When an enemy leaves your threatened melee range (usually 5ft), you get an immediate free **Basic Light Attack** against them!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "This attack resolves *before* the movement does! If you down or incapacitate the target with your AoO, their movement is cancelled.",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see an **Opportunity Attack** demo! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-Opportunity.mp4"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "You can also spend **1 RP** to upgrade your Attack of Opportunity to a **Heavy Attack**. Great for pushing offensive advantages!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Remember: simply moving *within* threatened range doesn't provoke. An AoO only triggers when an enemy leaves threatened range.",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "surprised",
+    background: "retro_classroom_bg.png",
+    text: "You also provoke if you cast a spell or shoot a ranged weapon while in melee threat range. Enemies get a free AoO for *every* cast!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "Do note that not all abilities are spells, and some spells or ranged attacks have special properties that do not provoke an AoO.",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Let's review the common reaction-related actions. Click the **basic ability cards above** to study how they work!",
+    type: "interactive",
+    hotspots: [
+      {
+        id: "reaction-aoo",
+        label: "Opportunity Attack",
+        x: "15%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "ATTACK OF OPPORTUNITY (FREE)",
+        desc: "• Resource Cost: Free (0 RP)\n• Trigger: Enemy leaves threatened range (5ft), or casts/shoots within it.\n• Attack: Immediate Basic Light Attack.\n• Special: Occurs before the enemy's action resolves. If they are downed/killed, their move is cancelled."
+      },
+      {
+        id: "reaction-heavy-aoo",
+        label: "Heavy Opportunity",
+        x: "41%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "HEAVY OPPORTUNITY ATTACK (1 RP)",
+        desc: "• Resource Cost: 1 RP\n• Trigger: Same as standard Attack of Opportunity.\n• Attack: Upgrades standard AoO to a Heavy Attack.\n• Advice: Great for pushing offensive advantages, but save your RP for defense when things are neutral."
+      },
+      {
+        id: "reaction-disengage",
+        label: "Disengage",
+        x: "67%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "DISENGAGE (2 AP)",
+        desc: "• AP Cost: 2\n• Effect: Prevent your movement from provoking Attacks of Opportunity until your next turn.\n• Limitations: Does not prevent AoO triggered by your spells or ranged attacks.\n• Use Case: Perfect for kiting, escaping tanks, and trading action economy."
+      }
+    ]
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "defeated",
+    background: "retro_classroom_bg.png",
+    text: "\"So if I'm ranged, I'm just screwed if they get close?\" No, you have options! Always carry a melee weapon like a dagger to draw fast.",
+    type: "dialogue",
+    subtab: "Disengage & Kiting"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Disengaging is a great tool. If you spend 3 AP to disengage and run, forcing 5 enemies to chase you... you traded 3 AP for 5 AP!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "Let's talk about the Reaction Stack. If an enemy attacks, react with **RP movement abilities** (like the class skill **Evasive Maneuver**)!Safe!",
+    type: "dialogue",
+    subtab: "Stack Tactics"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "Because your reaction resolves first, you move 5ft away. Now they are out of range and their Heavy Attack fails! Devastating!",
+    type: "dialogue"
+  },
+  {
+    section: "Reactions",
+    speaker: "Queri Lilibit",
+    expression: "thumbsup",
+    background: "retro_classroom_bg.png",
+    text: "Mastering reaction stacking is what makes you a true legend in Lyrian Chronicles. We'll practice more stack combos in later classes!",
+    type: "dialogue"
+  },
+
+  // SECTION 10: ADVANCED DEFENSES
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Let's cover **Advanced Defensive Play**, crucial tactics to survive dangerous situations and coordinate counterattacks!",
+    type: "dialogue",
+    subtab: "Tactical Defense"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "Unmitigated ranged attackers are the **#1 killer** in Angel's Sword RPG. Left unchecked, they will coordinate and focus fire your team!",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Everyone has access to **Cover**. Hiding behind a barrier is the difference between becoming a pincushion or gaining ground.",
+    type: "dialogue",
+    subtab: "Cover Rules"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see a **Cover** demonstration! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-Cover.mp4"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "There are three types of cover on the battlefield. Click the **Cover Cards above** to study their benefits!",
+    type: "interactive",
+    hotspots: [
+      {
+        id: "cover-low",
+        label: "Low Cover",
+        x: "15%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "LOW COVER",
+        desc: "• Evasion Bonus: +4\n• Hunker Down (2 AP): Counts Low Cover as High Cover (+6 Evasion, +1 Guard) until the start of your next turn.\n• Examples: Chest-high walls, tree trunks, or peeking around a corner."
+      },
+      {
+        id: "cover-high",
+        label: "High Cover",
+        x: "41%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "HIGH COVER",
+        desc: "• Evasion Bonus: +6\n• Guard Bonus: +1\n• Examples: Arrow slits or magical shielding barriers.\n• Detail: Covers almost the entire body, making you extremely difficult to hit while offering solid passive damage reduction."
+      },
+      {
+        id: "cover-full",
+        label: "Full Cover",
+        x: "67%",
+        y: "20%",
+        width: "22%",
+        height: "60%",
+        title: "FULL COVER",
+        desc: "• Benefit: Cannot be targeted by direct attacks.\n• Requirement: No direct line of sight between you and the attacker.\n• Note: If the attack's point of origin creates LoS (like a fireball thrown behind your wall), Full Cover is negated."
+      }
+    ]
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "surprised",
+    background: "retro_classroom_bg.png",
+    text: "Be careful! If an attack destroys the cover you are hiding behind, the cover bonus is completely nullified for that attack.",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "For **2 AP**, you can use the **Hunker Down** action. This counts any Low Cover you have as High Cover until the start of your next turn!",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "When firing from cover, you can **peek**—treating the attack as coming from a physically reachable space within 5 feet of the cover.",
+    type: "dialogue",
+    subtab: "Peeking & Line of Sight"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "surprised",
+    background: "retro_classroom_bg.png",
+    text: "If your peeking space is in an enemy's melee range, their ranged attack or spell will trigger an Attack of Opportunity against you!",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "Additionally, if you peek from High or Full Cover to shoot, your cover is downgraded to **Low Cover** during the attack.",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see a **Peek From Cover** demonstration! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-PeekFromCover.mp4"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "You can use Smoke Flasks or Mage skills like **Glittershards** to block line of sight. If enemies can't see you, they can't shoot!",
+    type: "dialogue",
+    subtab: "Slicing Sightlines"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "A powerful tactic: throw a **Smoke Flask** right at your feet. Ranged attackers can't target you, though AoEs and melee attacks still hit!",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see an **Advanced Smoke Bomb** demo! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-AdvSmokeBomb.mp4"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "To shut down ranged foes completely, close in fast! Use skills like **Movement Burst** and **Fae Flash** to drag them into melee.",
+    type: "dialogue",
+    subtab: "Closing Melee"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "Forcing a ranged attacker into melee removes their targeting freedom. Any ranged attacks or spells they try to cast will trigger your AoOs!",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Remember: **action economy is paramount**! Disengaging and running forces enemies to spend AP chasing you instead of attacking.",
+    type: "dialogue",
+    subtab: "Action Economy"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "defeated",
+    background: "retro_classroom_bg.png",
+    text: "Under severe pressure from a boss or ranged fire, you can use the **Defend** basic action. It is expensive at **3 AP**...",
+    type: "dialogue"
+  },
+  {
+    section: "Advanced Defenses",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "...but it allows you to **Dodge or Block for 0 RP** until your next turn! A powerful way to last as long as possible under focus fire.",
+    type: "dialogue"
+  },
+
+  // SECTION 11: PREPARED ACTION
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Lastly, let's study the **Prepared Action**—a powerful tactic that lets you act out of turn by preparing a specific trigger.",
+    type: "dialogue",
+    subtab: "Preparation Rules"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "To **Prepare**, you spend **X AP** (the cost of the action) and end your turn, stating a trigger and an action with any targets involved.",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "If the trigger occurs before your next turn starts, you immediately execute your action. But there are rules!",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "You cannot prepare actions with a base AP cost of **0** or higher than **2 AP**. No preparing free moves or massive spells!",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "Additionally, your trigger cannot be one of your own **0 RP actions**, nor can it depend on a dice roll (like missing/hitting).",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Despite the caveats, it is incredibly versatile. You can use it to shoot at an enemy as they leave cover!",
+    type: "dialogue",
+    subtab: "Tactical Uses"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "You can also use it to coordinate combination attacks with allies, or create powerful setups in dire circumstances.",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Let's look at a legendary combo: the **Kreman Lodi Special**. It's designed to counter hordes of ranged enemies!",
+    type: "dialogue",
+    subtab: "Kreman Lodi Special"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "focused",
+    background: "retro_classroom_bg.png",
+    text: "First, throw a **Smoke Flask** down at your feet to block line of sight. Ranged foes can't target you, so you are safe in cover.",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "Next, spend your AP to prepare movement. Your trigger: **'When the person who moves right before me ends their turn.'**",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "smug",
+    background: "retro_classroom_bg.png",
+    text: "This lets you remain in cover, then blitz to the enemy *right before* your turn starts, giving you a full **4 AP** in their face!",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "surprised",
+    background: "retro_classroom_bg.png",
+    text: "Beware: conditions could change before you act, and enemies can use **Reaction** abilities to interrupt you. High risk, high reward!",
+    type: "dialogue"
+  },
+  {
+    section: "Prepared Action",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "Watch the video monitor to see a **Kreman Lodi Special** demonstration! Press **PLAY** on the controls below.",
+    type: "video",
+    videoSrc: "anime/Queri-Kreman.mp4"
+  },
+
+  // SECTION 12: SUMMARY
+  {
+    section: "Summary",
+    speaker: "Queri Lilibit",
+    expression: "thumbsup",
+    background: "retro_classroom_bg.png",
+    text: "Incredible job, cadet! You have successfully completed the entire combat curriculum here at **Queri's Combat School**!",
     type: "dialogue"
   },
   {
     section: "Summary",
     speaker: "Queri Lilibit",
-    expression: "cheerful",
+    expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "You know how they interact with stats like Evasion, Guard, Power, and Focus. You're ready for actual combat!",
+    text: "You've mastered **AP management** and the three basic attacks: fast **Light**, crushing **Heavy**, and piercing **Precise** strikes.",
     type: "dialogue"
   },
   {
@@ -529,7 +1154,39 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "normal",
     background: "retro_classroom_bg.png",
-    text: "Head over to **rpg.angelssword.com** to build your character sheet and review advanced combat disciplines. Good luck out there!",
+    text: "You know how to defend using **HP** and **RP**, reactively choosing to **Dodge** or **Block** based on your **Armor weight class**.",
+    type: "dialogue"
+  },
+  {
+    section: "Summary",
+    speaker: "Queri Lilibit",
+    expression: "normal",
+    background: "retro_classroom_bg.png",
+    text: "We covered strategic **Movement**, kiting, and utilizing **Attacks of Opportunity** to control melee spaces outside of your turn.",
+    type: "dialogue"
+  },
+  {
+    section: "Summary",
+    speaker: "Queri Lilibit",
+    expression: "thoughtful",
+    background: "retro_classroom_bg.png",
+    text: "You learned to slice sightlines with **Smoke Flasks**, peek from **Cover**, and spend 2 AP to **Hunker Down** for safety.",
+    type: "dialogue"
+  },
+  {
+    section: "Summary",
+    speaker: "Queri Lilibit",
+    expression: "cheerful",
+    background: "retro_classroom_bg.png",
+    text: "And finally, you know how to **Prepare** actions to execute complex combos, like the **Kreman Lodi Special** blitz.",
+    type: "dialogue"
+  },
+  {
+    section: "Summary",
+    speaker: "Queri Lilibit",
+    expression: "thumbsup",
+    background: "retro_classroom_bg.png",
+    text: "Now head over to **rpg.angelssword.com** to build your sheet and test these tactics. Good luck out there, hero!",
     type: "dialogue"
   }
 ];

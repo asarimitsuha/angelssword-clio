@@ -308,7 +308,16 @@ function renderSlide(index) {
       
       // Determine a retro card icon based on ID
       let icon = "❓";
-      if (spot.id.includes("light")) icon = "⚡";
+      if (spot.id.includes("armor-light")) icon = "🍃";
+      else if (spot.id.includes("armor-medium")) icon = "⚖️";
+      else if (spot.id.includes("armor-heavy")) icon = "🧱";
+      else if (spot.id.includes("reaction-aoo")) icon = "⚔️";
+      else if (spot.id.includes("reaction-heavy-aoo")) icon = "🪓";
+      else if (spot.id.includes("reaction-disengage")) icon = "🏃";
+      else if (spot.id.includes("cover-low")) icon = "🌲";
+      else if (spot.id.includes("cover-high")) icon = "🏰";
+      else if (spot.id.includes("cover-full")) icon = "🚪";
+      else if (spot.id.includes("light")) icon = "⚡";
       else if (spot.id.includes("heavy")) icon = "💥";
       else if (spot.id.includes("precise")) icon = "🎯";
       else if (spot.id.includes("dodge")) icon = "💨";
