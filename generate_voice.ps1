@@ -123,6 +123,7 @@ for ($i=0; $i -lt $slides.Count; $i++) {
     $cleanText = $slide.text -replace '\\"', '"'
     $cleanText = $cleanText -replace '\*\*', ''
     $cleanText = $cleanText -replace '#', 'Number '
+    $cleanText = $cleanText -replace '\(2 x Toughness\) \+ Armor Block Value', '2 times Toughness plus Armor Block Value'
     
     # Get personality tag based on index and expression, prepending it to payload
     $voiceTag = Get-VoiceTag $slide.expression $i

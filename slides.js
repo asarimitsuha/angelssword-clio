@@ -85,7 +85,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "Because Light Attacks are cheap, they allow you to put constant pressure on low-HP targets.",
+    text: "Being cheap, they are perfect against **low Guard** targets. Tackle them with a flurry of blows!",
     type: "dialogue"
   },
   {
@@ -93,7 +93,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "You can chip away at their HP pool, forcing them to waste valuable defensive resources!",
+    text: "You'll put pressure on their HP pool, forcing them to waste valuable defensive resources!",
     type: "dialogue"
   },
   {
