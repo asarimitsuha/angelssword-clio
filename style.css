@@ -1,0 +1,947 @@
+/* Custom styling for Angel's Sword RPG: Combat School (PC-98 Retro Edition) */
+
+:root {
+  /* PC-98 Color Palette */
+  --pc98-bg-dark: #05050f;       /* Deep space/navy black */
+  --pc98-window-bg: #0c1220;     /* Translucent dark window pane */
+  --pc98-border-light: #4c6280;  /* Standard UI border blue-grey */
+  --pc98-border-highlight: #00f0ff; /* Glowing cyan */
+  --pc98-text-green: #33ff33;    /* Glowing terminal green */
+  --pc98-text-amber: #ffaa00;    /* Glowing warning orange */
+  --pc98-text-cyan: #00f0ff;     /* Glowing cyan */
+  --pc98-text-white: #ffffff;    /* Dialogue white */
+  --pc98-text-muted: #8899aa;    /* Secondary labels */
+  --pc98-led-green: #00ff66;     /* Active power LED */
+  --pc98-led-red: #ff3333;       /* Warning LED */
+  --pc98-gold-glow: #dfb858;     /* Fairy wings gold */
+  
+  /* Font Family Stacks */
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-dialogue: 'VT323', monospace;
+
+  /* Layout Constants */
+  --sidebar-width: 320px;
+  --bezel-color: #bab09e;        /* Classic retro grey-beige computer casing */
+  --bezel-color-dark: #8c8270;
+  --bezel-color-light: #eae0cf;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated; /* Maintain pixel art crispness */
+}
+
+body {
+  background-color: #12121e;
+  color: var(--pc98-text-white);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+/* Main Container Layout */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--pc98-bg-dark);
+}
+
+/* ==========================================================================
+   SIDEBAR & TABLE OF CONTENTS
+   ========================================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: #0c0c16;
+  border-right: 4px double var(--pc98-border-light);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  z-index: 10;
+}
+
+.sidebar-header {
+  border-bottom: 3px double var(--pc98-border-light);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.game-logo {
+  font-family: var(--font-pixel);
+  font-size: 1.4rem;
+  color: var(--pc98-text-cyan);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--pc98-text-amber);
+  margin-top: 5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.toc-container {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.menu-label {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--pc98-text-muted);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.toc-list {
+  list-style: none;
+}
+
+.toc-item {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  padding: 12px 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: var(--pc98-text-muted);
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toc-item::before {
+  content: "▶";
+  font-family: var(--font-mono);
+  position: absolute;
+  left: -10px;
+  opacity: 0;
+  color: var(--pc98-text-green);
+  transition: opacity 0.2s, left 0.2s;
+}
+
+.toc-item:hover {
+  color: var(--pc98-text-white);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--pc98-border-light);
+}
+
+.toc-item:hover::before {
+  opacity: 0.7;
+  left: -2px;
+}
+
+.toc-item.active {
+  color: var(--pc98-text-green);
+  font-weight: bold;
+  border: 1px solid var(--pc98-text-green);
+  background-color: rgba(51, 255, 51, 0.05);
+  box-shadow: inset 0 0 5px rgba(51, 255, 51, 0.2);
+}
+
+.toc-item.active::before {
+  content: "▶";
+  opacity: 1;
+  left: 5px;
+}
+.toc-item.active {
+  padding-left: 22px;
+}
+
+/* TOC Sublist and Subitems (Attack Types children) */
+.toc-sublist {
+  list-style: none;
+  padding-left: 18px;
+  margin-top: -4px;
+  margin-bottom: 12px;
+}
+
+.toc-subitem {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--pc98-text-muted);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 1px dashed var(--pc98-border-light);
+}
+
+.toc-subitem:hover {
+  color: var(--pc98-text-white);
+  border-left: 1px solid var(--pc98-text-cyan);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.toc-subitem.active {
+  color: var(--pc98-text-cyan);
+  font-weight: bold;
+  border-left: 2px solid var(--pc98-text-cyan);
+  background-color: rgba(0, 240, 255, 0.05);
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.4);
+}
+
+/* System Control Widgets */
+.sidebar-footer {
+  border-top: 3px double var(--pc98-border-light);
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.footer-link {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.retro-btn {
+  background-color: #162030;
+  border: 2px solid var(--pc98-border-light);
+  color: var(--pc98-text-cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  padding: 10px;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: all 0.1s ease;
+  box-shadow: 3px 3px 0px #080a10;
+  text-transform: uppercase;
+}
+
+.retro-btn:hover {
+  background-color: #202e45;
+  border-color: var(--pc98-border-highlight);
+  color: var(--pc98-text-white);
+  box-shadow: 2px 2px 0px #080a10;
+  transform: translate(1px, 1px);
+}
+
+.retro-btn:active {
+  box-shadow: 0px 0px 0px #080a10;
+  transform: translate(3px, 3px);
+}
+
+.system-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.control-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--pc98-text-muted);
+}
+
+.control-group .label {
+  letter-spacing: 1px;
+}
+
+/* Toggle Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1f2733;
+  border: 1px solid var(--pc98-border-light);
+  transition: .2s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--pc98-text-muted);
+  transition: .2s;
+}
+
+input:checked + .slider {
+  border-color: var(--pc98-text-green);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+  background-color: var(--pc98-text-green);
+  box-shadow: 0 0 5px var(--pc98-text-green);
+}
+
+
+/* ==========================================================================
+   MONITOR CASE & CRT DISPLAY
+   ========================================================================== */
+.monitor-wrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0c0c16;
+  padding: 30px;
+}
+
+/* Outer Monitor Bezel */
+.monitor-bezel {
+  width: 100%;
+  max-width: 960px;
+  aspect-ratio: 4 / 3;
+  background-color: var(--bezel-color);
+  border-top: 8px solid var(--bezel-color-light);
+  border-left: 8px solid var(--bezel-color-light);
+  border-right: 8px solid var(--bezel-color-dark);
+  border-bottom: 8px solid var(--bezel-color-dark);
+  border-radius: 12px;
+  padding: 25px 25px 45px 25px; /* Thicker bottom for controls and logo */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 2px 5px rgba(255,255,255,0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Monitor Branding & LED Indicators */
+.monitor-brand {
+  position: absolute;
+  bottom: 12px;
+  left: 35px;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #635b4c;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0px var(--bezel-color-light);
+}
+
+.power-led-group {
+  position: absolute;
+  bottom: 14px;
+  right: 35px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.power-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #635b4c;
+  font-weight: bold;
+}
+
+.power-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #4a443a;
+  border: 1px solid #736b5c;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  transition: background-color 0.3s ease;
+}
+
+.power-led.active {
+  background-color: var(--pc98-led-green);
+  box-shadow: 0 0 6px var(--pc98-led-green), inset 0 1px 1px rgba(255,255,255,0.8);
+}
+
+
+/* Inner CRT Screen Frame */
+.crt-screen {
+  flex-grow: 1;
+  background-color: var(--pc98-bg-dark);
+  border: 6px solid #4a443a;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0,0,0,1);
+}
+
+/* CRT Screen Scanlines and Curvature Shader Overlay */
+.screen-curvature {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 15; /* Sits above video cutscene layers and navigation zones */
+}
+
+.scanlines {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 14; /* Sits above video cutscene layers and navigation zones */
+}
+
+/* CRT Screen Filter Toggle Off Class */
+.no-crt .scanlines {
+  display: none;
+}
+.no-crt .screen-curvature {
+  background: none;
+}
+.no-crt .crt-screen {
+  box-shadow: none;
+}
+.no-crt * {
+  text-shadow: none !important;
+}
+
+
+/* ==========================================================================
+   VISUAL NOVEL STAGE
+   ========================================================================== */
+.vn-stage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Scene Layer */
+.stage-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('assets/retro_classroom_bg.png');
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 1;
+}
+
+/* Queri Sprite Layer */
+.sprite-container {
+  position: absolute;
+  bottom: -60px; /* Shifted down so lower body is hidden behind dialogue box */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 480px;
+  height: 480px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.queri-sprite {
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+  filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.7));
+}
+
+/* Floating animation simulating fairy hovering */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-anim {
+  animation: float 4s ease-in-out infinite;
+}
+
+
+/* ==========================================================================
+   NAVIGATION OVERLAYS (LEFT / RIGHT CLICK ZONES)
+   ========================================================================== */
+.nav-zone {
+  position: absolute;
+  top: 0;
+  bottom: 145px; /* Don't overlap dialogue box */
+  width: 10%; /* Thinner hitbox to prevent overlaps with cards during Combat Practice */
+  cursor: pointer;
+  z-index: 12; /* Raise above video layer (z-index: 10) to register navigation clicks */
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.zone-left {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 20px;
+  background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+
+.zone-right {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 20px;
+  background: linear-gradient(to left, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+
+.nav-arrow {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  color: var(--pc98-text-white);
+  background-color: var(--pc98-window-bg);
+  border: 2px solid var(--pc98-border-light);
+  padding: 8px 12px;
+  box-shadow: 3px 3px 0 #000;
+  white-space: nowrap; /* Avoid wrapping due to thin nav-zones */
+}
+
+.nav-zone:hover {
+  opacity: 1;
+}
+
+.zone-left:hover .nav-arrow {
+  color: var(--pc98-text-amber);
+  border-color: var(--pc98-text-amber);
+}
+
+.zone-right:hover .nav-arrow {
+  color: var(--pc98-text-green);
+  border-color: var(--pc98-text-green);
+}
+
+
+/* ==========================================================================
+   DIALOGUE WINDOW (PC-98 TEXT INTERFACE)
+   ========================================================================== */
+.dialogue-box {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  height: 135px;
+  background-color: var(--pc98-window-bg);
+  border: 3px double var(--pc98-text-white);
+  padding: 10px 20px;
+  z-index: 5;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+}
+
+.dialogue-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--pc98-border-light);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.speaker-name {
+  font-family: var(--font-pixel);
+  color: var(--pc98-text-amber);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.slide-counter {
+  font-family: var(--font-mono);
+  color: var(--pc98-text-muted);
+}
+
+.dialogue-body {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.dialogue-text {
+  font-family: var(--font-dialogue);
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: var(--pc98-text-white);
+  white-space: pre-wrap;
+  text-shadow: 0 0 1px rgba(255,255,255,0.5);
+}
+
+/* Custom colors inside dialogue */
+.dialogue-text strong {
+  font-weight: normal;
+  color: var(--pc98-text-cyan);
+  text-shadow: 0 0 4px rgba(0,240,255,0.4);
+}
+
+.dialogue-text em {
+  font-style: normal;
+  color: var(--pc98-text-amber);
+  text-shadow: 0 0 4px rgba(255,170,0,0.4);
+}
+
+/* Blinking Arrow click-to-continue indicator */
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.blinking-arrow {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid var(--pc98-text-green);
+  animation: blink 0.8s infinite;
+  display: none; /* Controlled by JS typewriter end */
+}
+
+
+/* ==========================================================================
+   INTERACTIVE HOTSPOTS LAYER
+   ========================================================================== */
+.hotspot-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 145px;
+  z-index: 4;
+  pointer-events: none; /* Let clicks pass through except on active spots */
+  display: none; /* Shown dynamically by JS */
+}
+
+.hotspot {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  background-color: rgba(0, 240, 255, 0.15);
+  border: 2px dashed var(--pc98-text-cyan);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(0,240,255,0.2);
+}
+
+.hotspot:hover {
+  background-color: rgba(51, 255, 51, 0.25);
+  border: 2px solid var(--pc98-text-green);
+  box-shadow: 0 0 15px rgba(51,255,51,0.5);
+  transform: scale(1.02);
+}
+
+.hotspot-label {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--pc98-text-white);
+  background-color: #0c0c16;
+  border: 1px solid var(--pc98-border-light);
+  padding: 3px 6px;
+  margin-top: 5px;
+  text-shadow: none;
+}
+
+.hotspot:hover .hotspot-label {
+  color: var(--pc98-text-green);
+  border-color: var(--pc98-text-green);
+}
+
+.hotspot-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
+.hotspot:hover .hotspot-icon {
+  transform: scale(1.15);
+  text-shadow: 0 0 15px rgba(51, 255, 51, 0.8);
+}
+
+
+
+/* ==========================================================================
+   RETRO POPUP WINDOW (SUB-PANELS)
+   ========================================================================== */
+.retro-popup {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  background-color: var(--pc98-window-bg);
+  border: 3px solid var(--pc98-text-amber);
+  z-index: 9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.9);
+  display: none; /* Shown dynamically */
+  animation: popupOpen 0.2s ease-out;
+  cursor: pointer;
+}
+
+@keyframes popupOpen {
+  from { transform: translateX(-50%) scale(0.9); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.popup-header {
+  background-color: var(--pc98-text-amber);
+  color: var(--pc98-bg-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: var(--pc98-bg-dark);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.popup-close:hover {
+  color: var(--pc98-text-white);
+}
+
+.popup-body {
+  padding: 15px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--pc98-text-white);
+  white-space: pre-wrap;
+}
+
+
+/* ==========================================================================
+   VIDEO DISPLAY LAYER
+   ========================================================================== */
+.video-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; /* Foreground overlay covering sprites and dialogue boxes */
+  display: none; /* Controlled by JS */
+  background-color: #000;
+}
+
+.video-bezel {
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+}
+
+.video-bezel video {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: block;
+  object-fit: contain; /* Fit video aspect ratio inside CRT stage */
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.video-error-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #050510;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* TV Static Noise animation */
+@keyframes staticShift {
+  0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; }
+}
+
+.static-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.08;
+  background-image: 
+    radial-gradient(circle, #fff 15%, transparent 16%),
+    radial-gradient(circle, #fff 15%, transparent 16%);
+  background-size: 6px 6px;
+  background-position: 0 0, 3px 3px;
+  animation: staticShift 0.08s steps(4) infinite;
+  pointer-events: none;
+}
+
+.error-text {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--pc98-text-muted);
+  text-shadow: 0 0 4px rgba(255, 170, 0, 0.4);
+}
+
+@keyframes blinkFast {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.blink-fast {
+  animation: blinkFast 0.6s steps(1) infinite;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  color: var(--pc98-text-amber);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.video-controls {
+  display: none !important; /* Hide console buttons for full-screen cutscene */
+}
+
+.video-time {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--pc98-text-muted);
+  margin-left: auto;
+}
+
+/* ==========================================================================
+   START SCREEN & GAME STATE MODIFIERS
+   ========================================================================== */
+.game-not-started .sidebar {
+  display: none !important;
+}
+
+.game-not-started .dialogue-box {
+  display: none !important;
+}
+
+.game-not-started .monitor-wrapper {
+  width: 100vw;
+  max-width: 100%;
+  height: 100vh;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-not-started .monitor-bezel {
+  max-width: 800px; /* Centered compact fit for the startup monitor */
+}
+
+.start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--pc98-bg-dark);
+  z-index: 20; /* High z-index to overlay everything */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 40px 20px;
+  cursor: pointer;
+  border: 4px solid var(--pc98-border-light);
+}
+
+.start-title-container {
+  text-align: center;
+}
+
+.start-game-title {
+  font-family: var(--font-pixel);
+  font-size: 2rem;
+  color: var(--pc98-text-cyan);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.start-sub-title {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  color: var(--pc98-text-amber);
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+.start-graphic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 160px;
+}
+
+.start-prompt {
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  color: var(--pc98-text-green);
+  text-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+  letter-spacing: 2px;
+}
+
+.start-copyright {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--pc98-text-muted);
+  letter-spacing: 1px;
+}
+
+
