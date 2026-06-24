@@ -717,7 +717,7 @@ window.SLIDES = [
     speaker: "Queri Lilibit",
     expression: "focused",
     background: "retro_classroom_bg.png",
-    text: "You can also spend **1 RP** to upgrade your AoO to a **Heavy** or **Precise** attack, letting you pierce defenses on their turn!",
+    text: "You can also spend **1 RP** to upgrade your **Attack of Opportunity** (also known as **AoO**) to a **Heavy** or **Precise** attack, letting you pierce defenses on their turn!",
     type: "dialogue"
   },
   {
