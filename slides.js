@@ -200,7 +200,7 @@ window.SLIDES = [
         width: "22%",
         height: "60%",
         title: "HEAVY ATTACK (2 AP)",
-        desc: "• AP Cost: 2\n• Hit Check: d20 + Focus vs Evasion\n• Damage Formula: 4d6 + (Power x 2) [Adds +1d6 if using a two-handed weapon]\n• Best Against: High Guard / Heavily armored targets\n• Usage: Maximum raw damage output. The multiplier on Power makes it perfect for crushing an enemy's Guard shield."
+        desc: "• AP Cost: 2\n• Hit Check: d20 + Focus vs Evasion\n• Damage Formula: 4d6 + (Power x 2) [Adds +1d6 if using a melee two-handed weapon only]\n• Best Against: High Guard / Heavily armored targets\n• Usage: Maximum raw damage output. The multiplier on Power makes it perfect for crushing an enemy's Guard shield."
       },
       {
         id: "attack-precise",
