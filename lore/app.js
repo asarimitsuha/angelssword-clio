@@ -272,6 +272,7 @@ let guardTypeTimer = null;
 let guardFullText = "";
 let guardDialogueIndex = 0;
 let guardDialogueActive = false;
+let guardIntroComplete = false;
 
 /* Queri (Combat School) State */
 let queriDialogueIndex = 0;
@@ -387,17 +388,24 @@ function showAcademyGates() {
 function handleGuardIntroClick(e) {
   // Don't advance if clicking buttons
   if (e.target.closest(".city-gates-actions")) return;
+  if (e.target.closest(".scene-btn")) return;
 
-  if (guardIsTyping) {
-    completeGuardTyping();
-  } else {
-    guardIntroIndex++;
-    if (guardIntroIndex < GUARD_INTRO.length) {
-      showGuardIntroLine(guardIntroIndex);
+  if (!guardIntroComplete) {
+    if (guardIsTyping) {
+      completeGuardTyping();
     } else {
-      // Intro complete — show action buttons
-      showGuardActions();
+      guardIntroIndex++;
+      if (guardIntroIndex < GUARD_INTRO.length) {
+        showGuardIntroLine(guardIntroIndex);
+      } else {
+        // Intro complete — show action buttons
+        guardIntroComplete = true;
+        showGuardActions();
+      }
     }
+  } else {
+    // After intro — clicking dialogue box advances talk
+    handleGuardTalk();
   }
 }
 
@@ -717,6 +725,25 @@ function initSceneNavigation() {
     });
   }
 
+  // Combat School — Click dialogue to advance talk
+  const combatDialogueBox = document.getElementById("combat-dialogue-box");
+  if (combatDialogueBox) {
+    combatDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleQueriTalk();
+    });
+  }
+
+  // Guard — Click dialogue to advance talk
+  const guardDialogueBox = document.getElementById("guard-dialogue-box");
+  if (guardDialogueBox) {
+    guardDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!guardIntroComplete) return; // Intro handled by overlay click
+      handleGuardTalk();
+    });
+  }
+
   // Combat School — Replay Video button
   const replayBtn = document.getElementById("btn-replay-video");
   if (replayBtn) {
@@ -749,13 +776,15 @@ function initSceneNavigation() {
     });
   }
 
-  // Airship Docks — Click dialogue to advance intro
+  // Airship Docks — Click dialogue to advance intro or talk
   const airshipDialogueBox = document.getElementById("airship-dialogue-box");
   if (airshipDialogueBox) {
     airshipDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!nixIntroComplete) {
         advanceNixIntro();
+      } else {
+        handleNixTalk();
       }
     });
   }
@@ -769,13 +798,15 @@ function initSceneNavigation() {
     });
   }
 
-  // Mirane — Click dialogue to advance intro
+  // Mirane — Click dialogue to advance intro or talk
   const miraneDialogueBox = document.getElementById("mirane-dialogue-box");
   if (miraneDialogueBox) {
     miraneDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!mirrimeIntroComplete) {
         advanceMirrimeIntro();
+      } else {
+        handleMirrimeTalk();
       }
     });
   }

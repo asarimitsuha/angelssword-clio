@@ -21,7 +21,7 @@ if ([string]::IsNullOrEmpty($apiKey)) {
 $vnScript = @(
     @{ text = "Oh! A visitor... Welcome to the Riannon Institute of Alchemy... [pause]"; tag = "[cheerfully, welcoming] "; id = "vn_0" },
     @{ text = "I'm Philomel - a researcher here. I help maintain the archives and special collections."; tag = "[gently, smiling] "; id = "vn_1" },
-    @{ text = "We have light novels, historical records, academy research notes, and field reports from adventurers across Lyria."; tag = "[gently, informative] "; id = "vn_2" },
+    @{ text = "We have light novels, historical records, academy research notes, and field reports from adventurers across Lyr."; tag = "[gently, informative] "; id = "vn_2" },
     @{ text = "Feel free to browse the shelves and pick up anything that catches your eye. I'll be here if you need help!"; tag = "[warmly, cheerfully] "; id = "vn_3" }
 )
 
