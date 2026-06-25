@@ -1059,7 +1059,7 @@ function showMirrimeIntroLine(index) {
 
   voiceAudio.pause();
   voiceAudio.src = `assets/voice/mirrime_intro_${index}.mp3`;
-  voiceAudio.volume = 0.8;
+  voiceAudio.volume = 1.0;
   voiceAudio.play().catch(err => console.log("Mirrime voiceover blocked or missing:", err));
 
   mirrimeIsTyping = true;
@@ -1132,7 +1132,7 @@ function showMirrimeTalkLine(index) {
 
   voiceAudio.pause();
   voiceAudio.src = `assets/voice/mirrime_talk_${index}.mp3`;
-  voiceAudio.volume = 0.8;
+  voiceAudio.volume = 1.0;
   voiceAudio.play().catch(err => console.log("Mirrime voiceover blocked or missing:", err));
 
   mirrimeIsTyping = true;
