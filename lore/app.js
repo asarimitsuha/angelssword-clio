@@ -1770,6 +1770,15 @@ function initRoomNavigation() {
       handleDeskTalk();
     });
   }
+
+  // Philomel — Click dialogue to advance talk
+  const deskDialogueBox = document.getElementById("desk-dialogue-box");
+  if (deskDialogueBox) {
+    deskDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleDeskTalk();
+    });
+  }
 }
 
 function navigateToRoom(roomId, animate = true) {
@@ -2261,8 +2270,14 @@ function openMap(map) {
   playSFX("scroll_open");
 
   title.textContent = map.title;
-  img.src = map.file;
   img.alt = map.title;
+
+  // Hide image until new source loads to prevent stale image flash
+  img.style.opacity = "0";
+  img.src = map.file;
+  img.onload = () => {
+    img.style.opacity = "1";
+  };
 
   viewer.style.display = "flex";
   requestAnimationFrame(() => {
