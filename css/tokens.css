@@ -1,0 +1,110 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Design Tokens — Shared across all pages
+   Canonical values use --clr-* prefix.
+   Lore page aliases use --lib-* prefix (for backward compatibility).
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Root Palette (canonical) ────────────────────────────────────── */
+  --clr-bg-deep:       #0d0f1a;
+  --clr-bg-dark:       #141624;
+  --clr-bg-card:       rgba(20, 22, 36, 0.75);
+  --clr-bg-glass:      rgba(30, 35, 55, 0.55);
+
+  /* Accent Colors */
+  --clr-gold:          #dfb858;
+  --clr-gold-soft:     #c4a04e;
+  --clr-gold-glow:     rgba(223, 184, 88, 0.4);
+  --clr-teal:          #5bb5a6;
+  --clr-teal-glow:     rgba(91, 181, 166, 0.35);
+  --clr-green:         #7b9f6e;
+  --clr-green-deep:    #3d5a3a;
+  --clr-brown:         #8b7355;
+  --clr-brown-dark:    #5c4a3a;
+  --clr-cream:         #f5ecd7;
+  --clr-parchment:     #e8dcc8;
+
+  /* Text */
+  --clr-text:          #e8dcc8;
+  --clr-text-bright:   #fff8ee;
+  --clr-text-muted:    #9a8e7d;
+  --clr-text-dim:      #6b6258;
+
+  /* Borders */
+  --clr-border:        rgba(223, 184, 88, 0.15);
+  --clr-border-hover:  rgba(223, 184, 88, 0.4);
+
+  /* ─── Lore Palette — differing values (independent) ───────────────── */
+  --lib-bg-deep:       #0a0c14;
+  --lib-bg-dark:       #12141f;
+  --lib-bg-warm:       #1a1610;
+  --lib-bg-card:       rgba(26, 22, 16, 0.85);
+  --lib-bg-glass:      rgba(20, 20, 36, 0.6);
+  --lib-parchment:     #f5ecd7;
+  --lib-parchment-dark:#d4c9a8;
+  --lib-cream:         #fff8ee;
+  --lib-text:          #e0d5c0;
+  --lib-gold-glow:     rgba(223, 184, 88, 0.35);
+  --lib-border:        rgba(223, 184, 88, 0.12);
+  --lib-border-hover:  rgba(223, 184, 88, 0.35);
+
+  /* Lore — Wood Tones */
+  --lib-wood-dark:     #3a2a18;
+  --lib-wood-mid:      #5c4330;
+  --lib-wood-light:    #8b6f4e;
+  --lib-wood-highlight:#a68b5b;
+
+  /* Lore — Alchemy Blues (Philomel's palette) */
+  --lib-blue:          #5b9bd5;
+  --lib-blue-deep:     #3a6ea5;
+  --lib-blue-glow:     rgba(91, 155, 213, 0.35);
+  --lib-blue-soft:     #a3c9e8;
+
+  /* Lore — Extra Accents */
+  --lib-red:           #c75050;
+  --lib-purple:        #8b6faa;
+
+  /* Lore — Aliases for SAME values ──────────────────────────────────── */
+  --lib-gold:          var(--clr-gold);
+  --lib-teal:          var(--clr-teal);
+  --lib-green:         var(--clr-green);
+  --lib-text-bright:   var(--clr-text-bright);
+  --lib-text-muted:    var(--clr-text-muted);
+  --lib-text-dim:      var(--clr-text-dim);
+
+  /* ─── Fonts ───────────────────────────────────────────────────────── */
+  --font-display:  'Cinzel Decorative', 'Georgia', serif;
+  --font-body:     'Outfit', 'Segoe UI', sans-serif;
+  --font-mono:     'Share Tech Mono', monospace;
+
+  /* Lore-only fonts */
+  --font-heading:  'Cinzel', 'Georgia', serif;
+  --font-reading:  'Lora', 'Georgia', serif;
+
+  /* ─── Layout ──────────────────────────────────────────────────────── */
+  --max-width: 1200px;
+  --section-pad: 120px;
+  --nav-height: 72px;
+
+  /* ─── Animation Easings ───────────────────────────────────────────── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Shared Keyframes ──────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmerText {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(14px); opacity: 0.2; }
+}

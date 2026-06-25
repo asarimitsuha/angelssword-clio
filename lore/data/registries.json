@@ -1,0 +1,50 @@
+{
+  "books": {
+    "light-novels": [
+      { "id": "wotk-ch1", "file": "books/will-of-the-king-ch1.js", "spineTitle": "Will of the King", "spineColor": "book-color-red", "width": 58 },
+      { "id": "aso-ch1", "file": "books/angels-sword-origin-ch1.js", "spineTitle": "Angel's Sword Origin", "spineColor": "book-color-blue", "width": 52 }
+    ],
+    "lore": [],
+    "research": [
+      { "id": "on-fiends", "file": "books/on-fiends.js", "spineTitle": "On Fiends", "spineColor": "book-color-green", "width": 48 },
+      { "id": "nature-of-magic", "file": "books/on-the-nature-of-magic.js", "spineTitle": "On the Nature of Magic", "spineColor": "book-color-gold", "width": 54 }
+    ],
+    "field": []
+  },
+  "maps": [
+    { "id": "lyrian-peninsula", "file": "map/LyrPSNewJpeg.jpg", "title": "Map of the Lyr Peninsula" },
+    { "id": "houkaina", "file": "map/Houkaina.PNG", "title": "Map of Houkaina" },
+    { "id": "far-east-empire", "file": "map/Map.jpg", "title": "Map of The Far East Empire" },
+    { "id": "mirane-expedition", "file": "map/Mirane.jpg", "title": "Map of Mirane Expedition" }
+  ],
+  "relics": {
+    "fiend-relics": [
+      {
+        "id": "gravity-fiend",
+        "title": "Gravity Fiend",
+        "image": "img/artifact/gravity.jpeg",
+        "crystalColor": "#4a1a6b",
+        "crystalGlow": "rgba(120, 40, 180, 0.6)",
+        "lore": {
+          "slainAt": "Corwood",
+          "year": "726",
+          "killedBy": "Mirane Expeditioner Alliance",
+          "captain": "Beetle Swallower",
+          "squad": ["Raoh", "Sable", "Dark Paladin", "Alaric"],
+          "ability": "Gravity Manipulation",
+          "type": "Exousiai",
+          "danger": "Very High",
+          "description": "Slain in Corwood in 726\u2014the gravity fiend was killed by an expedition from the Mirane Expeditioner Alliance. The party consisted of Captain \"Beetle Swallower\" and his squad: Raoh, Sable, Dark Paladin and Alaric.\n\nThe gravity fiend, like its name said had the ability to manipulate gravity.",
+          "appearance": "The Gravity Fiend manifested as a colossal, shapeless mass of swirling dark matter suspended above the forest canopy. Its body was a churning vortex of condensed gravitational force\u2014dense tendrils of violet-black energy cascading downward like an inverted maelstrom. Three concentric rings of distorted space orbited its core, bending light and debris into halos of destruction.\n\nWhere the fiend hovered, the earth beneath cracked and cratered under impossible weight. Trees were ripped from their roots and drawn upward into its spiraling form. Its lower body tapered into a single tendril that touched the ground like the finger of a wrathful god, leaving scorched, compressed earth in its wake.\n\nIt had no eyes, no mouth, no discernible features\u2014yet those who faced it reported an overwhelming sense of being watched, as though gravity itself had become aware. The air around it shimmered with gravitational lensing, making it appear to occupy more space than it physically did. Soldiers who drew near described their armor becoming impossibly heavy, their blood pooling in their extremities, and their vision tunneling as the fiend warped the very fabric of space around them."
+        }
+      }
+    ]
+  },
+  "sceneMusicMap": {
+    "city-gates-overlay": "../mu/Apples and Steel - Theme of Mothergreen (2022 - Loop).mp3",
+    "airship-docks-overlay": "../mu/Fiona's Heist ~ Theft of Valkyria (2022 - Loop).mp3",
+    "mirane-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
+    "combat-school-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3"
+  },
+  "defaultBGM": "../mu/Swords and Spells ~ Riannon Institute of Alchemy.mp3"
+}

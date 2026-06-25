@@ -1,0 +1,16 @@
+{
+  "dialogue": [
+    { "text": "Hello.  I'm Philomel Lapis.  I've been a member of the academy for quite some time.", "expression": "smile" },
+    { "text": "The Riannon Institute of Alchemy has been around for centuries and has a rich history.  Famous mages have graduated from here... including the World Famous Camielelileananu, Mirane and Chroma Lichtvog to name a few.", "expression": "book" },
+    { "text": "Isn't alchemy amazing?  You can make so many useful things out of what others would consider weeds or junk.", "expression": "happy" },
+    { "text": "My wife?  Ah... yeah... she's back at Sylvan.  I miss her.", "expression": "sad" },
+    { "text": "Inter-racial procreation?  Ah... I see you're one of those...  I think theres a book by Dr. Mizi Marion somewhere...", "expression": "puzzled" },
+    { "text": "The four swords war?  Ah... yes, I was a member of Ayra's party.  That Ayra, the holy maiden.  I was the airship's doctor onboard the Nadesico.", "expression": "concerned" },
+    { "text": "Hazel Nutella?  I don't want to talk about her...", "expression": "pout" },
+    { "text": "I think I consider myself a member of the Angel's Sword Guild.  I do find myself working there a lot.", "expression": "clasp" },
+    { "text": "My favorite food?  Oh... I adore Nurenese Steak.  It's really the best.  Although prices have gone up significantly since the war...", "expression": "joyful" },
+    { "text": "Are you considering enrolling as a student here?  I would make sure to brush up on the basics first!  It's not easy to get in.", "expression": "idea" },
+    { "text": "You want a certain potion from me?  Oh... that... well...  can we not talk about that....", "expression": "nervous" },
+    { "text": "What do slime cores taste like?  Why do people always ask that?!", "expression": "pout" }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "script": [
+    { "speaker": "Philomel Lapis", "text": "Oh! A visitor... Welcome to the Riannon Institute of Alchemy.", "expression": "idea" },
+    { "speaker": "Philomel Lapis", "text": "I'm Philomel — a researcher here. I help maintain the archives and special collections.", "expression": "smile" },
+    { "speaker": "Philomel Lapis", "text": "We have light novels, historical records, academy research notes, and field reports from adventurers across Lyr.", "expression": "book" },
+    { "speaker": "Philomel Lapis", "text": "Feel free to browse the shelves and pick up anything that catches your eye. I'll be here if you need help!", "expression": "clasp" }
+  ]
+}

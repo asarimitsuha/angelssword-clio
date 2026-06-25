@@ -1,0 +1,17 @@
+{
+  "dialogue": [
+    { "text": "Hi!  I'm Queri Lilibit. Alchemist, Transmuter, Fiend Researcher and Faerie Fencer!", "sprite": "2" },
+    { "text": "I highly recommend the combat school if you're new here... it could save your life.", "sprite": "1" },
+    { "text": "I also run an Alchemy Shop in town, you should come visit sometime!", "sprite": "2" },
+    { "text": "My party members, Nia and Ashe are always doing crazy things... I'm always worried about them.", "sprite": "5" },
+    { "text": "I'm a Fiend researcher, did you know that?  I graduated from the Riannon Institute of Alchemy.", "sprite": "1" },
+    { "text": "No... I don't personally know Camielelileananu...  not every Alchemist is her friend you know.", "sprite": "3" },
+    { "text": "Fiends are always evil, but people forget that...  a veteran expeditioner died recently because they forgot that...", "sprite": "5" },
+    { "text": "Fiends just want to deceive you... but I heard some rumors of people who were fiends that regained their sanity and state of mind.", "sprite": "4" },
+    { "text": "Is such a thing possible?  Its just stories from the east....", "sprite": "4" },
+    { "text": "People who eat Astra Sporocarps can exhibit fiend-like abilities.  It changes you.", "sprite": "1" },
+    { "text": "Don't forget to bring smoke flasks!  They're a lifesaver.", "sprite": "2" },
+    { "text": "My favorite food?  I love meat stew with berries.  But lately I've been craving Chorpa Steaks.  Have you had it?", "sprite": "2" },
+    { "text": "The director?  I've never met them... I don't think anyone even knows what they look like.", "sprite": "4" }
+  ]
+}

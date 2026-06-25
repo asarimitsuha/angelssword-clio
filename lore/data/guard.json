@@ -1,0 +1,19 @@
+{
+  "intro": [
+    { "text": "Hello.  Welcome to the Free Trade City of Mothergreen.", "sprite": "1" },
+    { "text": "Let me know if I can help you with anything.", "sprite": "2" }
+  ],
+  "dialogue": [
+    { "text": "Don't try to start any trouble okay?", "sprite": "6" },
+    { "text": "Mothergreen exists on the intersection of the Fayto and Signum Leylines.", "sprite": "2" },
+    { "text": "Why are leylines important?  Well airships need them to travel... otherwise you're burning too much magical fuel.", "sprite": "4" },
+    { "text": "The city is run by a Mercantile collective that has its own army.", "sprite": "2" },
+    { "text": "Huh? Rabbitfolk? Why do you think I would dislike Rabbitfolk?", "sprite": "3" },
+    { "text": "I miss going on vacation to Madeline, they have great restaurants there, but no chance I'm going there with the war and all.", "sprite": "5" },
+    { "text": "I hope we don't get too involved in the Dacquoise war....", "sprite": "5" },
+    { "text": "Lorenz Gang?  Bunch of ruffians...", "sprite": "6" },
+    { "text": "The Riannon Institute of Alchemy?  Its world famous, only the Merlin Academy of Magic in Northi is even close.", "sprite": "2" },
+    { "text": "My sword style?  Hah.  Aurora Blade Style obviously... Idris was a legend in Mothergreen!", "sprite": "4" },
+    { "text": "Angel's Sword Guild?  Ugh... I don't want to talk about it... but they cause so many problems.", "sprite": "3" }
+  ]
+}

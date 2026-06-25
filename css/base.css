@@ -1,0 +1,82 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Base Styles — Shared reset, typography, and utility classes
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
+}
+
+/* Body base — bg/color set per-page */
+body {
+  font-family: var(--font-body);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--clr-gold);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: var(--clr-teal);
+}
+
+/* ─── Particle Canvas ─────────────────────────────────────────────── */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ─── Scroll Reveal Animation ─────────────────────────────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.scroll-reveal[data-delay="100"] { transition-delay: 0.1s; }
+.scroll-reveal[data-delay="200"] { transition-delay: 0.2s; }
+.scroll-reveal[data-delay="300"] { transition-delay: 0.3s; }
+.scroll-reveal[data-delay="400"] { transition-delay: 0.4s; }
+.scroll-reveal[data-delay="500"] { transition-delay: 0.5s; }
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.9s var(--ease-out-expo) forwards;
+}
+.fade-in-up[data-delay="200"] { animation-delay: 0.2s; }
+.fade-in-up[data-delay="400"] { animation-delay: 0.4s; }
+.fade-in-up[data-delay="600"] { animation-delay: 0.6s; }
+.fade-in-up[data-delay="700"] { animation-delay: 0.7s; }
+.fade-in-up[data-delay="800"] { animation-delay: 0.8s; }
+.fade-in-up[data-delay="900"] { animation-delay: 0.9s; }
+.fade-in-up[data-delay="1000"] { animation-delay: 1.0s; }
+.fade-in-up[data-delay="1200"] { animation-delay: 1.2s; }

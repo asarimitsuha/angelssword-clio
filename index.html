@@ -12,6 +12,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/buttons.css">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="combattutorial/assets/queri_normal.png">
 </head>
@@ -34,9 +38,10 @@
       <ul class="nav-links" id="nav-links">
         <li><a href="#hero">Home</a></li>
         <li><a href="#about">The World</a></li>
-        <li><a href="#resources">Resources</a></li>
+        <li><a href="lore/index.html?scene=mea-hq">Tools</a></li>
         <li><a href="combattutorial/index.html">Combat School</a></li>
         <li><a href="lore/index.html">Adventure</a></li>
+        <li><a href="mirane/index.html">Mirane</a></li>
         <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
       </ul>
       <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
@@ -168,8 +173,8 @@
             <span class="feature-tag">⚔ Core System</span>
             <h3>Tactical Combat That Rewards Creativity</h3>
             <p>A deep, grid-based combat system with light attacks, heavy strikes, dodge rolls, blocks, and cover mechanics. Every decision in battle matters — position, timing, and teamwork determine victory.</p>
-            <a href="combattutorial/index.html" class="feature-link">
-              Learn in Combat School →
+            <a href="lore/index.html?scene=mea-hq" class="feature-link">
+              View Gamemaster Tools →
             </a>
           </div>
         </div>
@@ -219,6 +224,47 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════
+       MIRANE EXPEDITION CTA
+       ═══════════════════════════════════════════════════ -->
+  <section class="mirane-section" id="mirane-expedition">
+    <div class="mirane-bg-img"></div>
+    <div class="mirane-bg-overlay"></div>
+    <div class="section-container">
+      <div class="mirane-cta-layout scroll-reveal">
+        <div class="mirane-cta-header">
+          <span class="mirane-cta-badge">✦ TTRPG MMO ✦</span>
+          <h2 class="mirane-cta-title">Mirane Expedition</h2>
+          <p class="mirane-cta-tagline">Adventure awaits... join the expedition today!</p>
+        </div>
+        <div class="mirane-cta-features">
+          <div class="mirane-feature-pill">
+            <span class="mirane-pill-icon">🎮</span>
+            <span>Fully Canon MMO with hundreds of players</span>
+          </div>
+          <div class="mirane-feature-pill">
+            <span class="mirane-pill-icon">🤝</span>
+            <span>Join a party, meet new people</span>
+          </div>
+          <div class="mirane-feature-pill">
+            <span class="mirane-pill-icon">⚔️</span>
+            <span>Player driven guilds &amp; storylines</span>
+          </div>
+          <div class="mirane-feature-pill">
+            <span class="mirane-pill-icon">✨</span>
+            <span>Leave your mark on the world</span>
+          </div>
+        </div>
+        <div class="mirane-cta-actions">
+          <a href="mirane/index.html" class="btn btn-primary btn-large mirane-btn-main">
+            <span class="btn-sparkle"></span>
+            Learn More & Join
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
        FOOTER
        ═══════════════════════════════════════════════════ -->
   <footer class="site-footer">
@@ -232,9 +278,10 @@
           <h4>Explore</h4>
           <ul>
             <li><a href="#about">The World</a></li>
-            <li><a href="#resources">Resources</a></li>
+            <li><a href="lore/index.html?scene=mea-hq">Tools</a></li>
             <li><a href="combattutorial/index.html">Combat School</a></li>
             <li><a href="lore/index.html">Adventure</a></li>
+            <li><a href="mirane/index.html">Mirane Expedition</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -252,6 +299,7 @@
     </div>
   </footer>
 
+  <script src="js/shared.js"></script>
   <script src="landing.js"></script>
 </body>
 </html>

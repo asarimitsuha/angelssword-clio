@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyrian Chronicles - Monster Autostat System</title>
+  <!-- Google Fonts for cinematic layout -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Material Icons for dashboard utility -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- App Suite Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <img src="assets/logo.png" alt="Angel's Sword RPG Logo" class="header-logo">
+      <div class="header-brand-text">
+        <span class="header-main-title">LYRIAN CHRONICLES</span>
+        <span class="header-sub-title">TTRPG GAME MASTER SUITE</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-tab active" id="tabMonsterCreator"><i class="material-icons">pets</i> Monster Creator</button>
+      <button class="nav-tab" id="tabExpeditionManager"><i class="material-icons">explore</i> Expedition Manager</button>
+    </nav>
+  </header>
+
+  <div class="app-container" id="monsterCreatorWorkspace">
+    <!-- Sidebar / Input Config Panel -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <img src="assets/logo.png" alt="Angel's Sword RPG Logo" class="brand-logo" id="brandLogo">
+        <div class="brand-text">
+          <h1>LYRIAN CHRONICLES</h1>
+          <span class="sub-brand">MONSTER AUTOSTAT</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+
+
+      <!-- Creator Content -->
+      <div id="creatorTabContent" class="tab-content-pane">
+        <!-- Generator Settings Form -->
+        <form id="generatorForm" onsubmit="event.preventDefault();">
+
+
+        <div class="form-group">
+          <label for="monsterName"><i class="material-icons">badge</i> Monster Name</label>
+          <input type="text" id="monsterName" class="form-control" placeholder="E.g., Void Stalker" value="Void Stalker">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="monsterRank"><i class="material-icons">grade</i> Rank</label>
+            <select id="monsterRank" class="form-control">
+              <option value="grunt">Grunt</option>
+              <option value="heroic" selected>Heroic</option>
+              <option value="boss">Boss</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label for="astraLevel"><i class="material-icons">explore</i> Astra Level (<span id="levelVal">2</span>)</label>
+            <input type="range" id="astraLevel" min="1" max="7" value="2" class="slider">
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="toggle-switch">
+            <input type="checkbox" id="isFiend">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label"><i class="material-icons">coronavirus</i> Is Fiend (Enables Regen)</span>
+          </label>
+        </div>
+
+        <div class="form-group" id="fiendRankGroup" style="display: none;">
+          <label for="fiendRank"><i class="material-icons">gavel</i> Fiend Category</label>
+          <select id="fiendRank" class="form-control">
+            <option value="grunt">Lesser / Grunt Fiend (1x Toughness Regen)</option>
+            <option value="heroic" selected>Elite Kratos (9 + Toughness Regen)</option>
+            <option value="boss">Boss Kratos (24 + Toughness Regen)</option>
+            <option value="exousia">Exousiai (10x Toughness Regen)</option>
+          </select>
+        </div>
+
+        <div class="section-subtitle">Primary Stat Targets</div>
+
+        <div class="form-row">
+          <div class="form-group col-4">
+            <label for="statHP">HP</label>
+            <select id="statHP" class="form-control stat-target">
+              <option value="very-low">Very Low</option>
+              <option value="low">Low</option>
+              <option value="average" selected>Average</option>
+              <option value="high">High</option>
+              <option value="very-high">Very High</option>
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label for="statFocus">Focus</label>
+            <select id="statFocus" class="form-control stat-target">
+              <option value="very-low">Very Low</option>
+              <option value="low">Low</option>
+              <option value="average" selected>Average</option>
+              <option value="high">High</option>
+              <option value="very-high">Very High</option>
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label for="statPower">Power</label>
+            <select id="statPower" class="form-control stat-target">
+              <option value="very-low">Very Low</option>
+              <option value="low">Low</option>
+              <option value="average" selected>Average</option>
+              <option value="high">High</option>
+              <option value="very-high">Very High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="statAgility">Agility</label>
+            <select id="statAgility" class="form-control stat-target">
+              <option value="very-low">Very Low</option>
+              <option value="low">Low</option>
+              <option value="average" selected>Average</option>
+              <option value="high">High</option>
+              <option value="very-high">Very High</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label for="statToughness">Toughness</label>
+            <select id="statToughness" class="form-control stat-target">
+              <option value="very-low">Very Low</option>
+              <option value="low">Low</option>
+              <option value="average" selected>Average</option>
+              <option value="high">High</option>
+              <option value="very-high">Very High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="variance"><i class="material-icons">shuffle</i> Stat Variance (Randomness: <span id="varianceVal">±1</span>)</label>
+          <input type="range" id="variance" min="0" max="2" value="1" class="slider">
+        </div>
+
+        <button id="btnGenerate" class="btn btn-primary"><i class="material-icons">auto_awesome</i> Roll Stats</button>
+
+        <div class="section-divider"></div>
+
+        <!-- AI Full Randomizers -->
+        <div class="section-subtitle">AI Full Monster Generator</div>
+        <div class="form-row" style="margin-bottom: 12px;">
+          <button id="btnAiGenFromName" class="btn btn-secondary col-6" type="button" style="margin-top: 0;"><i class="material-icons">badge</i> Gen From Name</button>
+          <button id="btnAiGenFullyRandom" class="btn btn-secondary col-6" type="button" style="margin-top: 0;"><i class="material-icons">casino</i> Fully Random</button>
+        </div>
+        <div class="form-row" style="margin-bottom: 15px; gap: 6px;">
+          <button id="btnAiGenGrunt" class="btn-action-small col-4" type="button"><i class="material-icons">shield</i> Rand Grunt</button>
+          <button id="btnAiGenHeroic" class="btn-action-small col-4" type="button"><i class="material-icons">military_tech</i> Rand Heroic</button>
+          <button id="btnAiGenBoss" class="btn-action-small col-4" type="button"><i class="material-icons">stars</i> Rand Boss</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Session Deck Manager -->
+        <div class="section-subtitle">Session Deck (<span id="deckCount">0</span>)</div>
+        <button id="btnAddToDeck" class="btn btn-secondary" type="button"><i class="material-icons">playlist_add</i> Add to Session Deck</button>
+        
+        <div class="deck-list-container">
+          <ul class="deck-mini-list" id="deckMiniList">
+            <!-- mini cards loaded dynamically -->
+          </ul>
+        </div>
+
+        <div class="form-row" style="margin-top: 10px; margin-bottom: 10px;">
+          <button id="btnExportDeck" class="btn-action-small col-6" type="button" title="Save deck to PC"><i class="material-icons">download</i> Save Deck</button>
+          <button id="btnImportDeck" class="btn-action-small col-6" type="button" title="Load deck from PC"><i class="material-icons">upload</i> Load Deck</button>
+        </div>
+        <input type="file" id="deckImportInput" accept=".json" style="display: none;">
+        
+        <button id="btnStartSession" class="btn btn-primary btn-session-glow" type="button" style="margin-top: 5px;"><i class="material-icons">play_circle_filled</i> Enter Session Mode</button>
+
+        <div class="section-divider"></div>
+
+        <!-- AI Generator -->
+        <div class="section-subtitle">AI Abilities & Actions Generator</div>
+        
+        <div class="form-group">
+          <label for="creatureDesc"><i class="material-icons">description</i> Creature Lore / Powers</label>
+          <textarea id="creatureDesc" class="form-control" rows="3" placeholder="Describe what the creature does, its elements, or personality (e.g. 'A shadowy beast that teleports and turns into liquid to avoid hits.')"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-switch">
+            <input type="checkbox" id="useGeminiApi">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label"><i class="material-icons">key</i> Use Gemini API Key</span>
+          </label>
+        </div>
+
+        <div id="apiGroup" class="form-group" style="display: none;">
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="geminiApiKey" class="form-control" placeholder="Paste your Gemini API key here" style="padding-right: 40px; width: 100%;">
+            <button type="button" id="btnToggleApiKeyVisibility" style="position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;" title="Toggle key visibility">
+              <i class="material-icons" style="font-size: 1.2rem;">visibility</i>
+            </button>
+          </div>
+          <span class="form-help-text">API Key is saved locally only in your browser storage.</span>
+        </div>
+
+          <button id="btnAiGen" class="btn btn-secondary"><i class="material-icons">psychology</i> Generate Powers & AI</button>
+        </form>
+      </div>
+
+
+
+
+    </aside>
+
+    <!-- Main Content / Preview Block -->
+    <main class="main-preview">
+      <div class="preview-header">
+        <h2>Live Editor & Output</h2>
+        <span class="help-hint"><i class="material-icons">edit</i> Pro Tip: Click any stat or text on the card below to edit it before exporting!</span>
+      </div>
+
+      <!-- Stat Block Card (Matching Official Aesthetic) -->
+      <div class="stat-card" id="monsterCard">
+        <div class="stat-card-border-glow"></div>
+        <div class="card-inner">
+          <div class="card-header-main">
+            <h2 id="cardName" class="editable" contenteditable="true">Void Stalker</h2>
+            <div class="card-subtitle">
+              <span id="cardMeta" class="editable" contenteditable="true">Heroic - Astra Level 2 - Fiend</span>
+            </div>
+          </div>
+
+          <!-- Monster Portrait Area -->
+          <div class="card-portrait-container" id="cardPortraitContainer">
+            <div class="portrait-placeholder" id="portraitPlaceholder">
+              <i class="material-icons placeholder-icon">pets</i>
+              <span>Click to Upload or Generate Portrait</span>
+            </div>
+            <img src="" alt="Monster Portrait" class="portrait-image" id="portraitImage" style="display: none;">
+            <div class="portrait-controls">
+              <button class="portrait-btn" id="btnUploadPortrait" title="Upload Image" type="button"><i class="material-icons">file_upload</i></button>
+              <button class="portrait-btn" id="btnAiPortrait" title="Generate AI with Nano Banana 2" type="button"><i class="material-icons">psychology</i></button>
+              <button class="portrait-btn" id="btnAutoToken" title="Create Token" style="display: none;" type="button"><i class="material-icons">donut_large</i></button>
+              <button class="portrait-btn" id="btnRemovePortrait" title="Remove Portrait" style="display: none;" type="button"><i class="material-icons">delete</i></button>
+            </div>
+            <!-- Hidden input for file upload -->
+            <input type="file" id="portraitInput" accept="image/*" style="display: none;">
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- Secondary/Combat Stats Row -->
+          <div class="combat-stats-grid">
+            <div class="combat-stat-box highlight-hp">
+              <span class="stat-label">HP</span>
+              <span id="cardHP" class="stat-val editable" contenteditable="true">60</span>
+            </div>
+            <div class="combat-stat-box">
+              <span class="stat-label">AP</span>
+              <span id="cardAP" class="stat-val editable" contenteditable="true">4</span>
+            </div>
+            <div class="combat-stat-box">
+              <span class="stat-label">RP</span>
+              <span id="cardRP" class="stat-val editable" contenteditable="true">3</span>
+            </div>
+            <div class="combat-stat-box highlight-evasion">
+              <span class="stat-label">Evasion</span>
+              <span id="cardEvasion" class="stat-val editable" contenteditable="true">8</span>
+            </div>
+            <div class="combat-stat-box highlight-speed">
+              <span class="stat-label">Speed</span>
+              <div style="display:flex; align-items:baseline; gap:2px;">
+                <span id="cardSpeed" class="stat-val editable" contenteditable="true">30</span>
+                <span style="font-size:0.9rem; color:var(--text-muted);">ft</span>
+              </div>
+              <span class="stat-sub-label" id="cardSpeedBlocks" style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">6 blocks</span>
+            </div>
+          </div>
+
+          <!-- Primary Stats Grid -->
+          <div class="primary-stats-grid">
+            <div class="stat-pill">
+              <span class="label">Focus (FC)</span>
+              <span id="cardFocus" class="val editable" contenteditable="true">4</span>
+            </div>
+            <div class="stat-pill">
+              <span class="label">Power (PW)</span>
+              <span id="cardPower" class="val editable" contenteditable="true">4</span>
+            </div>
+            <div class="stat-pill">
+              <span class="label">Agility (AG)</span>
+              <span id="cardAgility" class="val editable" contenteditable="true">4</span>
+            </div>
+            <div class="stat-pill">
+              <span class="label">Toughness (TG)</span>
+              <span id="cardToughness" class="val editable" contenteditable="true">4</span>
+            </div>
+          </div>
+
+          <!-- Defensive Ratings Reference -->
+          <div class="defenses-row-title">Defensive Ratings Reference</div>
+          <div class="defenses-grid">
+            <div class="defense-box">
+              <span class="defense-label">Evasion</span>
+              <span class="defense-val" id="defenseEvasion">11</span>
+              <span class="defense-desc">Base hit target</span>
+            </div>
+            <div class="defense-box highlight-dodge">
+              <span class="defense-label">Dodge (1 RP)</span>
+              <span class="defense-val" id="defenseDodge">24</span>
+              <span class="defense-desc">Evasion when dodging</span>
+            </div>
+            <div class="defense-box">
+              <span class="defense-label">Guard</span>
+              <span class="defense-val editable" contenteditable="true" id="defenseGuard">4</span>
+              <span class="defense-desc">Flat DMG reduction</span>
+            </div>
+            <div class="defense-box highlight-block">
+              <span class="defense-label">Block (Reaction)</span>
+              <span class="defense-val editable" contenteditable="true" id="defenseBlock">8</span>
+              <span class="defense-desc">Auto-hit, Guard: 2xTG</span>
+            </div>
+            <div class="defense-box highlight-save" id="btnToughnessSaveCard" style="cursor: pointer;" title="Copy Roll20 Toughness Save Macro">
+              <span class="defense-label">Toughness Save <i class="material-icons" style="font-size:0.8rem; vertical-align:middle;">content_copy</i></span>
+              <span class="defense-val" style="font-size:1.15rem; font-weight:700;">2d10 + TG</span>
+              <span class="defense-desc">Roll 2d10 + Toughness</span>
+            </div>
+          </div>
+
+          <!-- Fiend Regen Banner -->
+          <div class="regen-banner" id="cardRegenContainer" style="display: none;">
+            <i class="material-icons">favorite</i>
+            <span><strong>Regeneration:</strong> <span id="cardRegenVal" class="editable" contenteditable="true">0</span> HP per turn (Disabled by silver weapon damage)</span>
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- Abilities Section -->
+          <div class="block-section">
+            <div class="section-header-row">
+              <h3><i class="material-icons">bolt</i> Abilities</h3>
+              <button class="btn-card-action" onclick="addAbilityRow()"><i class="material-icons">add</i> Add Ability</button>
+            </div>
+            <ul class="abilities-list" id="abilitiesList">
+              <!-- Abilities populated dynamically -->
+            </ul>
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- Actions Section -->
+          <div class="block-section">
+            <div class="section-header-row">
+              <h3><i class="material-icons">sports_kabaddi</i> Actions</h3>
+              <button class="btn-card-action" onclick="addActionRow()"><i class="material-icons">add</i> Add Action</button>
+            </div>
+            <ul class="actions-list" id="actionsList">
+              <!-- Actions populated dynamically -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Panel for Export -->
+      <div class="action-panel">
+        <button id="btnExportTxt" class="btn btn-action"><i class="material-icons">file_download</i> Export to Notepad (.txt)</button>
+        <button id="btnExportJson" class="btn btn-action"><i class="material-icons">code</i> Export as JSON</button>
+        <input type="file" id="creatureJsonInput" accept=".json" style="display: none;">
+        <button id="btnUploadJson" class="btn btn-action"><i class="material-icons">file_upload</i> Import JSON</button>
+        <button id="btnCopy" class="btn btn-action"><i class="material-icons">content_copy</i> Copy Text Block</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Expedition Manager Workspace -->
+  <div class="app-container" id="expeditionManagerWorkspace" style="display: none;">
+    <!-- Expedition Sidebar: Status, Duration, Players, Food -->
+    <aside class="sidebar expedition-sidebar">
+      <div class="brand-header">
+        <i class="material-icons" style="font-size: 2.2rem; color: var(--accent-gold); filter: drop-shadow(0 0 8px var(--accent-gold-glow));">explore</i>
+        <div class="brand-text">
+          <h1>EXPEDITION</h1>
+          <span class="sub-brand" style="color: var(--accent-gold);">MANAGER</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Campaign Status Summary Card -->
+      <div class="status-summary-card">
+        <div class="section-subtitle" style="margin-top: 0;"><i class="material-icons" style="vertical-align: bottom; font-size: 1.1rem; color: var(--accent-gold);">campaign</i> Campaign Status</div>
+        <div class="status-metric">
+          <span class="metric-label">Loot Budget</span>
+          <span class="metric-value" id="expLootBudget">0 <span class="metric-unit">Clim</span></span>
+        </div>
+        <div class="status-metric">
+          <span class="metric-label">Current Journey</span>
+          <span class="metric-value" id="expCurrentDayDisplay">Day 1</span>
+        </div>
+        <div class="status-metric">
+          <span class="metric-label">Current Week</span>
+          <span class="metric-value" id="expCurrentWeekDisplay">Week 1</span>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="exp-progress-container" style="margin-top: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">
+            <span>Journey Progress</span>
+            <span id="expProgressPct">0%</span>
+          </div>
+          <div class="hp-progress-bar-bg" style="height: 8px;">
+            <div class="hp-progress-bar-fill" id="expProgressBarFill" style="width: 0%; background: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold-glow);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Expedition Config Form -->
+      <form id="expeditionForm" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="expName"><i class="material-icons">badge</i> Expedition Name</label>
+          <input type="text" id="expName" class="form-control" placeholder="E.g., Lost Valley Expedition" value="Unnamed Expedition">
+        </div>
+
+        <div class="form-group">
+          <label for="expPlayers"><i class="material-icons">people</i> Party Size</label>
+          <select id="expPlayers" class="form-control">
+            <option value="1">1 Player</option>
+            <option value="2">2 Players</option>
+            <option value="3">3 Players</option>
+            <option value="4" selected>4 Players</option>
+            <option value="5">5 Players</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="material-icons">event</i> Duration</label>
+          <div class="week-adjust-control">
+            <button type="button" class="btn-adjust" id="btnRemoveWeek" title="Remove Week"><i class="material-icons">remove</i></button>
+            <span class="week-duration-display"><span id="expDurationVal">3</span> Weeks</span>
+            <button type="button" class="btn-adjust" id="btnAddWeek" title="Add Week"><i class="material-icons">add</i></button>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Food Tracker -->
+        <div class="section-subtitle"><i class="material-icons">lunch_dining</i> Provisions</div>
+        
+        <div class="form-group">
+          <label for="expStartingFood">Starting Food (units)</label>
+          <input type="number" id="expStartingFood" class="form-control" value="2000" min="0">
+        </div>
+        
+        <div class="provisions-summary">
+          <div class="prov-row">
+            <span>Daily Consumption:</span>
+            <span id="expDailyFood">160 u</span>
+          </div>
+          <div class="prov-row">
+            <span>Total Consumed:</span>
+            <span id="expConsumedFood">0 u</span>
+          </div>
+          <div class="prov-row highlight-provision">
+            <span>Remaining Food:</span>
+            <span id="expRemainingFood">2000 u</span>
+          </div>
+          <div class="prov-row">
+            <span>Provisions Left:</span>
+            <span id="expFoodDaysLeft">12.5 days</span>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Time Controls -->
+        <div class="section-subtitle"><i class="material-icons">schedule</i> Time Controls</div>
+        <div class="form-row">
+          <button id="btnPrevDay" class="btn btn-secondary col-6" type="button" style="margin-top: 0;"><i class="material-icons">navigate_before</i> Prev Day</button>
+          <button id="btnNextDay" class="btn class-glow col-6" type="button" style="margin-top: 0; background: var(--accent-gold); color: #000; font-weight: bold;">Next Day <i class="material-icons">navigate_next</i></button>
+        </div>
+        <button id="btnResetJourney" class="btn btn-secondary" type="button" style="margin-top: 10px; width: 100%; border-color: rgba(220, 53, 69, 0.4); color: var(--accent-red);"><i class="material-icons">restart_alt</i> Reset Journey</button>
+
+        <div class="section-divider"></div>
+
+        <div class="section-subtitle"><i class="material-icons">save</i> Backup & Storage</div>
+        <div class="form-row" style="margin-top: 10px; margin-bottom: 10px;">
+          <button id="btnExportCampaign" class="btn-action-small col-6" type="button" title="Save campaign to PC"><i class="material-icons">download</i> Save Campaign</button>
+          <button id="btnImportCampaign" class="btn-action-small col-6" type="button" title="Load campaign from PC"><i class="material-icons">upload</i> Load Campaign</button>
+        </div>
+        <input type="file" id="campaignImportInput" accept=".json" style="display: none;">
+      </form>
+    </aside>
+
+    <!-- Main Content: Week Cards and Calendar -->
+    <main class="main-preview expedition-main">
+      <div class="preview-header">
+        <h2>Expedition: <span id="expTitle">Unnamed Expedition</span></h2>
+        <span class="help-hint"><i class="material-icons">info</i> Click a week card on the left to select it. Scroll days and roll for events below.</span>
+      </div>
+
+      <!-- Calendar View Layout -->
+      <div class="expedition-dashboard">
+        <!-- Left Panel: Week Cards List -->
+        <div class="weeks-timeline" id="weeksTimeline">
+          <!-- Dynamically populated week cards -->
+        </div>
+
+        <!-- Right Panel: Week Planner Details -->
+        <div class="week-details-card" id="weekDetailsPanel">
+          <!-- Shows detailed planning for the selected week -->
+          <div class="no-week-selected" id="noWeekSelectedMsg">
+            <i class="material-icons">date_range</i>
+            <h3>No Week Selected</h3>
+            <p>Click on any week in the timeline to view details and edit events.</p>
+          </div>
+          
+          <div class="week-planner-content" id="weekPlannerContent" style="display: none;">
+            <div class="planner-header">
+              <h3 id="plannerWeekTitle">Week 1 Planner</h3>
+              <span class="planner-zone-badge" id="plannerZoneBadge">Corwood (Lvl 2)</span>
+            </div>
+
+            <!-- Major Event Section -->
+            <div class="planner-major-event-section">
+              <div class="section-subtitle-row">
+                <span class="planner-section-subtitle"><i class="material-icons">stars</i> Weekly Major Event (Roll once per week)</span>
+                <button class="btn-roll-event" id="btnRollMajorEvent"><i class="material-icons">casino</i> Roll Major</button>
+              </div>
+              <div class="event-roll-display" id="majorEventDisplay">
+                <div class="roll-number-box">--</div>
+                <div class="roll-details">
+                  <span class="roll-result-title">No Major Event rolled yet</span>
+                  <p class="roll-result-desc">Roll a d100 to determine the primary weekly event based on the campaign table.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daily Days Grid -->
+            <div class="planner-days-section">
+              <div class="section-subtitle-row">
+                <span class="planner-section-subtitle"><i class="material-icons">calendar_view_week</i> Daily Logs & Minor Events</span>
+                <button class="btn-roll-event" id="btnRollAllMinor" type="button"><i class="material-icons">casino</i> Roll All Days</button>
+              </div>
+              <div class="days-calendar-grid" id="daysCalendarGrid">
+                <!-- 7 days boxes populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Day Detail / Minor Event Display -->
+            <div class="day-detail-panel" id="dayDetailPanel" style="display: none;">
+              <div class="day-detail-header">
+                <h4 id="detailDayTitle">Day 1</h4>
+                <button class="btn-roll-event-small" id="btnRollMinorEvent"><i class="material-icons">casino</i> Roll Minor Event</button>
+              </div>
+              <div class="event-roll-display minor-roll-display" id="minorEventDisplay">
+                <div class="roll-number-box-small">--</div>
+                <div class="roll-details">
+                  <span class="roll-result-title-small">No event rolled for this day</span>
+                  <p class="roll-result-desc-small">Roll a d100 to lookup the daily minor occurrence.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Events List Manager -->
+            <div class="planner-events-tracker">
+              <div class="section-subtitle-row">
+                <span class="planner-section-subtitle"><i class="material-icons">format_list_bulleted</i> Weekly Encounters & Points of Interest</span>
+                <div class="event-add-actions">
+                  <button class="btn-add-event" id="btnAddEventBtn" type="button"><i class="material-icons">add</i> Add Event</button>
+                  <div class="dropdown-menu-content" id="addEventDropdown">
+                    <button class="dropdown-item" type="button" id="btnAddSkill"><i class="material-icons">alt_route</i> Skill Challenge</button>
+                    <button class="dropdown-item" type="button" id="btnAddDialogue"><i class="material-icons">chat</i> Dialogue</button>
+                    <button class="dropdown-item" type="button" id="btnAddSpecial"><i class="material-icons">auto_awesome</i> Special Event</button>
+                    <button class="dropdown-item" type="button" id="btnAddCombat"><i class="material-icons">swords</i> Combat Encounter</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- List of events -->
+              <ul class="expedition-events-list" id="expeditionEventsList">
+                <!-- Dynamically populated events -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Session Mode Workspace -->
+  <div class="session-workspace" id="sessionWorkspace" style="display: none;">
+    <!-- Session Sidebar -->
+    <aside class="session-sidebar">
+      <div class="session-sidebar-header">
+        <h3>Session Deck</h3>
+        <button id="btnExitSession" class="btn-exit" type="button"><i class="material-icons">close</i> Exit</button>
+      </div>
+      <ul class="session-monster-list" id="sessionMonsterList">
+        <!-- populated dynamically -->
+      </ul>
+    </aside>
+    <!-- Session Main Panel -->
+    <main class="session-main">
+      <div class="session-card-header">
+        <h2 id="sessionActiveTitle">Active Monster</h2>
+        <div class="session-controls">
+          <div class="format-toggle">
+            <span class="toggle-label-text">Roll20:</span>
+            <button class="btn-toggle-format active" id="btnFormatTemplate" onclick="setRoll20Format('template')">Template</button>
+            <button class="btn-toggle-format" id="btnFormatRaw" onclick="setRoll20Format('raw')">Raw /roll</button>
+          </div>
+          <span class="macro-hint"><i class="material-icons">content_copy</i> Click any item to copy!</span>
+        </div>
+      </div>
+      
+      <div class="session-card-container">
+        <!-- Session Dashboard Grid (HP Tracker + Quick Defenses) -->
+        <div class="session-dashboard-grid">
+          <!-- HP Tracker Panel -->
+          <div class="session-hp-tracker" id="sessionHpTracker">
+            <div class="hp-tracker-header">
+              <span class="hp-tracker-title">Health Points</span>
+              <div class="hp-tracker-numbers">
+                <span id="sessionCurrentHP">60</span> / <span id="sessionMaxHP">60</span> HP
+              </div>
+            </div>
+            <div class="hp-progress-bar-bg">
+              <div class="hp-progress-bar-fill" id="sessionHpBarFill" style="width: 100%;"></div>
+            </div>
+            <div class="hp-tracker-actions">
+              <button class="hp-action-btn" onclick="adjustHP(-1)" type="button">-1</button>
+              <button class="hp-action-btn" onclick="adjustHP(-5)" type="button">-5</button>
+              <button class="hp-action-btn" onclick="adjustHP(-10)" type="button">-10</button>
+              <input type="number" id="hpDirectInput" class="hp-input-field" value="60">
+              <button class="hp-action-btn btn-plus" onclick="adjustHP(1)" type="button">+1</button>
+              <button class="hp-action-btn btn-plus" onclick="adjustHP(5)" type="button">+5</button>
+              <button class="hp-action-btn btn-plus" onclick="adjustHP(10)" type="button">+10</button>
+            </div>
+          </div>
+          
+          <!-- Defenses Quick Reference Panel -->
+          <div class="session-defenses-panel">
+            <div class="panel-header">
+              <span class="panel-title">Defenses Quick Ref</span>
+            </div>
+            <div class="session-defenses-grid">
+              <div class="def-box">
+                <span class="def-val" id="sessionDefEvasion">7</span>
+                <span class="def-label">Evasion</span>
+              </div>
+              <div class="def-box highlight-dodge">
+                <span class="def-val" id="sessionDefDodge">20</span>
+                <span class="def-label">Dodge</span>
+              </div>
+              <div class="def-box">
+                <span class="def-val" id="sessionDefGuard">0</span>
+                <span class="def-label">Guard</span>
+              </div>
+              <div class="def-box highlight-block">
+                <span class="def-val" id="sessionDefBlock">0</span>
+                <span class="def-label">Block</span>
+              </div>
+              <!-- Toughness Save Box -->
+              <div class="def-box highlight-save" id="btnToughnessSaveSession" style="cursor: pointer; grid-column: span 4; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px;" title="Click to copy Roll20 Toughness Save macro">
+                <i class="material-icons" style="font-size:1.1rem;">shield</i>
+                <span class="def-label" style="margin: 0; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Toughness Save (2d10 + TG)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Default Attacks Quick Roll Panel -->
+          <div class="session-quick-attacks-panel">
+            <div class="panel-header">
+              <span class="panel-title">Quick Roll Attacks</span>
+            </div>
+            <div class="quick-attacks-buttons">
+              <button class="quick-attack-btn btn-light-attack" id="btnQuickLightAttack" type="button" title="Copy Light Attack Macro">
+                <i class="material-icons">flash_on</i>
+                <div class="attack-btn-text">
+                  <span class="attack-btn-name">Light Attack (1 AP)</span>
+                  <span class="attack-btn-formula">1d20 + FC vs EV | 2d4 + PW DMG</span>
+                </div>
+              </button>
+              <button class="quick-attack-btn btn-heavy-attack" id="btnQuickHeavyAttack" type="button" title="Copy Heavy Attack Macro">
+                <i class="material-icons">gavel</i>
+                <div class="attack-btn-text">
+                  <span class="attack-btn-name">Heavy Attack (2 AP)</span>
+                  <span class="attack-btn-formula">1d20 + FC vs EV | 4d6 + PW * 2 DMG</span>
+                </div>
+              </button>
+              <button class="quick-attack-btn btn-precise-attack" id="btnQuickPreciseAttack" type="button" title="Copy Precise Attack Macro">
+                <i class="material-icons">adjust</i>
+                <div class="attack-btn-text">
+                  <span class="attack-btn-name">Precise Attack (2 AP)</span>
+                  <span class="attack-btn-formula">1d20 + FC * 2 vs EV | 2d4 + PW DMG | Pinpoint: FC</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Slot for moving the active card -->
+        <div id="sessionCardSlot"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Token Cookie Cutter Modal -->
+  <div class="modal-overlay" id="tokenModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="material-icons">donut_large</i> Token Cookie Cutter</h3>
+        <button type="button" class="btn-close-modal" id="btnExitTokenModal"><i class="material-icons">close</i></button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-help-text">Drag the image to position it, and use the slider to zoom so the subject is centered in the circle.</p>
+        
+        <div class="token-viewport-container">
+          <div class="token-viewport-image-wrapper" id="tokenImageWrapper">
+            <img src="" alt="Token Source" id="tokenSourceImage" class="token-source-image">
+          </div>
+          <!-- Circular cookie cutter mask -->
+          <div class="token-viewport-mask" id="tokenViewportCircle"></div>
+        </div>
+        
+        <div class="token-controls">
+          <div class="control-group">
+            <label for="tokenZoom"><i class="material-icons">zoom_in</i> Zoom</label>
+            <input type="range" id="tokenZoom" min="1" max="4" step="0.01" value="1" class="slider">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelToken">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btnDownloadToken"><i class="material-icons">download</i> Download Token</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

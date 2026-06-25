@@ -2,237 +2,13 @@
    Angel's Sword RPG: The Lyrian Chronicles — Landing Page Styles
    Anime-Inspired Alpine Fantasy Aesthetic
    ══════════════════════════════════════════════════════════════════════ */
+/* Shared styles (tokens, reset, nav, buttons) loaded via CSS imports in HTML */
 
-/* ─── Design Tokens ───────────────────────────────────────────────── */
-:root {
-  /* Earthy Fantasy Palette (from character sheet) */
-  --clr-bg-deep:       #0d0f1a;
-  --clr-bg-dark:       #141624;
-  --clr-bg-card:       rgba(20, 22, 36, 0.75);
-  --clr-bg-glass:      rgba(30, 35, 55, 0.55);
-
-  /* Accent Colors */
-  --clr-gold:          #dfb858;
-  --clr-gold-soft:     #c4a04e;
-  --clr-gold-glow:     rgba(223, 184, 88, 0.4);
-  --clr-teal:          #5bb5a6;
-  --clr-teal-glow:     rgba(91, 181, 166, 0.35);
-  --clr-green:         #7b9f6e;
-  --clr-green-deep:    #3d5a3a;
-  --clr-brown:         #8b7355;
-  --clr-brown-dark:    #5c4a3a;
-  --clr-cream:         #f5ecd7;
-  --clr-parchment:     #e8dcc8;
-
-  /* Text */
-  --clr-text:          #e8dcc8;
-  --clr-text-bright:   #fff8ee;
-  --clr-text-muted:    #9a8e7d;
-  --clr-text-dim:      #6b6258;
-
-  /* Borders */
-  --clr-border:        rgba(223, 184, 88, 0.15);
-  --clr-border-hover:  rgba(223, 184, 88, 0.4);
-
-  /* Fonts */
-  --font-display:  'Cinzel Decorative', 'Georgia', serif;
-  --font-body:     'Outfit', 'Segoe UI', sans-serif;
-  --font-mono:     'Share Tech Mono', monospace;
-
-  /* Layout */
-  --max-width: 1200px;
-  --section-pad: 120px;
-  --nav-height: 72px;
-
-  /* Animation */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* ─── Reset & Base ────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: var(--nav-height);
-}
-
+/* ─── Page-Specific Overrides ─────────────────────────────────────── */
 body {
-  font-family: var(--font-body);
   background-color: var(--clr-bg-deep);
   color: var(--clr-text);
-  line-height: 1.7;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-a {
-  color: var(--clr-gold);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-a:hover {
-  color: var(--clr-teal);
-}
-
-/* ─── Particle Canvas ─────────────────────────────────────────────── */
-#particle-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ─── Scroll Reveal Animation ─────────────────────────────────────── */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
-}
-.scroll-reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.9s var(--ease-out-expo) forwards;
-}
-.fade-in-up[data-delay="200"] { animation-delay: 0.2s; }
-.fade-in-up[data-delay="400"] { animation-delay: 0.4s; }
-.fade-in-up[data-delay="700"] { animation-delay: 0.7s; }
-.fade-in-up[data-delay="900"] { animation-delay: 0.9s; }
-.fade-in-up[data-delay="1200"] { animation-delay: 1.2s; }
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   NAVIGATION
-   ══════════════════════════════════════════════════════════════════════ */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--nav-height);
-  z-index: 1000;
-  transition: background-color 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
-}
-
-.navbar.scrolled {
-  background-color: rgba(13, 15, 26, 0.88);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  box-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 1px 0 var(--clr-border);
-}
-
-.nav-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 32px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--clr-gold);
-  text-decoration: none;
-  transition: transform 0.3s var(--ease-spring);
-}
-.nav-logo:hover {
-  transform: scale(1.05);
-  color: var(--clr-gold);
-}
-.logo-icon {
-  font-size: 1.6rem;
-  filter: drop-shadow(0 0 8px var(--clr-gold-glow));
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 8px;
-  align-items: center;
-}
-.nav-links li a {
-  padding: 8px 18px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--clr-text-muted);
-  letter-spacing: 0.02em;
-  border-radius: 8px;
-  transition: color 0.3s ease, background-color 0.3s ease;
-}
-.nav-links li a:hover {
-  color: var(--clr-text-bright);
-  background-color: rgba(223, 184, 88, 0.08);
-}
-
-.nav-cta {
-  background: linear-gradient(135deg, var(--clr-gold-soft), var(--clr-gold));
-  color: var(--clr-bg-deep) !important;
-  font-weight: 700 !important;
-  padding: 10px 24px !important;
-  border-radius: 50px !important;
-  box-shadow: 0 4px 20px var(--clr-gold-glow);
-  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease !important;
-}
-.nav-cta:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 6px 30px var(--clr-gold-glow) !important;
-  color: var(--clr-bg-deep) !important;
-  background: linear-gradient(135deg, var(--clr-gold), #edd78f) !important;
-}
-
-/* Mobile Toggle */
-.mobile-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 1001;
-}
-.mobile-toggle span {
-  display: block;
-  width: 26px;
-  height: 2px;
-  background: var(--clr-gold);
-  border-radius: 2px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-.mobile-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-.mobile-toggle.active span:nth-child(2) { opacity: 0; }
-.mobile-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
 /* ══════════════════════════════════════════════════════════════════════
    HERO SECTION
@@ -270,9 +46,9 @@ a:hover {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(13, 15, 26, 0.3) 0%,
-    rgba(13, 15, 26, 0.15) 30%,
-    rgba(13, 15, 26, 0.2) 60%,
+    rgba(13, 15, 26, 0.5) 0%,
+    rgba(13, 15, 26, 0.35) 30%,
+    rgba(13, 15, 26, 0.4) 60%,
     rgba(13, 15, 26, 0.85) 90%,
     rgba(13, 15, 26, 1) 100%
   );
@@ -351,6 +127,7 @@ a:hover {
   letter-spacing: 12px;
   text-transform: uppercase;
   margin-bottom: 4px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 .title-lyrian {
@@ -371,6 +148,7 @@ a:hover {
   color: var(--clr-parchment);
   letter-spacing: 8px;
   text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes shimmerText {
@@ -385,6 +163,7 @@ a:hover {
   margin: 0 auto 40px;
   font-weight: 300;
   line-height: 1.8;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Buttons ─────────────────────────────────────────────────────── */
@@ -393,77 +172,6 @@ a:hover {
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 36px;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 50px;
-  cursor: pointer;
-  border: none;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-spring);
-  text-decoration: none;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--clr-gold-soft), var(--clr-gold));
-  color: var(--clr-bg-deep);
-  box-shadow:
-    0 4px 20px var(--clr-gold-glow),
-    0 0 60px rgba(223, 184, 88, 0.15);
-}
-.btn-primary:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow:
-    0 8px 40px var(--clr-gold-glow),
-    0 0 80px rgba(223, 184, 88, 0.2);
-  color: var(--clr-bg-deep);
-}
-
-.btn-sparkle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
-  pointer-events: none;
-}
-.btn-primary:hover .btn-sparkle {
-  width: 300px;
-  height: 300px;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--clr-text);
-  border: 2px solid var(--clr-border-hover);
-  backdrop-filter: blur(10px);
-}
-.btn-secondary:hover {
-  background: rgba(223, 184, 88, 0.1);
-  border-color: var(--clr-gold);
-  transform: translateY(-3px);
-  color: var(--clr-gold);
-}
-
-.btn-icon {
-  font-size: 1.3rem;
-}
-
-.btn-large {
-  padding: 20px 48px;
-  font-size: 1.1rem;
 }
 
 /* ─── Scroll Indicator ────────────────────────────────────────────── */
@@ -867,6 +575,141 @@ a:hover {
   color: var(--clr-text-muted);
   line-height: 1.8;
   max-width: 560px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MIRANE EXPEDITION CTA
+   ══════════════════════════════════════════════════════════════════════ */
+.mirane-section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.mirane-bg-img {
+  position: absolute;
+  inset: 0;
+  background: url('lore/img/mirane.jpeg') center/cover no-repeat;
+  filter: blur(3px) brightness(0.35);
+  transform: scale(1.05);
+}
+
+.mirane-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--clr-bg-deep) 0%, transparent 20%, transparent 80%, var(--clr-bg-deep) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(91, 181, 166, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.mirane-cta-layout {
+  position: relative;
+  text-align: center;
+  background: rgba(13, 15, 26, 0.75);
+  border: 1px solid var(--clr-border);
+  border-radius: 24px;
+  padding: 60px 40px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.4);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mirane-cta-layout::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50px;
+  right: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-teal), transparent);
+}
+
+.mirane-cta-badge {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--clr-teal);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.mirane-cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--clr-text-bright);
+  line-height: 1.2;
+  margin: 12px 0 8px;
+}
+
+.mirane-cta-tagline {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--clr-gold);
+  font-style: italic;
+  opacity: 0.9;
+  margin-bottom: 32px;
+}
+
+.mirane-cta-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+
+.mirane-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(91, 181, 166, 0.08);
+  border: 1px solid rgba(91, 181, 166, 0.2);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  color: var(--clr-text);
+  transition: all 0.3s ease;
+}
+
+.mirane-feature-pill:hover {
+  background: rgba(91, 181, 166, 0.15);
+  border-color: rgba(91, 181, 166, 0.4);
+  transform: translateY(-2px);
+}
+
+.mirane-pill-icon {
+  font-size: 1.1rem;
+}
+
+.mirane-cta-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.mirane-btn-main {
+  background: linear-gradient(135deg, var(--clr-teal), #4a9a8c) !important;
+  border-color: var(--clr-teal) !important;
+  font-size: 1.1rem !important;
+  padding: 16px 40px !important;
+  box-shadow: 0 4px 24px rgba(91, 181, 166, 0.3);
+}
+
+.mirane-btn-main:hover {
+  box-shadow: 0 6px 32px rgba(91, 181, 166, 0.5);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 600px) {
+  .mirane-cta-layout {
+    padding: 40px 20px;
+  }
+  .mirane-feature-pill {
+    font-size: 0.8rem;
+    padding: 8px 14px;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════

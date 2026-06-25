@@ -1,0 +1,24 @@
+{
+  "intro": [
+    { "text": "Heya!  I'm Nix Ni Arlan, airship pilot and navigator for the Angel's Sword Guild.", "sprite": "2" },
+    { "text": "I'm off today, but I'm trying to make some money so... I'll take you anywhere you want.", "sprite": "1" }
+  ],
+  "dialogue": [
+    { "text": "I love that feeling of the wind in your hair.  Airships are the best way to travel.", "sprite": "2" },
+    { "text": "Obviously we would have to use leylines.... Magical Fuel Prices these days....", "sprite": "5" },
+    { "text": "Our airship has upgraded engines from Sorthen, the best!", "sprite": "4" },
+    { "text": "Never skimp out and buy Northi engines...", "sprite": "3" },
+    { "text": "Oh! You noticed my name, \"Ni Arlan\".  My family is famous for airship engineers and helmsman.", "sprite": "2" },
+    { "text": "The funny thing though... my mom is a Cannoneer!  She fought in the battle of Sorthen.", "sprite": "4" },
+    { "text": "Why do I need money? Hmm... let's just say... I have very pricey expenses.", "sprite": "1" },
+    { "text": "What? No!  I'm not buying Frixie Dust... geez....", "sprite": "6" },
+    { "text": "My sister Mix is such a gearhead.  She always comes home covered in dirt and oil.", "sprite": "2" },
+    { "text": "I'm not really much of a fighter, but my sister can really defend herself.", "sprite": "1" },
+    { "text": "She's got a Divine Arms... and its quite strong.", "sprite": "4" },
+    { "text": "I was supposed to take over the family engineering business but... I was a bit of a failure lets just say.", "sprite": "5" },
+    { "text": "Yeah I fought in the four swords war.  I pulled some pretty crazy maneuvers then...", "sprite": "4" },
+    { "text": "One time... I dove an airship straight into the mouth of a fiend to blast it with the buster cannon!  True story!", "sprite": "6" },
+    { "text": "Airships are romantic... they can take you anywhere you want to go...", "sprite": "1" },
+    { "text": "Leaflit?  Oh she's my best friend, we've been friends for a while.", "sprite": "2" }
+  ]
+}

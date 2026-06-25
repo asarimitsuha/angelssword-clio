@@ -1,0 +1,101 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Buttons — Shared button system
+   Lore-specific buttons (city-gates-btn, scene-btn, etc.) remain in
+   lore/style.css. This file covers the .btn family used by root
+   landing and mirane pages.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-spring);
+  text-decoration: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--clr-gold-soft), var(--clr-gold));
+  color: var(--clr-bg-deep);
+  box-shadow:
+    0 4px 20px var(--clr-gold-glow),
+    0 0 60px rgba(223, 184, 88, 0.15);
+}
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 8px 40px var(--clr-gold-glow),
+    0 0 80px rgba(223, 184, 88, 0.2);
+  color: var(--clr-bg-deep);
+}
+
+.btn-sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+}
+.btn-primary:hover .btn-sparkle {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--clr-text);
+  border: 2px solid var(--clr-border-hover);
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+}
+.btn-secondary:hover {
+  background: rgba(223, 184, 88, 0.1);
+  border-color: var(--clr-gold);
+  transform: translateY(-3px);
+  color: var(--clr-gold);
+}
+
+.btn-discord {
+  background: linear-gradient(135deg, #5865F2, #7289da);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(88, 101, 242, 0.35);
+}
+.btn-discord:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 40px rgba(88, 101, 242, 0.5);
+  color: #fff;
+}
+
+.btn-patreon {
+  background: linear-gradient(135deg, #f96854, #ff6b5a);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(249, 104, 84, 0.35);
+}
+.btn-patreon:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 40px rgba(249, 104, 84, 0.5);
+  color: #fff;
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+}
+
+.btn-large {
+  padding: 20px 48px;
+  font-size: 1.1rem;
+}

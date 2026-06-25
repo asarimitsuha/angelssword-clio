@@ -6,37 +6,13 @@
 /* ─── Book Registry ───────────────────────────────────────────────── */
 const BOOK_REGISTRY = {
   "light-novels": [
-    {
-      id: "wotk-ch1",
-      file: "books/will-of-the-king-ch1.js",
-      spineTitle: "Will of the King",
-      spineColor: "book-color-red",
-      width: 58
-    },
-    {
-      id: "aso-ch1",
-      file: "books/angels-sword-origin-ch1.js",
-      spineTitle: "Angel's Sword Origin",
-      spineColor: "book-color-blue",
-      width: 52
-    }
+    { id: "wotk-ch1", file: "books/will-of-the-king-ch1.js", spineTitle: "Will of the King", spineColor: "book-color-red", width: 58 },
+    { id: "aso-ch1", file: "books/angels-sword-origin-ch1.js", spineTitle: "Angel's Sword Origin", spineColor: "book-color-blue", width: 52 }
   ],
   "lore": [],
   "research": [
-    {
-      id: "on-fiends",
-      file: "books/on-fiends.js",
-      spineTitle: "On Fiends",
-      spineColor: "book-color-green",
-      width: 48
-    },
-    {
-      id: "nature-of-magic",
-      file: "books/on-the-nature-of-magic.js",
-      spineTitle: "On the Nature of Magic",
-      spineColor: "book-color-gold",
-      width: 54
-    }
+    { id: "on-fiends", file: "books/on-fiends.js", spineTitle: "On Fiends", spineColor: "book-color-green", width: 48 },
+    { id: "nature-of-magic", file: "books/on-the-nature-of-magic.js", spineTitle: "On the Nature of Magic", spineColor: "book-color-gold", width: 54 }
   ],
   "field": []
 };
@@ -76,90 +52,32 @@ const RELIC_REGISTRY = {
 
 /* ─── VN Dialogue Script ──────────────────────────────────────────── */
 const VN_SCRIPT = [
-  {
-    speaker: "Philomel Lapis",
-    text: "Oh! A visitor... Welcome to the Riannon Institute of Alchemy.",
-    expression: "idea"
-  },
-  {
-    speaker: "Philomel Lapis",
-    text: "I'm Philomel — a researcher here. I help maintain the archives and special collections.",
-    expression: "smile"
-  },
-  {
-    speaker: "Philomel Lapis",
-    text: "We have light novels, historical records, academy research notes, and field reports from adventurers across Lyr.",
-    expression: "book"
-  },
-  {
-    speaker: "Philomel Lapis",
-    text: "Feel free to browse the shelves and pick up anything that catches your eye. I'll be here if you need help!",
-    expression: "clasp"
-  }
+  { speaker: "Philomel Lapis", text: "Oh! A visitor... Welcome to the Riannon Institute of Alchemy.", expression: "idea" },
+  { speaker: "Philomel Lapis", text: "I'm Philomel — a researcher here. I help maintain the archives and special collections.", expression: "smile" },
+  { speaker: "Philomel Lapis", text: "We have light novels, historical records, academy research notes, and field reports from adventurers across Lyr.", expression: "book" },
+  { speaker: "Philomel Lapis", text: "Feel free to browse the shelves and pick up anything that catches your eye. I'll be here if you need help!", expression: "clasp" }
 ];
 
 /* ─── Front Desk Dialogue ─────────────────────────────────────────── */
 const DESK_DIALOGUE = [
-  {
-    text: "Hello.  I'm Philomel Lapis.  I've been a member of the academy for quite some time.",
-    expression: "smile"
-  },
-  {
-    text: "The Riannon Institute of Alchemy has been around for centuries and has a rich history.  Famous mages have graduated from here... including the World Famous Camielelileananu, Mirane and Chroma Lichtvog to name a few.",
-    expression: "book"
-  },
-  {
-    text: "Isn't alchemy amazing?  You can make so many useful things out of what others would consider weeds or junk.",
-    expression: "happy"
-  },
-  {
-    text: "My wife?  Ah... yeah... she's back at Sylvan.  I miss her.",
-    expression: "sad"
-  },
-  {
-    text: "Inter-racial procreation?  Ah... I see you're one of those...  I think theres a book by Dr. Mizi Marion somewhere...",
-    expression: "puzzled"
-  },
-  {
-    text: "The four swords war?  Ah... yes, I was a member of Ayra's party.  That Ayra, the holy maiden.  I was the airship's doctor onboard the Nadesico.",
-    expression: "concerned"
-  },
-  {
-    text: "Hazel Nutella?  I don't want to talk about her...",
-    expression: "pout"
-  },
-  {
-    text: "I think I consider myself a member of the Angel's Sword Guild.  I do find myself working there a lot.",
-    expression: "clasp"
-  },
-  {
-    text: "My favorite food?  Oh... I adore Nurenese Steak.  It's really the best.  Although prices have gone up significantly since the war...",
-    expression: "joyful"
-  },
-  {
-    text: "Are you considering enrolling as a student here?  I would make sure to brush up on the basics first!  It's not easy to get in.",
-    expression: "idea"
-  },
-  {
-    text: "You want a certain potion from me?  Oh... that... well...  can we not talk about that....",
-    expression: "nervous"
-  },
-  {
-    text: "What do slime cores taste like?  Why do people always ask that?!",
-    expression: "pout"
-  }
+  { text: "Hello.  I'm Philomel Lapis.  I've been a member of the academy for quite some time.", expression: "smile" },
+  { text: "The Riannon Institute of Alchemy has been around for centuries and has a rich history.  Famous mages have graduated from here... including the World Famous Camielelileananu, Mirane and Chroma Lichtvog to name a few.", expression: "book" },
+  { text: "Isn't alchemy amazing?  You can make so many useful things out of what others would consider weeds or junk.", expression: "happy" },
+  { text: "My wife?  Ah... yeah... she's back at Sylvan.  I miss her.", expression: "sad" },
+  { text: "Inter-racial procreation?  Ah... I see you're one of those...  I think theres a book by Dr. Mizi Marion somewhere...", expression: "puzzled" },
+  { text: "The four swords war?  Ah... yes, I was a member of Ayra's party.  That Ayra, the holy maiden.  I was the airship's doctor onboard the Nadesico.", expression: "concerned" },
+  { text: "Hazel Nutella?  I don't want to talk about her...", expression: "pout" },
+  { text: "I think I consider myself a member of the Angel's Sword Guild.  I do find myself working there a lot.", expression: "clasp" },
+  { text: "My favorite food?  Oh... I adore Nurenese Steak.  It's really the best.  Although prices have gone up significantly since the war...", expression: "joyful" },
+  { text: "Are you considering enrolling as a student here?  I would make sure to brush up on the basics first!  It's not easy to get in.", expression: "idea" },
+  { text: "You want a certain potion from me?  Oh... that... well...  can we not talk about that....", expression: "nervous" },
+  { text: "What do slime cores taste like?  Why do people always ask that?!", expression: "pout" }
 ];
 
 /* ─── Guard Dialogue (City Gates) ─────────────────────────────────── */
 const GUARD_INTRO = [
-  {
-    text: "Hello.  Welcome to the Free Trade City of Mothergreen.",
-    sprite: "1"
-  },
-  {
-    text: "Let me know if I can help you with anything.",
-    sprite: "2"
-  }
+  { text: "Hello.  Welcome to the Free Trade City of Mothergreen.", sprite: "1" },
+  { text: "Let me know if I can help you with anything.", sprite: "2" }
 ];
 
 const GUARD_DIALOGUE = [
@@ -248,57 +166,60 @@ const MIRRIME_DIALOGUE = [
   { text: "Be careful around Thousand Lakes, I got attacked once by a group calling themselves, \"Silica Wraiths\"", sprite: "3" }
 ];
 
+/* ─── Aniela Dialogue (MEA HQ) ────────────────────────────────────── */
+const ANIELA_INTRO = [
+  { text: "Hello there.  Welcome to the Mirane Expedition Alliance.", sprite: "1" },
+  { text: "We coordinate and manage the expeditions into the Astra Line.", sprite: "2" },
+  { text: "I'm Aniela.  How can I help you?", sprite: "1" }
+];
+
+const ANIELA_DIALOGUE = [
+  { text: "The MEA is the official administrative body for the Town of Mirane and the Mirane Expedition, we've grown a lot in the last year.", sprite: "2" },
+  { text: "People come here from all over... for various reasons.  We have researchers, treasure hunters.... explorers... all sorts of people.", sprite: "1" },
+  { text: "The Astra Line is a dangerous place... always be prepared with enough food and supplies.", sprite: "2" },
+  { text: "I've been working here since the beginning... 'roped into it' you could say.  But I'm glad to be useful.", sprite: "3" },
+  { text: "My favorite food?  Honestly anything imported... I'm tired of Chorpa Steaks... although I could really do for some Sorthenese Stew...", sprite: "3" },
+  { text: "Me? Go on expeditions?  Ah... I don't think I'm quite cut out for that.", sprite: "4" },
+  { text: "The Director?  Ah... I owe them a lot.  I'm just happy to have a home here.", sprite: "1" },
+  { text: "Don't try anything funny... last year someone tried a terrorist attack and they were executed instantly... the director has 'ways'...", sprite: "6" },
+  { text: "M.E.A. Staff?  Ah theres not too many of us but we're growing,  Theres me, Ravas and Karin among others.", sprite: "2" },
+  { text: "The staff are a bunch of misfits to be honest... but everyone does their best.", sprite: "1" },
+  { text: "Karin?  Ah.  She's nice.  Don't get between her and Mylene though.", sprite: "3" },
+  { text: "If you need any supplies you can ask Pecorine or any of the other merchants in town to try to procure it for you.", sprite: "2" },
+  { text: "If you need something smithed you should ask Fidget Tangan.  Hard to say if she has time though.", sprite: "3" },
+  { text: "Crimson?  How do you know about her?", sprite: "4" },
+  { text: "Last year we had the world famous Alchemist, Camielelileananu in town... it was quite a treat.  She's so cool.", sprite: "2" },
+  { text: "My eyes?  Ah... it's just like this.  Don't worry too much about it.", sprite: "1" },
+  { text: "Don't forget to drink lots of water and get a lot of rest.", sprite: "2" },
+  { text: "If you remember anything... just remember to be safe.  Come back home to me, okay?", sprite: "5" },
+  { text: "Everytime an expeditioner dies... it really breaks my heart.  I wish the director would do more to prevent it.", sprite: "5" },
+  { text: "I respect the director's wishes but... I disagree on the methodology.", sprite: "6" },
+  { text: "I think it would be great for morale if we hosted a big concert like the Starlight Festival, but not just for idols.", sprite: "2" },
+  { text: "Princess Cherry of Madeline is always helping us out so much.  I don't mind the propaganda.", sprite: "1" }
+];
+
+/* ─── Scene Music Map ─────────────────────────────────────────────── */
+const DEFAULT_BGM = "../mu/Swords and Spells ~ Riannon Institute of Alchemy.mp3";
+const SCENE_MUSIC = {
+  "city-gates-overlay": "../mu/Apples and Steel - Theme of Mothergreen (2022 - Loop).mp3",
+  "airship-docks-overlay": "../mu/Fiona's Heist ~ Theft of Valkyria (2022 - Loop).mp3",
+  "mirane-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
+  "combat-school-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
+  "mea-hq-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3"
+};
+
 /* ─── State ───────────────────────────────────────────────────────── */
-let vnDialogueIndex = 0;
-let vnIsTyping = false;
-let vnTypeTimer = null;
-let vnFullText = "";
 let currentBook = null;
-let currentPageIndex = 0;
 
 /* Room Navigation State */
 let currentRoom = "front-desk";
 let libraryHasBeenOpened = false;
-let deskDialogueIndex = 0;
-let deskIsTyping = false;
-let deskTypeTimer = null;
-let deskFullText = "";
-let deskDialogueActive = false;
 
-/* Guard (City Gates) State */
-let guardIntroIndex = 0;
-let guardIsTyping = false;
-let guardTypeTimer = null;
-let guardFullText = "";
-let guardDialogueIndex = 0;
-let guardDialogueActive = false;
-let guardIntroComplete = false;
-
-/* Queri (Combat School) State */
-let queriDialogueIndex = 0;
-let queriIsTyping = false;
-let queriTypeTimer = null;
-let queriFullText = "";
-let queriDialogueActive = false;
+/* Video State */
 let combatSchoolVideoEnded = false;
 
-/* Nix (Airship Docks) State */
-let nixIntroIndex = 0;
-let nixIsTyping = false;
-let nixTypeTimer = null;
-let nixFullText = "";
-let nixDialogueIndex = 0;
-let nixDialogueActive = false;
-let nixIntroComplete = false;
-
-/* Mirrime (Mirane) State */
-let mirrimeIntroIndex = 0;
-let mirrimeIsTyping = false;
-let mirrimeTypeTimer = null;
-let mirrimeFullText = "";
-let mirrimeDialogueIndex = 0;
-let mirrimeDialogueActive = false;
-let mirrimeIntroComplete = false;
+/* DialogueEngine instances — initialized in DOMContentLoaded */
+let guardEngine, queriEngine, nixEngine, mirrimeEngine, anielaEngine, vnEngine, deskEngine;
 
 /* BGM State */
 let bgm = null;
@@ -306,28 +227,189 @@ let bgmVolume = 0.15;
 let bgmIsMuted = false;
 let currentBGMTrack = null;
 
-/* Scene Music Map */
-const DEFAULT_BGM = "../mu/Swords and Spells ~ Riannon Institute of Alchemy.mp3";
-const SCENE_MUSIC = {
-  "city-gates-overlay": "../mu/Apples and Steel - Theme of Mothergreen (2022 - Loop).mp3",
-  "airship-docks-overlay": "../mu/Fiona's Heist ~ Theft of Valkyria (2022 - Loop).mp3",
-  "mirane-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
-  "combat-school-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3"
-};
-
 /* Voice Audio Player */
 let voiceAudio = new Audio();
 
 /* ─── Init ────────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  initParticles();
+  // Initialize DialogueEngine instances for each NPC
+  initDialogueEngines();
+
+  // Library-themed particles: fewer, smaller, subtler dust motes
+  initParticles({
+    count: 40,
+    sizeMin: 0.5,
+    sizeMax: 2.5,
+    glowMultiplier: 5,
+    speedX: 0.2,
+    speedY: 0.15,
+    colors: [
+      { r: 223, g: 184, b: 88 },   // Gold
+      { r: 200, g: 180, b: 140 },   // Warm dust
+      { r: 91, g: 155, b: 213 },    // Alchemy blue
+      { r: 180, g: 200, b: 220 },   // Soft silver
+    ]
+  });
   initMobileNav();
   initImageLightbox();
   startAdventure();
   initBGM();
   initRoomNavigation();
   initSceneNavigation();
+
+  // Handle ?scene= URL parameter for direct scene navigation
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetScene = urlParams.get("scene");
+  if (targetScene) {
+    // Skip the welcome screen and navigate through scenes to reach the target
+    const sceneChains = {
+      "mea-hq": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "mea-hq-overlay"],
+      "mirane": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay"],
+      "airship-docks": ["city-gates-overlay", "airship-docks-overlay"],
+      "city-gates": ["city-gates-overlay"],
+      "combat-school": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "combat-school-overlay"],
+    };
+    const chain = sceneChains[targetScene];
+    if (chain) {
+      // Immediately show the final scene without transitions
+      setTimeout(() => {
+        // Hide welcome screen
+        const welcomeOverlay = document.getElementById("welcome-overlay");
+        if (welcomeOverlay) welcomeOverlay.classList.add("hidden");
+        // Hide all overlays first
+        document.querySelectorAll(".scene-overlay").forEach(el => el.classList.add("hidden"));
+        // Show the final target overlay
+        const finalOverlay = document.getElementById(chain[chain.length - 1]);
+        if (finalOverlay) {
+          finalOverlay.classList.remove("hidden");
+          // Trigger intro for the scene's NPC
+          if (targetScene === "mea-hq" && anielaEngine && !anielaEngine.introComplete) {
+            startAnielaIntro();
+          } else if (targetScene === "mirane" && mirrimeEngine && !mirrimeEngine.introComplete) {
+            startMirrimeIntro();
+          }
+          // Start correct BGM for the scene
+          switchBGMForScene(chain[chain.length - 1]);
+        }
+      }, 100);
+    }
+  }
 });
+
+function initDialogueEngines() {
+  guardEngine = new DialogueEngine({
+    id: 'guard',
+    textEl: document.getElementById('guard-text'),
+    indicatorEl: document.getElementById('guard-next-indicator'),
+    spriteEl: document.getElementById('guard-sprite'),
+    speakerNameEl: document.getElementById('guard-speaker-name'),
+    dialogueBox: document.getElementById('guard-dialogue-box'),
+    talkBtn: document.getElementById('btn-guard-talk'),
+    actionsEl: document.getElementById('guard-actions'),
+    introLines: GUARD_INTRO,
+    talkLines: GUARD_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/guard_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/mguard/mguard${line.sprite}.png` : null,
+    voiceVolume: 0.8,
+    typeSpeed: 30,
+    btnIconClass: 'city-gates-btn-icon',
+    voiceAudio: voiceAudio,
+    onIntroComplete: () => showGuardActions(),
+  });
+
+  queriEngine = new DialogueEngine({
+    id: 'queri',
+    textEl: document.getElementById('combat-text'),
+    indicatorEl: document.getElementById('combat-next-indicator'),
+    spriteEl: document.getElementById('combat-sprite'),
+    dialogueBox: document.getElementById('combat-dialogue-box'),
+    talkBtn: document.getElementById('btn-queri-talk'),
+    talkLines: QUERI_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/queri_talk_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/queri/queri${line.sprite}.png` : null,
+    voiceVolume: 0.8,
+    btnIconClass: 'scene-btn-icon',
+    voiceAudio: voiceAudio,
+  });
+
+  nixEngine = new DialogueEngine({
+    id: 'nix',
+    textEl: document.getElementById('airship-text'),
+    indicatorEl: document.getElementById('airship-next-indicator'),
+    spriteEl: document.getElementById('airship-sprite'),
+    actionsEl: document.getElementById('airship-actions'),
+    introLines: NIX_INTRO,
+    talkLines: NIX_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/nix_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/nix/nix${line.sprite}.png` : null,
+    voiceVolume: 0.8,
+    btnIconClass: 'scene-btn-icon',
+    voiceAudio: voiceAudio,
+    talkBtn: document.getElementById('btn-nix-talk'),
+  });
+
+  mirrimeEngine = new DialogueEngine({
+    id: 'mirrime',
+    textEl: document.getElementById('mirane-text'),
+    indicatorEl: document.getElementById('mirane-next-indicator'),
+    spriteEl: document.getElementById('mirane-sprite'),
+    actionsEl: document.getElementById('mirane-actions'),
+    introLines: MIRRIME_INTRO,
+    talkLines: MIRRIME_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/mirrime_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/mirime/mirime${line.sprite}.png` : null,
+    voiceVolume: 1.0,
+    btnIconClass: 'scene-btn-icon',
+    voiceAudio: voiceAudio,
+    talkBtn: document.getElementById('btn-mirrime-talk'),
+  });
+
+  anielaEngine = new DialogueEngine({
+    id: 'aniela',
+    textEl: document.getElementById('mea-hq-text'),
+    indicatorEl: document.getElementById('mea-hq-next-indicator'),
+    spriteEl: document.getElementById('mea-hq-sprite'),
+    speakerNameEl: document.getElementById('mea-hq-speaker-name'),
+    actionsEl: document.getElementById('mea-hq-actions'),
+    introLines: ANIELA_INTRO,
+    talkLines: ANIELA_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/aniela_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/aniela/aniela${line.sprite}.png` : null,
+    voiceVolume: 0.8,
+    btnIconClass: 'scene-btn-icon',
+    voiceAudio: voiceAudio,
+    talkBtn: document.getElementById('btn-aniela-talk'),
+  });
+
+  vnEngine = new DialogueEngine({
+    id: 'vn',
+    textEl: document.getElementById('vn-text'),
+    indicatorEl: document.getElementById('vn-next-indicator'),
+    spriteEl: document.getElementById('vn-sprite'),
+    speakerNameEl: document.getElementById('vn-speaker-name'),
+    talkLines: VN_SCRIPT, // VN uses talkLines for its sequential script
+    voiceSrcFn: (type, index) => `assets/voice/vn_${index}.mp3`,
+    spriteSrcFn: (line) => line.expression ? `img/philomel/philomel_${line.expression}.png` : null,
+    voiceVolume: 0.8,
+    typeSpeed: 30,
+    voiceAudio: voiceAudio,
+  });
+
+  deskEngine = new DialogueEngine({
+    id: 'desk',
+    textEl: document.getElementById('desk-text'),
+    indicatorEl: document.getElementById('desk-next-indicator'),
+    spriteEl: document.getElementById('desk-sprite'),
+    dialogueBox: document.getElementById('desk-dialogue-box'),
+    talkBtn: document.getElementById('btn-talk-philomel'),
+    talkLines: DESK_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/desk_${index}.mp3`,
+    spriteSrcFn: (line) => line.expression ? `img/philomel/philomel_${line.expression}.png` : null,
+    voiceVolume: 0.8,
+    btnIconClass: 'desk-btn-icon',
+    voiceAudio: voiceAudio,
+  });
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    ADVENTURE WELCOME & GATES
@@ -376,9 +458,10 @@ function showAcademyGates() {
     dialogueBox.classList.add("visible");
   }, 800);
 
-  // Start guard intro
+  // Start guard intro via engine
   setTimeout(() => {
-    showGuardIntroLine(0);
+    guardEngine.speakerNameEl.textContent = "Guard";
+    guardEngine.startIntro();
   }, 1200);
 
   // Click to advance intro
@@ -390,63 +473,12 @@ function handleGuardIntroClick(e) {
   if (e.target.closest(".city-gates-actions")) return;
   if (e.target.closest(".scene-btn")) return;
 
-  if (!guardIntroComplete) {
-    if (guardIsTyping) {
-      completeGuardTyping();
-    } else {
-      guardIntroIndex++;
-      if (guardIntroIndex < GUARD_INTRO.length) {
-        showGuardIntroLine(guardIntroIndex);
-      } else {
-        // Intro complete — show action buttons
-        guardIntroComplete = true;
-        showGuardActions();
-      }
-    }
+  if (!guardEngine.introComplete) {
+    guardEngine.advanceIntro();
   } else {
     // After intro — clicking dialogue box advances talk
-    handleGuardTalk();
+    guardEngine.talk();
   }
-}
-
-function showGuardIntroLine(index) {
-  const line = GUARD_INTRO[index];
-  const nameEl = document.getElementById("guard-speaker-name");
-  const textEl = document.getElementById("guard-text");
-  const indicator = document.getElementById("guard-next-indicator");
-
-  nameEl.textContent = "Guard";
-  indicator.classList.remove("visible");
-  guardFullText = line.text;
-
-  // Update guard sprite
-  const spriteEl = document.getElementById("guard-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/mguard/mguard${line.sprite}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/guard_intro_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Guard voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  guardIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(guardTypeTimer);
-  guardTypeTimer = setInterval(() => {
-    if (charIndex < guardFullText.length) {
-      textEl.textContent += guardFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(guardTypeTimer);
-      guardIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 30);
 }
 
 function showGuardActions() {
@@ -464,7 +496,7 @@ function showGuardActions() {
   // Talk to Guard button
   document.getElementById("btn-guard-talk").addEventListener("click", (e) => {
     e.stopPropagation();
-    handleGuardTalk();
+    guardEngine.talk();
   });
 
   // Riannon Institute button — enters the library
@@ -484,74 +516,6 @@ function showGuardActions() {
     e.stopPropagation();
     window.location.href = window.location.pathname;
   });
-}
-
-function handleGuardTalk() {
-  const dialogueBox = document.getElementById("guard-dialogue-box");
-  const talkBtn = document.getElementById("btn-guard-talk");
-
-  if (!guardDialogueActive) {
-    guardDialogueActive = true;
-    dialogueBox.style.display = "block";
-    dialogueBox.classList.add("visible");
-    talkBtn.innerHTML = `<span class="city-gates-btn-icon">💬</span> Continue...`;
-    showGuardTalkLine(guardDialogueIndex);
-    return;
-  }
-
-  if (guardIsTyping) {
-    completeGuardTyping();
-    return;
-  }
-
-  guardDialogueIndex = (guardDialogueIndex + 1) % GUARD_DIALOGUE.length;
-  showGuardTalkLine(guardDialogueIndex);
-}
-
-function showGuardTalkLine(index) {
-  const line = GUARD_DIALOGUE[index];
-  const textEl = document.getElementById("guard-text");
-  const indicator = document.getElementById("guard-next-indicator");
-
-  indicator.classList.remove("visible");
-  guardFullText = line.text;
-
-  // Update guard sprite
-  const spriteEl = document.getElementById("guard-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/mguard/mguard${line.sprite}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/guard_talk_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Guard voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  guardIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(guardTypeTimer);
-  guardTypeTimer = setInterval(() => {
-    if (charIndex < guardFullText.length) {
-      textEl.textContent += guardFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(guardTypeTimer);
-      guardIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
-}
-
-function completeGuardTyping() {
-  clearInterval(guardTypeTimer);
-  const textEl = document.getElementById("guard-text");
-  textEl.textContent = guardFullText;
-  guardIsTyping = false;
-  document.getElementById("guard-next-indicator").classList.add("visible");
 }
 
 function enterEtoileLibrary() {
@@ -649,7 +613,7 @@ function navigateToScene(fromOverlayId, toOverlayId) {
 
     // Handle airship docks entry
     if (toOverlayId === "airship-docks-overlay") {
-      if (nixIntroComplete) {
+      if (nixEngine.introComplete) {
         // Already seen intro — show actions directly
         document.getElementById("airship-actions").style.display = "flex";
       } else {
@@ -660,10 +624,19 @@ function navigateToScene(fromOverlayId, toOverlayId) {
 
     // Handle mirane entry
     if (toOverlayId === "mirane-overlay") {
-      if (mirrimeIntroComplete) {
+      if (mirrimeEngine.introComplete) {
         document.getElementById("mirane-actions").style.display = "flex";
       } else {
         startMirrimeIntro();
+      }
+    }
+
+    // Handle MEA HQ entry
+    if (toOverlayId === "mea-hq-overlay") {
+      if (anielaEngine.introComplete) {
+        document.getElementById("mea-hq-actions").style.display = "flex";
+      } else {
+        startAnielaIntro();
       }
     }
   }, 600);
@@ -721,7 +694,7 @@ function initSceneNavigation() {
   if (queriTalkBtn) {
     queriTalkBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      handleQueriTalk();
+      queriEngine.talk();
     });
   }
 
@@ -730,7 +703,7 @@ function initSceneNavigation() {
   if (combatDialogueBox) {
     combatDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
-      handleQueriTalk();
+      queriEngine.talk();
     });
   }
 
@@ -739,8 +712,8 @@ function initSceneNavigation() {
   if (guardDialogueBox) {
     guardDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (!guardIntroComplete) return; // Intro handled by overlay click
-      handleGuardTalk();
+      if (!guardEngine.introComplete) return; // Intro handled by overlay click
+      guardEngine.talk();
     });
   }
 
@@ -772,7 +745,7 @@ function initSceneNavigation() {
   if (nixTalkBtn) {
     nixTalkBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      handleNixTalk();
+      nixEngine.talk();
     });
   }
 
@@ -781,10 +754,10 @@ function initSceneNavigation() {
   if (airshipDialogueBox) {
     airshipDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (!nixIntroComplete) {
+      if (!nixEngine.introComplete) {
         advanceNixIntro();
       } else {
-        handleNixTalk();
+        nixEngine.talk();
       }
     });
   }
@@ -794,7 +767,7 @@ function initSceneNavigation() {
   if (mirrimeTalkBtn) {
     mirrimeTalkBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      handleMirrimeTalk();
+      mirrimeEngine.talk();
     });
   }
 
@@ -803,10 +776,57 @@ function initSceneNavigation() {
   if (miraneDialogueBox) {
     miraneDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (!mirrimeIntroComplete) {
+      if (!mirrimeEngine.introComplete) {
         advanceMirrimeIntro();
       } else {
-        handleMirrimeTalk();
+        mirrimeEngine.talk();
+      }
+    });
+  }
+
+  // Mirane → MEA HQ
+  const enterMeaHqBtn = document.getElementById("btn-enter-mea-hq");
+  if (enterMeaHqBtn) {
+    enterMeaHqBtn.addEventListener("click", () => {
+      navigateToScene("mirane-overlay", "mea-hq-overlay");
+    });
+  }
+
+  // MEA HQ → Back to Mirane
+  const meaHqBackBtn = document.getElementById("btn-mea-hq-back");
+  if (meaHqBackBtn) {
+    meaHqBackBtn.addEventListener("click", () => {
+      navigateToScene("mea-hq-overlay", "mirane-overlay");
+    });
+  }
+
+  // MEA HQ → Strategy Room (navigates to separate page)
+  const enterStrategyBtn = document.getElementById("btn-enter-strategy-room");
+  if (enterStrategyBtn) {
+    enterStrategyBtn.addEventListener("click", () => {
+      playSFX("footsteps");
+      window.open("../strategy-room/index.html", "_blank");
+    });
+  }
+
+  // MEA HQ — Talk to Aniela button
+  const anielaTalkBtn = document.getElementById("btn-aniela-talk");
+  if (anielaTalkBtn) {
+    anielaTalkBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      anielaEngine.talk();
+    });
+  }
+
+  // MEA HQ — Click dialogue to advance intro or talk
+  const meaHqDialogueBox = document.getElementById("mea-hq-dialogue-box");
+  if (meaHqDialogueBox) {
+    meaHqDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!anielaEngine.introComplete) {
+        advanceAnielaIntro();
+      } else {
+        anielaEngine.talk();
       }
     });
   }
@@ -835,77 +855,10 @@ function handleCombatVideoEnded() {
 
   combatSchoolVideoEnded = true;
 
-  // Start intro line, mark dialogue as active so Talk advances to next line
-  showQueriTalkLine(0);
-  queriDialogueActive = true;
-  queriDialogueIndex = 1;
-}
-
-function handleQueriTalk() {
-  const dialogueBox = document.getElementById("combat-dialogue-box");
-  const talkBtn = document.getElementById("btn-queri-talk");
-
-  if (!queriDialogueActive) {
-    queriDialogueActive = true;
-    dialogueBox.style.display = "block";
-    talkBtn.innerHTML = `<span class="scene-btn-icon">💬</span> Continue...`;
-    showQueriTalkLine(queriDialogueIndex);
-    return;
-  }
-
-  if (queriIsTyping) {
-    completeQueriTyping();
-    return;
-  }
-
-  queriDialogueIndex = (queriDialogueIndex + 1) % QUERI_DIALOGUE.length;
-  showQueriTalkLine(queriDialogueIndex);
-}
-
-function showQueriTalkLine(index) {
-  const line = QUERI_DIALOGUE[index];
-  const textEl = document.getElementById("combat-text");
-  const indicator = document.getElementById("combat-next-indicator");
-
-  indicator.classList.remove("visible");
-  queriFullText = line.text;
-
-  // Update Queri sprite
-  const spriteEl = document.getElementById("combat-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/queri/queri${line.sprite}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/queri_talk_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Queri voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  queriIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(queriTypeTimer);
-  queriTypeTimer = setInterval(() => {
-    if (charIndex < queriFullText.length) {
-      textEl.textContent += queriFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(queriTypeTimer);
-      queriIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
-}
-
-function completeQueriTyping() {
-  clearInterval(queriTypeTimer);
-  const textEl = document.getElementById("combat-text");
-  textEl.textContent = queriFullText;
-  queriIsTyping = false;
-  document.getElementById("combat-next-indicator").classList.add("visible");
+  // Start first line via engine, then mark talk active so next click advances
+  queriEngine.showLine(QUERI_DIALOGUE[0], 'talk', 0);
+  queriEngine._talkActive = true;
+  queriEngine._talkIndex = 1;
 }
 
 function replayCombatVideo() {
@@ -938,257 +891,33 @@ function replayCombatVideo() {
    NIX NI ARLAN — Airship Docks Dialogue System
    ═══════════════════════════════════════════════════════════════════ */
 function startNixIntro() {
-  nixIntroIndex = 0;
-  showNixIntroLine(0);
-}
-
-function showNixIntroLine(index) {
-  const line = NIX_INTRO[index];
-  const textEl = document.getElementById("airship-text");
-  const indicator = document.getElementById("airship-next-indicator");
-
-  indicator.classList.remove("visible");
-  nixFullText = line.text;
-
-  // Update sprite
-  const spriteEl = document.getElementById("airship-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/nix/nix${line.sprite}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/nix_intro_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Nix voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  nixIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(nixTypeTimer);
-  nixTypeTimer = setInterval(() => {
-    if (charIndex < nixFullText.length) {
-      textEl.textContent += nixFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(nixTypeTimer);
-      nixIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
+  nixEngine.startIntro();
 }
 
 function advanceNixIntro() {
-  if (nixIsTyping) {
-    // Complete current line instantly
-    clearInterval(nixTypeTimer);
-    const textEl = document.getElementById("airship-text");
-    textEl.textContent = nixFullText;
-    nixIsTyping = false;
-    document.getElementById("airship-next-indicator").classList.add("visible");
-    return;
-  }
-
-  nixIntroIndex++;
-  if (nixIntroIndex < NIX_INTRO.length) {
-    showNixIntroLine(nixIntroIndex);
-  } else {
-    // Intro complete — show actions
-    nixIntroComplete = true;
-    document.getElementById("airship-actions").style.display = "flex";
-  }
-}
-
-function handleNixTalk() {
-  const dialogueBox = document.getElementById("airship-dialogue-box");
-  const talkBtn = document.getElementById("btn-nix-talk");
-
-  if (!nixDialogueActive) {
-    nixDialogueActive = true;
-    talkBtn.innerHTML = `<span class="scene-btn-icon">💬</span> Continue...`;
-    showNixTalkLine(nixDialogueIndex);
-    return;
-  }
-
-  if (nixIsTyping) {
-    completeNixTyping();
-    return;
-  }
-
-  nixDialogueIndex = (nixDialogueIndex + 1) % NIX_DIALOGUE.length;
-  showNixTalkLine(nixDialogueIndex);
-}
-
-function showNixTalkLine(index) {
-  const line = NIX_DIALOGUE[index];
-  const textEl = document.getElementById("airship-text");
-  const indicator = document.getElementById("airship-next-indicator");
-
-  indicator.classList.remove("visible");
-  nixFullText = line.text;
-
-  // Update sprite
-  const spriteEl = document.getElementById("airship-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/nix/nix${line.sprite}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/nix_talk_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Nix voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  nixIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(nixTypeTimer);
-  nixTypeTimer = setInterval(() => {
-    if (charIndex < nixFullText.length) {
-      textEl.textContent += nixFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(nixTypeTimer);
-      nixIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
-}
-
-function completeNixTyping() {
-  clearInterval(nixTypeTimer);
-  const textEl = document.getElementById("airship-text");
-  textEl.textContent = nixFullText;
-  nixIsTyping = false;
-  document.getElementById("airship-next-indicator").classList.add("visible");
+  nixEngine.advanceIntro();
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    MIRRIME WOLKENSANG — Mirane Dialogue System
    ═══════════════════════════════════════════════════════════════════ */
 function startMirrimeIntro() {
-  mirrimeIntroIndex = 0;
-  showMirrimeIntroLine(0);
-}
-
-function showMirrimeIntroLine(index) {
-  const line = MIRRIME_INTRO[index];
-  const textEl = document.getElementById("mirane-text");
-  const indicator = document.getElementById("mirane-next-indicator");
-
-  indicator.classList.remove("visible");
-  mirrimeFullText = line.text;
-
-  const spriteEl = document.getElementById("mirane-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/mirime/mirime${line.sprite}.png`;
-  }
-
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/mirrime_intro_${index}.mp3`;
-  voiceAudio.volume = 1.0;
-  voiceAudio.play().catch(err => console.log("Mirrime voiceover blocked or missing:", err));
-
-  mirrimeIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(mirrimeTypeTimer);
-  mirrimeTypeTimer = setInterval(() => {
-    if (charIndex < mirrimeFullText.length) {
-      textEl.textContent += mirrimeFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(mirrimeTypeTimer);
-      mirrimeIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
+  mirrimeEngine.startIntro();
 }
 
 function advanceMirrimeIntro() {
-  if (mirrimeIsTyping) {
-    clearInterval(mirrimeTypeTimer);
-    const textEl = document.getElementById("mirane-text");
-    textEl.textContent = mirrimeFullText;
-    mirrimeIsTyping = false;
-    document.getElementById("mirane-next-indicator").classList.add("visible");
-    return;
-  }
-
-  mirrimeIntroIndex++;
-  if (mirrimeIntroIndex < MIRRIME_INTRO.length) {
-    showMirrimeIntroLine(mirrimeIntroIndex);
-  } else {
-    mirrimeIntroComplete = true;
-    document.getElementById("mirane-actions").style.display = "flex";
-  }
+  mirrimeEngine.advanceIntro();
 }
 
-function handleMirrimeTalk() {
-  const talkBtn = document.getElementById("btn-mirrime-talk");
-
-  if (!mirrimeDialogueActive) {
-    mirrimeDialogueActive = true;
-    talkBtn.innerHTML = `<span class="scene-btn-icon">💬</span> Continue...`;
-    showMirrimeTalkLine(mirrimeDialogueIndex);
-    return;
-  }
-
-  if (mirrimeIsTyping) {
-    completeMirrimeTyping();
-    return;
-  }
-
-  mirrimeDialogueIndex = (mirrimeDialogueIndex + 1) % MIRRIME_DIALOGUE.length;
-  showMirrimeTalkLine(mirrimeDialogueIndex);
+/* ═══════════════════════════════════════════════════════════════════
+   ANIELA — MEA HQ Dialogue System
+   ═══════════════════════════════════════════════════════════════════ */
+function startAnielaIntro() {
+  anielaEngine.startIntro();
 }
 
-function showMirrimeTalkLine(index) {
-  const line = MIRRIME_DIALOGUE[index];
-  const textEl = document.getElementById("mirane-text");
-  const indicator = document.getElementById("mirane-next-indicator");
-
-  indicator.classList.remove("visible");
-  mirrimeFullText = line.text;
-
-  const spriteEl = document.getElementById("mirane-sprite");
-  if (spriteEl && line.sprite) {
-    spriteEl.src = `../img/chara/mirime/mirime${line.sprite}.png`;
-  }
-
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/mirrime_talk_${index}.mp3`;
-  voiceAudio.volume = 1.0;
-  voiceAudio.play().catch(err => console.log("Mirrime voiceover blocked or missing:", err));
-
-  mirrimeIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(mirrimeTypeTimer);
-  mirrimeTypeTimer = setInterval(() => {
-    if (charIndex < mirrimeFullText.length) {
-      textEl.textContent += mirrimeFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(mirrimeTypeTimer);
-      mirrimeIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
-}
-
-function completeMirrimeTyping() {
-  clearInterval(mirrimeTypeTimer);
-  const textEl = document.getElementById("mirane-text");
-  textEl.textContent = mirrimeFullText;
-  mirrimeIsTyping = false;
-  document.getElementById("mirane-next-indicator").classList.add("visible");
+function advanceAnielaIntro() {
+  anielaEngine.advanceIntro();
 }
 
 function returnToGates() {
@@ -1223,6 +952,9 @@ function startVNScene() {
   const spriteContainer = document.getElementById("vn-sprite-container");
   const dialogueBox = document.getElementById("vn-dialogue-box");
 
+  // Reset VN dialogue tracking
+  vnEngine._talkIndex = 0;
+
   // Animate sprite entrance
   setTimeout(() => {
     spriteContainer.classList.add("visible");
@@ -1233,9 +965,9 @@ function startVNScene() {
     dialogueBox.classList.add("visible");
   }, 800);
 
-  // Start first dialogue
+  // Start first dialogue via engine
   setTimeout(() => {
-    showVNDialogue(0);
+    vnEngine.showLine(VN_SCRIPT[0], 'talk', 0);
   }, 1200);
 
   // Click to advance dialogue
@@ -1247,66 +979,16 @@ function handleVNClick(e) {
   // Don't advance if clicking buttons
   if (e.target.closest(".vn-actions")) return;
 
-  if (vnIsTyping) {
-    // Complete current typing
-    completeVNTyping();
+  if (vnEngine.isTyping) {
+    vnEngine.completeTyping();
   } else {
-    // Advance to next dialogue
-    vnDialogueIndex++;
-    if (vnDialogueIndex < VN_SCRIPT.length) {
-      showVNDialogue(vnDialogueIndex);
+    vnEngine._talkIndex++;
+    if (vnEngine._talkIndex < VN_SCRIPT.length) {
+      vnEngine.showLine(VN_SCRIPT[vnEngine._talkIndex], 'talk', vnEngine._talkIndex);
     } else {
       showVNActions();
     }
   }
-}
-
-function showVNDialogue(index) {
-  const line = VN_SCRIPT[index];
-  const nameEl = document.getElementById("vn-speaker-name");
-  const textEl = document.getElementById("vn-text");
-  const indicator = document.getElementById("vn-next-indicator");
-
-  nameEl.textContent = line.speaker;
-  indicator.classList.remove("visible");
-  vnFullText = line.text;
-
-  // Update expression sprite dynamically
-  const spriteEl = document.getElementById("vn-sprite");
-  if (spriteEl && line.expression) {
-    spriteEl.src = `img/philomel/philomel_${line.expression}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/vn_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("VN voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  vnIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(vnTypeTimer);
-  vnTypeTimer = setInterval(() => {
-    if (charIndex < vnFullText.length) {
-      textEl.textContent += vnFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(vnTypeTimer);
-      vnIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 30);
-}
-
-function completeVNTyping() {
-  clearInterval(vnTypeTimer);
-  const textEl = document.getElementById("vn-text");
-  textEl.textContent = vnFullText;
-  vnIsTyping = false;
-  document.getElementById("vn-next-indicator").classList.add("visible");
 }
 
 function showVNActions() {
@@ -1767,7 +1449,7 @@ function initRoomNavigation() {
   const talkBtn = document.getElementById("btn-talk-philomel");
   if (talkBtn) {
     talkBtn.addEventListener("click", () => {
-      handleDeskTalk();
+      deskEngine.talk();
     });
   }
 
@@ -1776,7 +1458,7 @@ function initRoomNavigation() {
   if (deskDialogueBox) {
     deskDialogueBox.addEventListener("click", (e) => {
       e.stopPropagation();
-      handleDeskTalk();
+      deskEngine.talk();
     });
   }
 }
@@ -1845,195 +1527,9 @@ function navigateToRoom(roomId, animate = true) {
   window.scrollTo({ top: 0, behavior: animate ? "smooth" : "auto" });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   FRONT DESK — Philomel Interaction
-   ═══════════════════════════════════════════════════════════════════ */
-function handleDeskTalk() {
-  const dialogueBox = document.getElementById("desk-dialogue-box");
-  const talkBtn = document.getElementById("btn-talk-philomel");
+/* (Desk dialogue is now handled by deskEngine — see initDialogueEngines) */
 
-  if (!deskDialogueActive) {
-    // First click — show dialogue box and start first line
-    deskDialogueActive = true;
-    dialogueBox.style.display = "block";
-    requestAnimationFrame(() => {
-      dialogueBox.classList.add("visible");
-    });
-    talkBtn.innerHTML = `<span class="desk-btn-icon">💬</span> Continue...`;
-    showDeskDialogue(deskDialogueIndex);
-    return;
-  }
-
-  if (deskIsTyping) {
-    // Complete current typing
-    completeDeskTyping();
-    return;
-  }
-
-  // Advance to next line (wrap around)
-  deskDialogueIndex = (deskDialogueIndex + 1) % DESK_DIALOGUE.length;
-
-  showDeskDialogue(deskDialogueIndex);
-}
-
-function showDeskDialogue(index) {
-  const line = DESK_DIALOGUE[index];
-  const textEl = document.getElementById("desk-text");
-  const indicator = document.getElementById("desk-next-indicator");
-
-  indicator.classList.remove("visible");
-  deskFullText = line.text;
-
-  // Update Philomel's expression
-  const spriteEl = document.getElementById("desk-sprite");
-  if (spriteEl && line.expression) {
-    spriteEl.src = `img/philomel/philomel_${line.expression}.png`;
-  }
-
-  // Play voiceover
-  voiceAudio.pause();
-  voiceAudio.src = `assets/voice/desk_${index}.mp3`;
-  voiceAudio.volume = 0.8;
-  voiceAudio.play().catch(err => console.log("Desk voiceover blocked or missing:", err));
-
-  // Typewriter effect
-  deskIsTyping = true;
-  textEl.textContent = "";
-  let charIndex = 0;
-
-  clearInterval(deskTypeTimer);
-  deskTypeTimer = setInterval(() => {
-    if (charIndex < deskFullText.length) {
-      textEl.textContent += deskFullText[charIndex];
-      charIndex++;
-    } else {
-      clearInterval(deskTypeTimer);
-      deskIsTyping = false;
-      indicator.classList.add("visible");
-    }
-  }, 25);
-}
-
-function completeDeskTyping() {
-  clearInterval(deskTypeTimer);
-  const textEl = document.getElementById("desk-text");
-  textEl.textContent = deskFullText;
-  deskIsTyping = false;
-  document.getElementById("desk-next-indicator").classList.add("visible");
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   PARTICLES — Library Dust Motes
-   ═══════════════════════════════════════════════════════════════════ */
-function initParticles() {
-  const canvas = document.getElementById("particle-canvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  let width, height;
-  let particles = [];
-  const COUNT = 40;
-
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener("resize", resize);
-
-  class Mote {
-    constructor() { this.reset(); }
-    reset() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.size = Math.random() * 2.5 + 0.5;
-      this.speedX = (Math.random() - 0.5) * 0.2;
-      this.speedY = (Math.random() - 0.5) * 0.15 - 0.05;
-      this.opacity = 0;
-      this.targetOpacity = Math.random() * 0.4 + 0.1;
-      this.fadeSpeed = Math.random() * 0.005 + 0.002;
-      this.fadeDir = 1;
-      this.life = 0;
-      this.maxLife = Math.random() * 800 + 300;
-
-      const colors = [
-        { r: 223, g: 184, b: 88 },
-        { r: 200, g: 180, b: 140 },
-        { r: 91, g: 155, b: 213 },
-        { r: 180, g: 200, b: 220 },
-      ];
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    update() {
-      this.x += this.speedX + Math.sin(this.life * 0.015) * 0.15;
-      this.y += this.speedY;
-      this.life++;
-
-      if (this.fadeDir === 1) {
-        this.opacity += this.fadeSpeed;
-        if (this.opacity >= this.targetOpacity) this.fadeDir = -1;
-      } else {
-        this.opacity -= this.fadeSpeed;
-        if (this.opacity <= 0) this.reset();
-      }
-
-      if (this.life > this.maxLife || this.x < -10 || this.x > width + 10 || this.y < -10 || this.y > height + 10) {
-        this.reset();
-      }
-    }
-
-    draw() {
-      const { r, g, b } = this.color;
-      const a = Math.max(0, this.opacity);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
-      ctx.fill();
-
-      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 5);
-      grad.addColorStop(0, `rgba(${r},${g},${b},${a * 0.2})`);
-      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 5, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    }
-  }
-
-  for (let i = 0; i < COUNT; i++) {
-    const m = new Mote();
-    m.life = Math.random() * 300;
-    particles.push(m);
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animate);
-  }
-  animate();
-}
-
-/* ─── Mobile Nav ──────────────────────────────────────────────────── */
-function initMobileNav() {
-  const toggle = document.getElementById("mobile-toggle");
-  const navLinks = document.getElementById("nav-links");
-  if (!toggle || !navLinks) return;
-
-  toggle.addEventListener("click", () => {
-    toggle.classList.toggle("active");
-    navLinks.classList.toggle("open");
-    document.body.style.overflow = navLinks.classList.contains("open") ? "hidden" : "";
-  });
-
-  navLinks.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-      toggle.classList.remove("active");
-      navLinks.classList.remove("open");
-      document.body.style.overflow = "";
-    });
-  });
-}
+/* (Particles and Mobile Nav now loaded from ../js/shared.js) */
 
 /* ─── Image Lightbox Modal ────────────────────────────────────────── */
 function initImageLightbox() {
@@ -2332,65 +1828,23 @@ function initBGM() {
   document.addEventListener("click", startAudio);
   document.addEventListener("keydown", startAudio);
 
-  // Setup volume slider listener
-  const volumeSlider = document.getElementById("bgm-volume");
-  if (volumeSlider) {
-    volumeSlider.value = bgmVolume;
-    volumeSlider.addEventListener("input", (e) => {
-      bgmVolume = parseFloat(e.target.value);
-      if (!bgmIsMuted) {
-        bgm.volume = bgmVolume;
-      }
-      updateMuteButtonUI();
-    });
-  }
-
-  // Setup mute button listener
-  const muteBtn = document.getElementById("btn-bgm-mute");
-  if (muteBtn) {
-    muteBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleMute();
-    });
-  }
-
-  // Setup gates volume slider listener (duplicate controls)
-  const volumeSliderGates = document.getElementById("bgm-volume-gates");
-  if (volumeSliderGates) {
-    volumeSliderGates.value = bgmVolume;
-    volumeSliderGates.addEventListener("input", (e) => {
-      bgmVolume = parseFloat(e.target.value);
-      if (!bgmIsMuted) {
-        bgm.volume = bgmVolume;
-      }
-      updateMuteButtonUI();
-    });
-  }
-
-  // Setup gates mute button listener
-  const muteBtnGates = document.getElementById("btn-bgm-mute-gates");
-  if (muteBtnGates) {
-    muteBtnGates.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleMute();
-    });
-  }
-
-  // Setup class-based sync controls (Airship Docks, Mirane, Combat School)
-  document.querySelectorAll(".bgm-btn-sync").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleMute();
-    });
-  });
-  document.querySelectorAll(".bgm-slider-sync").forEach(slider => {
+  // Unified volume slider handlers — all sliders use .bgm-slider class
+  document.querySelectorAll(".bgm-slider").forEach(slider => {
     slider.value = bgmVolume;
     slider.addEventListener("input", (e) => {
       bgmVolume = parseFloat(e.target.value);
       if (!bgmIsMuted) {
         bgm.volume = bgmVolume;
       }
-      updateMuteButtonUI();
+      syncBGMControls();
+    });
+  });
+
+  // Unified mute button handlers — all mute buttons use .bgm-mute-btn class
+  document.querySelectorAll(".bgm-mute-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMute();
     });
   });
 }
@@ -2400,52 +1854,29 @@ function toggleMute() {
   if (bgm) {
     bgm.volume = bgmIsMuted ? 0 : bgmVolume;
   }
-  updateMuteButtonUI();
+  syncBGMControls();
 }
 
-function updateMuteButtonUI() {
-  // Update both library and gates BGM controls
-  const muteBtns = [document.getElementById("btn-bgm-mute"), document.getElementById("btn-bgm-mute-gates")];
-  const volumeSliders = [document.getElementById("bgm-volume"), document.getElementById("bgm-volume-gates")];
-
-  muteBtns.forEach(muteBtn => {
-    if (!muteBtn) return;
-    const iconEl = muteBtn.querySelector(".bgm-btn-icon");
-    if (bgmIsMuted || bgmVolume === 0) {
-      if (iconEl) iconEl.textContent = "🔇";
-    } else {
-      if (iconEl) {
-        if (bgmVolume < 0.3) {
-          iconEl.textContent = "🔈";
-        } else if (bgmVolume < 0.7) {
-          iconEl.textContent = "🔉";
-        } else {
-          iconEl.textContent = "🔊";
-        }
-      }
-    }
-  });
-
-  // Also sync class-based controls
-  document.querySelectorAll(".bgm-btn-sync").forEach(btn => {
+function syncBGMControls() {
+  // Sync all mute button icons
+  document.querySelectorAll(".bgm-mute-btn").forEach(btn => {
     const iconEl = btn.querySelector(".bgm-btn-icon");
+    if (!iconEl) return;
     if (bgmIsMuted || bgmVolume === 0) {
-      if (iconEl) iconEl.textContent = "🔇";
+      iconEl.textContent = "🔇";
+    } else if (bgmVolume < 0.3) {
+      iconEl.textContent = "🔈";
+    } else if (bgmVolume < 0.7) {
+      iconEl.textContent = "🔉";
     } else {
-      if (iconEl) {
-        if (bgmVolume < 0.3) iconEl.textContent = "🔈";
-        else if (bgmVolume < 0.7) iconEl.textContent = "🔉";
-        else iconEl.textContent = "🔊";
-      }
+      iconEl.textContent = "🔊";
     }
   });
 
-  volumeSliders.forEach(slider => {
-    if (!slider) return;
-    slider.value = (bgmIsMuted || bgmVolume === 0) ? 0 : bgmVolume;
-  });
-  document.querySelectorAll(".bgm-slider-sync").forEach(slider => {
-    slider.value = (bgmIsMuted || bgmVolume === 0) ? 0 : bgmVolume;
+  // Sync all volume sliders
+  const displayVolume = (bgmIsMuted || bgmVolume === 0) ? 0 : bgmVolume;
+  document.querySelectorAll(".bgm-slider").forEach(slider => {
+    slider.value = displayVolume;
   });
 }
 

@@ -1,0 +1,29 @@
+{
+  "intro": [
+    { "text": "Hey.  You look new around here!", "sprite": "2" },
+    { "text": "Do you need help?", "sprite": "1" }
+  ],
+  "dialogue": [
+    { "text": "I'm Mirrime Wolkensang!  Goblin warrior!  I won't lose to anyone!", "sprite": "4" },
+    { "text": "I'm following the path of Eisen!", "sprite": "4" },
+    { "text": "I arrived here in Mirane a little bit over a year ago. We've been through a lot...", "sprite": "1" },
+    { "text": "Dragon Claw War... I'll never forgive them.  I'll never forgive the cultists...", "sprite": "3" },
+    { "text": "When Sebo and Tereval died in that battle... I didn't know what to do...", "sprite": "5" },
+    { "text": "Thats what this is here... the statue of Mirane.  The namesake of this town.", "sprite": "1" },
+    { "text": "When an expeditioner dies, their most important item is left here at the statue.  Its so we always remember them...", "sprite": "5" },
+    { "text": "Jerry?  Gah... he's so annoying man!", "sprite": "6" },
+    { "text": "When you get settled, lets go on an expedition together! Ehehehe!", "sprite": "2" },
+    { "text": "Why am I in Mirane?  I hope to find an Astra Relic that will heal my people.", "sprite": "1" },
+    { "text": "Goblins and Orcs are the same race... Orcs have a disease.  Our people have traded health for power for generations.", "sprite": "5" },
+    { "text": "Our people are disadvantaged in many ways... but we won't let that stop us.  It just means when we do well it means so much more!", "sprite": "4" },
+    { "text": "Dr. Ziggy?  Yeah I know about him... I heard he tried to create a virus to kill all life in Lyr.  I hear he's out here somewhere...", "sprite": "3" },
+    { "text": "Oh those drinks... yeah I don't want to drink any Gobbo Fuel.  Those were made by Dr. Ziggy you know...", "sprite": "6" },
+    { "text": "Astra poisoning feels awful... it feels like when you've stayed up for two days in a row and haven't slept.", "sprite": "5" },
+    { "text": "My favorite food?  Chorpa Ribeye!", "sprite": "2" },
+    { "text": "I heard in the Heartwood theres a really good restaurant.  It's ran by the crows.", "sprite": "1" },
+    { "text": "Helvetica?  I know a lot of Miraners are hunting her down.", "sprite": "3" },
+    { "text": "A void crow told me that there was a large temple to Eisen in the Lightning Wastes... when I get strong enough I'll go.", "sprite": "4" },
+    { "text": "Whatever you do avoid Malignance Rift...", "sprite": "3" },
+    { "text": "Be careful around Thousand Lakes, I got attacked once by a group calling themselves, \"Silica Wraiths\"", "sprite": "3" }
+  ]
+}

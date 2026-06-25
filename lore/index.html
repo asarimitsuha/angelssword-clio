@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/nav.css">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
 </head>
@@ -72,11 +75,11 @@
         </div>
         <div class="header-actions">
           <div class="bgm-player-container" id="bgm-player-container-gates">
-            <button class="bgm-btn" id="btn-bgm-mute-gates" title="Mute/Unmute Music">
+            <button class="bgm-btn bgm-mute-btn" id="btn-bgm-mute-gates" title="Mute/Unmute Music">
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" id="bgm-volume-gates" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider" title="Volume">
+              <input type="range" id="bgm-volume-gates" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -138,11 +141,11 @@
         </div>
         <div class="header-actions">
           <div class="bgm-player-container">
-            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+            <button class="bgm-btn bgm-mute-btn" title="Mute/Unmute Music">
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -196,11 +199,11 @@
         </div>
         <div class="header-actions">
           <div class="bgm-player-container">
-            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+            <button class="bgm-btn bgm-mute-btn" title="Mute/Unmute Music">
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -232,6 +235,10 @@
           <span class="scene-btn-icon">⚔</span>
           Mirane Expedition Alliance Combat School
         </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-enter-mea-hq">
+          <span class="scene-btn-icon">🏛️</span>
+          Expeditioner Alliance HQ
+        </button>
         <button class="scene-btn scene-btn-disabled" disabled>
           <span class="scene-btn-icon">🪦</span>
           View Memorial <span class="coming-soon-tag">(Coming Soon)</span>
@@ -258,11 +265,11 @@
         </div>
         <div class="header-actions">
           <div class="bgm-player-container">
-            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+            <button class="bgm-btn bgm-mute-btn" title="Mute/Unmute Music">
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -298,7 +305,7 @@
           <span class="scene-btn-icon">💬</span>
           Talk to Queri
         </button>
-        <a href="../combattutorial/index.html" class="scene-btn scene-btn-signup" id="btn-signup-combat">
+        <a href="../combattutorial/index.html" target="_blank" class="scene-btn scene-btn-signup" id="btn-signup-combat" onclick="if(typeof bgm!=='undefined'&&bgm){bgmIsMuted=true;bgm.volume=0;syncBGMControls();}">
           <span class="scene-btn-icon">📝</span>
           Sign Up For Combat School
         </a>
@@ -307,6 +314,64 @@
           Play Video Again
         </button>
         <button class="scene-btn scene-btn-back" id="btn-combat-back">
+          <span class="scene-btn-icon">←</span>
+          Back to Mirane
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MEA HQ — Mirane Expeditioner Alliance Headquarters
+       ═══════════════════════════════════════════════════ -->
+  <div class="scene-overlay hidden" id="mea-hq-overlay">
+    <div class="scene-bg mea-hq-bg"></div>
+    <header class="location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">🏛️</div>
+        <div class="location-titles">
+          <h1 class="location-name">Mirane Expedition Alliance</h1>
+          <p class="location-sub">Alliance Headquarters</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container">
+            <button class="bgm-btn bgm-mute-btn" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">Alliance HQ</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="scene-content">
+      <div class="scene-sprite-container" id="mea-hq-sprite-container">
+        <img src="../img/chara/aniela/aniela1.png" alt="Aniela" class="scene-sprite" id="mea-hq-sprite">
+      </div>
+      <div class="scene-dialogue-box" id="mea-hq-dialogue-box">
+        <div class="scene-speaker-plate">
+          <span class="scene-speaker-name" id="mea-hq-speaker-name">Aniela</span>
+        </div>
+        <div class="scene-text-area">
+          <p class="scene-text" id="mea-hq-text"></p>
+          <span class="scene-next-indicator" id="mea-hq-next-indicator">▼</span>
+        </div>
+      </div>
+      <div class="scene-actions" id="mea-hq-actions" style="display: none;">
+        <button class="scene-btn scene-btn-talk" id="btn-aniela-talk">
+          <span class="scene-btn-icon">💬</span>
+          Talk to Aniela
+        </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-enter-strategy-room">
+          <span class="scene-btn-icon">🗺️</span>
+          Enter the Strategy Room
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-mea-hq-back">
           <span class="scene-btn-icon">←</span>
           Back to Mirane
         </button>
@@ -365,11 +430,11 @@
         </div>
         <div class="header-actions">
           <div class="bgm-player-container" id="bgm-player-container">
-            <button class="bgm-btn" id="btn-bgm-mute" title="Mute/Unmute Music">
+            <button class="bgm-btn bgm-mute-btn" id="btn-bgm-mute" title="Mute/Unmute Music">
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider" title="Volume">
+              <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
 
@@ -705,6 +770,8 @@
     <div class="image-modal-caption" id="image-modal-caption"></div>
   </div>
 
+  <script src="../js/shared.js"></script>
+  <script src="dialogue-engine.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
