@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adventure — The Chronicles of Lyr</title>
+  <meta name="description" content="Begin your adventure in the world of The Chronicles of Lyr. Explore the Riannon Institute of Alchemy, browse its grand library, and discover the rich lore of Lyr.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       AMBIENT PARTICLES CANVAS
+       ═══════════════════════════════════════════════════ -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+       ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Angel's Sword</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../combattutorial/index.html">Combat School</a></li>
+        <li><a href="index.html" class="active-link">Adventure</a></li>
+        <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       ADVENTURE WELCOME SCREEN
+       ═══════════════════════════════════════════════════ -->
+  <div class="welcome-overlay" id="welcome-overlay">
+    <div class="welcome-content">
+      <div class="welcome-ornament">✦ ━━━━━━ ✦</div>
+      <h1 class="welcome-title">Welcome to the World of Lyr</h1>
+      <div class="welcome-divider"></div>
+      <p class="welcome-genre">High Action Anime Fantasy</p>
+      <p class="welcome-subtitle">A vast world of expeditioners, alchemists, airship pilots, fiends and ancient relics — countless adventures await across the lands of Lyr.</p>
+      <button class="welcome-btn" id="welcome-begin-btn">Begin</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       CITY GATES — Guard VN Scene
+       ═══════════════════════════════════════════════════ -->
+  <div class="city-gates-overlay hidden" id="city-gates-overlay">
+    <div class="city-gates-bg"></div>
+
+    <!-- City Gates Location Header -->
+    <header class="location-header" id="gates-location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">⚔</div>
+        <div class="location-titles">
+          <h1 class="location-name">Free Trade City of Mothergreen</h1>
+          <p class="location-sub">City Square</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container" id="bgm-player-container-gates">
+            <button class="bgm-btn" id="btn-bgm-mute-gates" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" id="bgm-volume-gates" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">City Square</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="city-gates-scene">
+      <!-- Guard Sprite -->
+      <div class="city-gates-sprite-container" id="guard-sprite-container">
+        <img src="../img/chara/mguard/mguard1.png" alt="City Guard" class="city-gates-sprite" id="guard-sprite">
+      </div>
+      <!-- Dialogue Box -->
+      <div class="city-gates-dialogue-box" id="guard-dialogue-box">
+        <div class="city-gates-speaker-plate">
+          <span class="city-gates-speaker-name" id="guard-speaker-name">Guard</span>
+        </div>
+        <div class="city-gates-text-area">
+          <p class="city-gates-text" id="guard-text"></p>
+          <span class="city-gates-next-indicator" id="guard-next-indicator">▼</span>
+        </div>
+      </div>
+      <!-- Action Buttons (appear after intro dialogue) -->
+      <div class="city-gates-actions" id="guard-actions" style="display: none;">
+        <button class="city-gates-btn city-gates-btn-talk" id="btn-guard-talk">
+          <span class="city-gates-btn-icon">💬</span>
+          Talk to Guard
+        </button>
+        <button class="city-gates-btn city-gates-btn-navigate" id="btn-enter-riannon">
+          <span class="city-gates-btn-icon">🔮</span>
+          Riannon Institute of Alchemy
+        </button>
+        <button class="city-gates-btn city-gates-btn-navigate" id="btn-enter-airship-docks">
+          <span class="city-gates-btn-icon">⚓</span>
+          Airship Docks
+        </button>
+        <button class="city-gates-btn city-gates-btn-back" id="btn-gates-back">
+          <span class="city-gates-btn-icon">←</span>
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       AIRSHIP DOCKS — Scene
+       ═══════════════════════════════════════════════════ -->
+  <div class="scene-overlay hidden" id="airship-docks-overlay">
+    <div class="scene-bg airship-docks-bg"></div>
+    <header class="location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">⚓</div>
+        <div class="location-titles">
+          <h1 class="location-name">Free Trade City of Mothergreen</h1>
+          <p class="location-sub">Airship Docks</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container">
+            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">Airship Docks</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="scene-content">
+      <div class="scene-sprite-container" id="airship-sprite-container">
+        <img src="../img/chara/nix/nix1.png" alt="Nix Ni Arlan" class="scene-sprite" id="airship-sprite">
+      </div>
+      <div class="scene-dialogue-box" id="airship-dialogue-box">
+        <div class="scene-speaker-plate">
+          <span class="scene-speaker-name" id="airship-speaker-name">Nix Ni Arlan</span>
+        </div>
+        <div class="scene-text-area">
+          <p class="scene-text" id="airship-text"></p>
+          <span class="scene-next-indicator" id="airship-next-indicator">▼</span>
+        </div>
+      </div>
+      <div class="scene-actions" id="airship-actions" style="display: none;">
+        <button class="scene-btn scene-btn-talk" id="btn-nix-talk">
+          <span class="scene-btn-icon">💬</span>
+          Talk to Nix
+        </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-travel-mirane">
+          <span class="scene-btn-icon">🚢</span>
+          Travel to Mirane
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-airship-back">
+          <span class="scene-btn-icon">←</span>
+          Back to City Square
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MIRANE — Alpine Fantasy Town
+       ═══════════════════════════════════════════════════ -->
+  <div class="scene-overlay hidden" id="mirane-overlay">
+    <div class="scene-bg mirane-bg"></div>
+    <header class="location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">⛰</div>
+        <div class="location-titles">
+          <h1 class="location-name">Mirane</h1>
+          <p class="location-sub">Town of Pioneers</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container">
+            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">Mirane</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="scene-content">
+      <div class="scene-sprite-container" id="mirane-sprite-container">
+        <img src="../img/chara/mirime/mirime1.png" alt="Mirrime Wolkensang" class="scene-sprite" id="mirane-sprite">
+      </div>
+      <div class="scene-dialogue-box" id="mirane-dialogue-box">
+        <div class="scene-speaker-plate">
+          <span class="scene-speaker-name" id="mirane-speaker-name">Mirrime Wolkensang</span>
+        </div>
+        <div class="scene-text-area">
+          <p class="scene-text" id="mirane-text"></p>
+          <span class="scene-next-indicator" id="mirane-next-indicator">▼</span>
+        </div>
+      </div>
+      <div class="scene-actions" id="mirane-actions" style="display: none;">
+        <button class="scene-btn scene-btn-talk" id="btn-mirrime-talk">
+          <span class="scene-btn-icon">💬</span>
+          Talk to Mirrime
+        </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-enter-combat-school">
+          <span class="scene-btn-icon">⚔</span>
+          Mirane Expedition Alliance Combat School
+        </button>
+        <button class="scene-btn scene-btn-disabled" disabled>
+          <span class="scene-btn-icon">🪦</span>
+          View Memorial <span class="coming-soon-tag">(Coming Soon)</span>
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-mirane-back">
+          <span class="scene-btn-icon">←</span>
+          Back to Airship Docks
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       COMBAT SCHOOL — Mirane Expedition Alliance
+       ═══════════════════════════════════════════════════ -->
+  <div class="scene-overlay hidden" id="combat-school-overlay">
+    <div class="scene-bg combat-school-bg"></div>
+    <header class="location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">⚔</div>
+        <div class="location-titles">
+          <h1 class="location-name">Mirane Expedition Alliance</h1>
+          <p class="location-sub">Combat School</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container">
+            <button class="bgm-btn bgm-btn-sync" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider-sync" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">Combat School</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="scene-content">
+      <div class="scene-video-container" id="combat-school-video-container">
+        <video class="scene-video" id="combat-school-video" muted playsinline>
+          <source src="assets/video/Queri-School.mp4" type="video/mp4">
+        </video>
+        <button class="scene-btn scene-btn-skip" id="btn-skip-video">
+          Skip Video ▶
+        </button>
+      </div>
+      <div class="scene-sprite-container" id="combat-sprite-container" style="display: none;">
+        <img src="../img/chara/queri/queri1.png" alt="Queri Lilibit" class="scene-sprite" id="combat-sprite">
+      </div>
+      <div class="scene-dialogue-box" id="combat-dialogue-box" style="display: none;">
+        <div class="scene-speaker-plate">
+          <span class="scene-speaker-name" id="combat-speaker-name">Queri Lilibit</span>
+        </div>
+        <div class="scene-text-area">
+          <p class="scene-text" id="combat-text"></p>
+          <span class="scene-next-indicator" id="combat-next-indicator">▼</span>
+        </div>
+      </div>
+      <div class="scene-actions" id="combat-actions" style="display: none;">
+        <button class="scene-btn scene-btn-talk" id="btn-queri-talk">
+          <span class="scene-btn-icon">💬</span>
+          Talk to Queri
+        </button>
+        <a href="../combattutorial/index.html" class="scene-btn scene-btn-signup" id="btn-signup-combat">
+          <span class="scene-btn-icon">📝</span>
+          Sign Up For Combat School
+        </a>
+        <button class="scene-btn scene-btn-replay" id="btn-replay-video">
+          <span class="scene-btn-icon">🎬</span>
+          Play Video Again
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-combat-back">
+          <span class="scene-btn-icon">←</span>
+          Back to Mirane
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       VISUAL NOVEL WELCOME OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div class="vn-overlay hidden" id="vn-overlay">
+    <div class="vn-bg"></div>
+    <div class="vn-scene">
+      <!-- Philomel Sprite -->
+      <div class="vn-sprite-container" id="vn-sprite-container">
+        <img src="img/philomel_normal.png" alt="Philomel Lapis" class="vn-sprite" id="vn-sprite">
+      </div>
+      <!-- Dialogue Box -->
+      <div class="vn-dialogue-box" id="vn-dialogue-box">
+        <div class="vn-speaker-plate">
+          <span class="vn-speaker-name" id="vn-speaker-name">Philomel Lapis</span>
+        </div>
+        <div class="vn-text-area">
+          <p class="vn-text" id="vn-text"></p>
+          <span class="vn-next-indicator" id="vn-next-indicator">▼</span>
+        </div>
+      </div>
+      <!-- Action Buttons (appear after dialogue) -->
+      <div class="vn-actions" id="vn-actions" style="display: none;">
+        <button class="vn-btn vn-btn-primary" id="vn-enter-btn">Enter the Library</button>
+        <button class="vn-btn vn-btn-secondary" id="vn-guide-btn" disabled>
+          <span class="vn-btn-icon">📖</span>
+          Philomel's Guided Tour
+          <span class="vn-coming-soon">Coming Soon</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       LIBRARY MAIN VIEW
+       ═══════════════════════════════════════════════════ -->
+  <main class="library-main" id="library-main" style="display: none;">
+
+    <!-- Shared Background (persists across rooms) -->
+    <div class="library-bg"></div>
+    <div class="library-ambient"></div>
+
+    <!-- Library Header -->
+    <header class="library-header">
+      <div class="library-header-inner">
+        <div class="institute-crest">🔮</div>
+        <div class="institute-titles">
+          <h1 class="institute-name">Riannon Institute of Alchemy</h1>
+          <p class="institute-sub">Archives & Special Collections</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container" id="bgm-player-container">
+            <button class="bgm-btn" id="btn-bgm-mute" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider" title="Volume">
+            </div>
+          </div>
+
+          <div class="room-breadcrumb" id="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text" id="breadcrumb-text">Front Desk</span>
+          </div>
+          <button class="header-btn header-btn-ghost" id="btn-back-to-gates" title="Return to Mothergreen Hub">
+            ← Mothergreen Hub
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM: FRONT DESK
+         ═══════════════════════════════════════════════════ -->
+    <section class="room room-front-desk active" id="room-front-desk">
+      <div class="front-desk-scene">
+
+        <!-- Philomel Sprite -->
+        <div class="desk-sprite-container" id="desk-sprite-container">
+          <img src="img/philomel/philomel_smile.png" alt="Philomel Lapis" class="desk-sprite" id="desk-sprite">
+        </div>
+
+        <!-- Front Desk Counter -->
+        <div class="desk-counter">
+          <div class="desk-counter-surface"></div>
+        </div>
+
+        <!-- Interaction Area -->
+        <div class="desk-interaction" id="desk-interaction">
+          <!-- Desk Dialogue Box (hidden until Talk is clicked) -->
+          <div class="desk-dialogue-box" id="desk-dialogue-box" style="display: none;">
+            <div class="desk-speaker-plate">
+              <span class="desk-speaker-name">Philomel Lapis</span>
+            </div>
+            <div class="desk-text-area">
+              <p class="desk-text" id="desk-text"></p>
+              <span class="desk-next-indicator" id="desk-next-indicator">▼</span>
+            </div>
+          </div>
+
+          <div class="desk-actions" id="desk-actions">
+            <button class="desk-btn desk-btn-talk" id="btn-talk-philomel">
+              <span class="desk-btn-icon">💬</span>
+              Talk to Philomel
+            </button>
+            <button class="desk-btn desk-btn-navigate" id="btn-enter-stacks">
+              <span class="desk-btn-icon">📚</span>
+              Library Shelves
+            </button>
+            <button class="desk-btn desk-btn-navigate" id="btn-enter-artifacts">
+              <span class="desk-btn-icon">🏺</span>
+              Artifacts
+            </button>
+            <button class="desk-btn desk-btn-back" id="btn-library-back">
+              <span class="desk-btn-icon">←</span>
+              Back to Gates
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM: LIBRARY SHELVES
+         ═══════════════════════════════════════════════════ -->
+    <section class="room room-stacks" id="room-stacks" style="display: none;">
+
+      <!-- Back to Front Desk Navigation -->
+      <div class="stacks-nav">
+        <button class="stacks-back-btn" id="btn-back-to-desk">
+          <span>←</span> Back to Front Desk
+        </button>
+      </div>
+
+      <!-- Shelf Sections -->
+      <div class="shelves-container">
+
+        <!-- Light Novels Shelf -->
+        <section class="bookshelf" id="shelf-light-novels">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">📕</span>
+              <h2 class="shelf-label">Light Novels</h2>
+            </div>
+            <p class="shelf-desc">Replay novels & serialized stories from the world of Lyr</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="books-row" id="books-light-novels">
+              <!-- Books rendered by JS -->
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+
+        <!-- Lore Compendium Shelf -->
+        <section class="bookshelf" id="shelf-lore">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">📗</span>
+              <h2 class="shelf-label">Lore Compendium</h2>
+            </div>
+            <p class="shelf-desc">World history, geography, and cultural records</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="books-row" id="books-lore">
+              <div class="book-placeholder">
+                <div class="placeholder-icon">🔒</div>
+                <span>Coming Soon</span>
+              </div>
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+
+        <!-- Academy Research Shelf -->
+        <section class="bookshelf" id="shelf-research">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">📘</span>
+              <h2 class="shelf-label">Academy Research</h2>
+            </div>
+            <p class="shelf-desc">Research Conducted by Academy and Alumni</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="books-row" id="books-research">
+              <div class="book-placeholder">
+                <div class="placeholder-icon">🔒</div>
+                <span>Coming Soon</span>
+              </div>
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+
+        <!-- Field Reports Shelf -->
+        <section class="bookshelf" id="shelf-field">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">📙</span>
+              <h2 class="shelf-label">Field Reports</h2>
+            </div>
+            <p class="shelf-desc">Adventurer dispatches, battle records, and expedition journals</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="books-row" id="books-field">
+              <div class="book-placeholder">
+                <div class="placeholder-icon">🔒</div>
+                <span>Coming Soon</span>
+              </div>
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM: ARTIFACTS
+         ═══════════════════════════════════════════════════ -->
+    <section class="room room-artifacts" id="room-artifacts" style="display: none;">
+      <div class="stacks-nav">
+        <button class="stacks-back-btn" id="btn-artifacts-back">
+          <span>←</span> Back to Front Desk
+        </button>
+      </div>
+      <div class="artifacts-container">
+        <div class="artifacts-header">
+          <h2 class="artifacts-title">🏺 Artifacts Collection</h2>
+          <p class="artifacts-subtitle">Rare artifacts, maps, and historical relics preserved by the academy</p>
+        </div>
+        <div class="artifacts-categories">
+          <div class="artifact-category-card" id="artifact-maps-card">
+            <div class="artifact-card-icon">🗺️</div>
+            <div class="artifact-card-name">Maps</div>
+            <p class="artifact-card-desc">Cartographic records of Lyr and beyond</p>
+            <span class="artifact-card-badge">Enter</span>
+          </div>
+          <div class="artifact-category-card" id="artifact-relics-card">
+            <div class="artifact-card-icon">⚗️</div>
+            <div class="artifact-card-name">Relics</div>
+            <p class="artifact-card-desc">Ancient artifacts recovered from expeditions</p>
+            <span class="artifact-card-badge">Enter</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM: MAPS
+         ═══════════════════════════════════════════════════ -->
+    <section class="room room-maps" id="room-maps" style="display: none;">
+      <div class="stacks-nav">
+        <button class="stacks-back-btn" id="btn-maps-back">
+          <span>←</span> Back to Artifacts
+        </button>
+      </div>
+      <div class="shelves-container">
+        <section class="bookshelf" id="shelf-maps">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">🗺️</span>
+              <h2 class="shelf-label">Scroll Rack</h2>
+            </div>
+            <p class="shelf-desc">Cartographic records spanning the known world</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="scrolls-row" id="maps-shelf">
+              <!-- Scroll items rendered by JS -->
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         ROOM: RELICS (Fiend Relics)
+         ═══════════════════════════════════════════════════ -->
+    <section class="room room-relics" id="room-relics" style="display: none;">
+      <div class="stacks-nav">
+        <button class="stacks-back-btn" id="btn-relics-back">
+          <span>←</span> Back to Artifacts
+        </button>
+      </div>
+      <div class="relics-container">
+        <div class="relics-header">
+          <h2 class="relics-title">⚗️ Fiend Relics</h2>
+          <p class="relics-subtitle">Fiend artifacts sealed in artifice jars with protective locks — handle with extreme caution</p>
+        </div>
+        <div class="relics-shelf" id="relics-shelf">
+          <!-- Relic jars rendered by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       BOOK READER OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div class="book-reader" id="book-reader" style="display: none;">
+    <div class="reader-chrome">
+      <div class="reader-header">
+        <button class="reader-close" id="reader-close" title="Close Book">✕</button>
+        <div class="reader-title-bar">
+          <span class="reader-book-title" id="reader-book-title">Book Title</span>
+          <span class="reader-page-num" id="reader-page-num">Section 1 of 1</span>
+        </div>
+        <button class="reader-toc-btn" id="reader-toc-btn" title="Table of Contents">📖</button>
+      </div>
+      <!-- Table of Contents Panel -->
+      <div class="reader-toc-panel" id="reader-toc-panel" style="display: none;">
+        <div class="reader-toc-header">
+          <h3>Table of Contents</h3>
+          <button class="reader-toc-close" id="reader-toc-close">✕</button>
+        </div>
+        <div class="reader-toc-list" id="reader-toc-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="reader-body">
+        <button class="reader-nav reader-prev" id="reader-prev" title="Previous Page">❮</button>
+        <div class="reader-content-area">
+          <div class="reader-page" id="reader-page">
+            <!-- Content injected by JS -->
+          </div>
+        </div>
+        <button class="reader-nav reader-next" id="reader-next" title="Next Page">❯</button>
+      </div>
+      <div class="reader-footer">
+        <div class="reader-progress">
+          <div class="reader-progress-bar" id="reader-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAP VIEWER OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div class="map-viewer" id="map-viewer" style="display: none;">
+    <div class="map-viewer-chrome">
+      <div class="map-viewer-header">
+        <button class="map-viewer-close" id="map-viewer-close" title="Close Map">✕</button>
+        <span class="map-viewer-title" id="map-viewer-title">Map</span>
+      </div>
+      <div class="map-viewer-body">
+        <img class="map-viewer-img" id="map-viewer-img" alt="Map">
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       RELIC VIEWER OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div class="relic-viewer" id="relic-viewer" style="display: none;">
+    <div class="relic-viewer-chrome">
+      <div class="relic-viewer-header">
+        <button class="relic-viewer-close" id="relic-viewer-close" title="Put Back">✕</button>
+        <span class="relic-viewer-title" id="relic-viewer-title">Relic</span>
+      </div>
+      <div class="relic-viewer-body" id="relic-viewer-body">
+        <!-- Content populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ -->
+  <footer class="site-footer" id="site-footer" style="display: none;">
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p>&copy; 2024-2026 Angel's Sword Studios, LLC. All rights reserved.</p>
+        <p class="footer-made-with">Riannon Institute of Alchemy — Preserving Knowledge Since the Second Era</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════
+       IMAGE LIGHTBOX MODAL
+       ═══════════════════════════════════════════════════ -->
+  <div class="image-modal" id="image-modal" style="display: none;">
+    <span class="image-modal-close" id="image-modal-close">&times;</span>
+    <img class="image-modal-content" id="image-modal-img" alt="Enlarged Illustration">
+    <div class="image-modal-caption" id="image-modal-caption"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -3,189 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Queri's Combat School</title>
-  <!-- Google Fonts for Retro/Pixel Art Styles -->
+  <title>The Chronicles of Lyr: Angel's Sword RPG Adventurer Resources</title>
+  <meta name="description" content="Your hub for Angel's Sword RPG adventurer resources — combat tutorials, lore archives, light novels, and more from the world of The Chronicles of Lyr.">
+  <meta name="keywords" content="Angel's Sword, Chronicles of Lyr, TTRPG, tabletop RPG, anime RPG, fantasy RPG">
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="assets/queri_normal.png">
+  <link rel="icon" type="image/png" href="combattutorial/assets/queri_normal.png">
 </head>
 <body>
-  <div class="app-container">
-    <!-- LEFT SIDEBAR: Table of Contents -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1 class="game-logo">QUERI-98</h1>
-        <p class="subtitle">Combat School</p>
-      </div>
 
-      <!-- Retro PC-98 Floppy Disk Drives & System Badge -->
-      <div class="fdd-panel">
-        <div class="fdd-drive" id="drive-a">
-          <div class="fdd-slot-wrapper">
-            <div class="fdd-slot">
-              <div class="fdd-disk-shutter"></div>
-            </div>
-            <div class="fdd-eject"></div>
-          </div>
-          <div class="fdd-status">
-            <div class="fdd-led" id="fdd-led-a"></div>
-            <span class="fdd-text">A: SYSTEM</span>
-          </div>
-        </div>
-        <div class="fdd-drive" id="drive-b">
-          <div class="fdd-slot-wrapper">
-            <div class="fdd-slot">
-              <div class="fdd-disk-shutter"></div>
-            </div>
-            <div class="fdd-eject"></div>
-          </div>
-          <div class="fdd-status">
-            <div class="fdd-led" id="fdd-led-b"></div>
-            <span class="fdd-text">B: ASSETS</span>
-          </div>
-        </div>
-      </div>
+  <!-- ═══════════════════════════════════════════════════
+       FLOATING PARTICLES CANVAS (Fireflies & Magic)
+       ═══════════════════════════════════════════════════ -->
+  <canvas id="particle-canvas"></canvas>
 
-      <div class="system-badge">
-        <div class="badge-title">LYRIAN-98</div>
-        <div class="badge-sub">16-BIT CLASSIC</div>
-      </div>
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+       ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Angel's Sword</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">The World</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="combattutorial/index.html">Combat School</a></li>
+        <li><a href="lore/index.html">Adventure</a></li>
+        <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
 
-      <nav class="toc-container">
-        <div class="menu-label">SYS MENU</div>
-        <ul id="toc-list" class="toc-list">
-          <!-- Dynamic List of Lessons -->
-        </ul>
-      </nav>
+  <!-- ═══════════════════════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-wrapper">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-vignette"></div>
+    </div>
 
-      <div class="sidebar-footer">
-        <a href="https://rpg.angelssword.com" target="_blank" id="lnk-game-site" class="retro-btn footer-link">
-          <span class="btn-text">rpg.angelssword.com</span>
+    <!-- Floating Petal Elements -->
+    <div class="petal petal-1"></div>
+    <div class="petal petal-2"></div>
+    <div class="petal petal-3"></div>
+    <div class="petal petal-4"></div>
+    <div class="petal petal-5"></div>
+    <div class="petal petal-6"></div>
+
+    <div class="hero-content">
+      <p class="hero-pre-title fade-in-up" data-delay="200">✦ Angel's Sword RPG ✦</p>
+      <h1 class="hero-title fade-in-up" data-delay="400">
+        <span class="title-line title-the">The</span>
+        <span class="title-line title-lyrian">Lyrian</span>
+        <span class="title-line title-chronicles">Chronicles</span>
+      </h1>
+      <p class="hero-subtitle fade-in-up" data-delay="700">Adventurer Resources — Tutorials, Lore, Stories & More</p>
+      <div class="hero-buttons fade-in-up" data-delay="900">
+        <a href="#resources" class="btn btn-primary">
+          <span class="btn-sparkle"></span>
+          Explore Resources
         </a>
-        <div class="system-controls">
-          <div class="control-group">
-            <span class="label">CRT FILTER</span>
-            <label class="switch">
-              <input type="checkbox" id="crt-toggle" checked>
-              <span class="slider"></span>
-            </label>
+        <a href="lore/index.html" class="btn btn-secondary">
+          <span class="btn-icon">🗺️</span>
+          Begin Adventure
+        </a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator fade-in-up" data-delay="1200">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span class="scroll-text">Scroll to Explore</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       ABOUT / WORLD SECTION
+       ═══════════════════════════════════════════════════ -->
+  <section class="about-section" id="about">
+    <div class="section-container">
+
+      <div class="section-header scroll-reveal">
+        <span class="section-ornament">✦ ━━━━━━ ✦</span>
+        <h2 class="section-title">Welcome to the World of Lyr</h2>
+        <p class="section-desc">A vast world of high action anime fantasy — from bustling trade cities to frozen alpine frontiers, ancient alchemical academies to fiend-haunted wilds. Countless adventures, factions, and stories await across the lands of Lyr.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card scroll-reveal" data-delay="100">
+          <div class="card-glow"></div>
+          <div class="card-icon-wrap">
+            <span class="card-icon">⚔️</span>
           </div>
-          <div class="control-group volume-group">
-            <span class="label">BGM VOLUME</span>
-            <input type="range" id="bgm-volume" min="0" max="100" value="80" class="retro-slider">
+          <h3>High Action Anime Fantasy</h3>
+          <p>A vast world with intense combat, airship battles, expeditions into fiend territory, and high-stakes adventures — all rendered in gorgeous anime style.</p>
+        </div>
+
+        <div class="about-card scroll-reveal" data-delay="200">
+          <div class="card-glow"></div>
+          <div class="card-icon-wrap">
+            <span class="card-icon">🧪</span>
           </div>
-          <div class="control-group">
-            <span class="label">SFX BEEP</span>
-            <label class="switch">
-              <input type="checkbox" id="sound-toggle" checked>
-              <span class="slider"></span>
-            </label>
+          <h3>Alchemy & Magic</h3>
+          <p>Brew potions, transmute materials, and weave spells. The magic system draws from deep alchemical lore woven into every aspect of the world.</p>
+        </div>
+
+        <div class="about-card scroll-reveal" data-delay="300">
+          <div class="card-glow"></div>
+          <div class="card-icon-wrap">
+            <span class="card-icon">🧝</span>
           </div>
-          <div class="control-group">
-            <span class="label">VOICE OVER</span>
-            <label class="switch">
-              <input type="checkbox" id="voice-toggle" checked>
-              <span class="slider"></span>
-            </label>
+          <h3>Diverse Races</h3>
+          <p>Play as Fairies, Chimerae, Elves, and more. Each race brings unique abilities, cultural depth, and story hooks to your adventures.</p>
+        </div>
+
+        <div class="about-card scroll-reveal" data-delay="400">
+          <div class="card-glow"></div>
+          <div class="card-icon-wrap">
+            <span class="card-icon">📖</span>
+          </div>
+          <h3>Living Story</h3>
+          <p>Born from a decade-long homebrew campaign, The Chronicles of Lyr is a living world with frequent updates and evolving narrative arcs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       FEATURES SHOWCASE (Diagonal Split)
+       ═══════════════════════════════════════════════════ -->
+  <section class="features-section" id="resources">
+    <div class="features-bg-shape"></div>
+    <div class="section-container">
+
+      <div class="section-header scroll-reveal">
+        <span class="section-ornament">✦ ━━━━━━ ✦</span>
+        <h2 class="section-title">Adventurer Resources</h2>
+        <p class="section-desc">Everything you need to prepare for your journey — from combat training to the lore archives of the Riannon Institute.</p>
+      </div>
+
+      <div class="features-showcase">
+        <div class="feature-row scroll-reveal">
+          <div class="feature-visual">
+            <div class="feature-img-wrap">
+              <img src="img/quest_board.png" alt="Adventurer's Quest Board" class="feature-img">
+              <div class="img-frame"></div>
+            </div>
+          </div>
+          <div class="feature-details">
+            <span class="feature-tag">⚔ Core System</span>
+            <h3>Tactical Combat That Rewards Creativity</h3>
+            <p>A deep, grid-based combat system with light attacks, heavy strikes, dodge rolls, blocks, and cover mechanics. Every decision in battle matters — position, timing, and teamwork determine victory.</p>
+            <a href="combattutorial/index.html" class="feature-link">
+              Learn in Combat School →
+            </a>
+          </div>
+        </div>
+
+        <div class="feature-row reverse scroll-reveal">
+          <div class="feature-visual">
+            <div class="feature-img-wrap">
+              <img src="lore/img/philomel_normal.png" alt="Philomel Lapis - Riannon Institute" class="feature-img character-img">
+              <div class="img-frame"></div>
+            </div>
+          </div>
+          <div class="feature-details">
+            <span class="feature-tag">🗺️ Adventure</span>
+            <h3>Explore the World of Lyr</h3>
+            <p>Begin your adventure in the Free Trade City of Mothergreen. Visit the prestigious Riannon Institute of Alchemy, browse its grand library guided by Philomel Lapis, and discover the rich lore of The Chronicles of Lyr through an immersive visual novel experience.</p>
+            <a href="lore/index.html" class="feature-link">
+              Begin Adventure →
+            </a>
           </div>
         </div>
       </div>
-    </aside>
+    </div>
+  </section>
 
-    <!-- RIGHT MAIN CONTENT: The CRT Monitor Display -->
-    <main class="monitor-wrapper">
-      <div class="monitor-bezel">
-        <div class="monitor-brand">MULTISYNC AS-98</div>
-        <div class="power-led-group">
-          <span class="power-label">POWER</span>
-          <div class="power-led active"></div>
+  <!-- ═══════════════════════════════════════════════════
+       COMBAT SCHOOL CTA
+       ═══════════════════════════════════════════════════ -->
+  <section class="combat-school-section" id="combat-school">
+    <div class="cta-bg-effect"></div>
+    <div class="section-container">
+      <div class="cta-layout scroll-reveal">
+        <div class="cta-character">
+          <img src="combattutorial/assets/queri_normal.png" alt="Queri Lilibit" class="cta-sprite" id="cta-sprite">
+          <div class="cta-sprite-glow"></div>
         </div>
-
-        <!-- Inner CRT Screen -->
-        <div id="crt-screen" class="crt-screen crt-effects">
-          <!-- Screen Glare / Curvature Shadow -->
-          <div class="screen-curvature"></div>
-          <div class="scanlines"></div>
-
-          <!-- Start Screen Overlay -->
-          <div id="start-screen" class="start-screen">
-            <video id="start-bg-video" autoplay loop muted playsinline src="anime/Queri-Start.mp4" class="start-video"></video>
-          </div>
-
-          <!-- Visual Novel Stage Area -->
-          <div class="vn-stage" id="vn-stage">
-            <!-- Background Image -->
-            <div class="stage-bg" id="stage-bg"></div>
-
-            <!-- Sprite Layer (Queri Lilibit) -->
-            <div class="sprite-container" id="sprite-container">
-              <img id="queri-sprite" class="queri-sprite float-anim" src="assets/queri_normal.png" alt="Queri Lilibit">
-            </div>
-
-            <!-- Overlay Click Zones for Left/Right Clicking -->
-            <div class="nav-zone zone-left" id="zone-left" title="Previous Slide">
-              <div class="nav-arrow">&lt;&lt; PREV</div>
-            </div>
-            <div class="nav-zone zone-right" id="zone-right" title="Next Slide">
-              <div class="nav-arrow">NEXT &gt;&gt;</div>
-            </div>
-
-            <!-- Hotspot Interactive Layer (Absolute positioned items) -->
-            <div class="hotspot-layer" id="hotspot-layer"></div>
-
-            <!-- Video Player Layer (Visible only on video slides) -->
-            <div class="video-layer" id="video-layer">
-              <div class="video-bezel">
-                <div class="video-container">
-                  <video id="demo-video" src="assets/combat_demo_placeholder.mp4" playsinline></video>
-                  <div class="video-error-message" id="video-error-message">
-                    <div class="static-noise"></div>
-                    <div class="error-text">
-                      <div class="blink-fast">◆ INSERT DISK 2 ◆</div>
-                      <div>A:\COMBAT_DEMO.MP4 NOT FOUND</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="video-controls">
-                  <button id="video-play-btn" class="retro-btn">PLAY</button>
-                  <button id="video-stop-btn" class="retro-btn">STOP</button>
-                  <span id="video-time" class="video-time">00:00 / 00:00</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Dialogue Box (Classic PC-98 Interface Window) -->
-            <div class="dialogue-box" id="dialogue-box">
-              <div class="dialogue-header">
-                <span class="speaker-name" id="speaker-name">Queri Lilibit</span>
-                <span class="slide-counter" id="slide-counter">01/12</span>
-              </div>
-              <div class="dialogue-body">
-                <p id="dialogue-text" class="dialogue-text">Initializing combat tutorial systems...</p>
-                <span class="blinking-arrow" id="next-indicator"></span>
-              </div>
-            </div>
-
-            <!-- Sub-Window: Interactive Detail popup (PC-98 look) -->
-            <div class="retro-popup" id="retro-popup">
-              <div class="popup-header">
-                <span class="popup-title" id="popup-title">ALCHEMICAL LOG</span>
-                <button class="popup-close" id="popup-close">X</button>
-              </div>
-              <div class="popup-body">
-                <p id="popup-content">Detail content goes here...</p>
-              </div>
-            </div>
-          </div>
+        <div class="cta-content">
+          <span class="cta-badge">✦ Interactive Tutorial ✦</span>
+          <h2 class="cta-title">Queri's Combat School</h2>
+          <p class="cta-desc">Join Queri Lilibit, your fairy alchemist instructor, for an interactive crash course in the combat system. Complete with animated demonstrations, voice-over narration, and a retro PC-98 visual novel interface.</p>
+          <a href="combattutorial/index.html" class="btn btn-primary btn-large">
+            <span class="btn-sparkle"></span>
+            Enter Combat School
+          </a>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </section>
 
-  <!-- Load Data and Main Script -->
-  <script src="slides.js"></script>
-  <script src="app.js"></script>
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">⚔ Angel's Sword</span>
+        <p class="footer-tagline">The Chronicles of Lyr — Tabletop Games as a Service</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#about">The World</a></li>
+            <li><a href="#resources">Resources</a></li>
+            <li><a href="combattutorial/index.html">Combat School</a></li>
+            <li><a href="lore/index.html">Adventure</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://rpg.angelssword.com" target="_blank">Official Site</a></li>
+            <li><a href="https://angelssword.com" target="_blank">Studio</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024-2026 Angel's Sword Studios, LLC. All rights reserved.</p>
+        <p class="footer-made-with">Crafted with ✦ for adventurers everywhere</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="landing.js"></script>
 </body>
 </html>
