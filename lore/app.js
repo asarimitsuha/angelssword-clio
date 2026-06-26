@@ -19,10 +19,12 @@ const BOOK_REGISTRY = {
 
 /* ─── Map Registry ────────────────────────────────────────────────── */
 const MAP_REGISTRY = [
-  { id: "lyrian-peninsula", file: "map/LyrPSNewJpeg.jpg", title: "Map of the Lyr Peninsula" },
-  { id: "houkaina", file: "map/Houkaina.PNG", title: "Map of Houkaina" },
-  { id: "far-east-empire", file: "map/Map.jpg", title: "Map of The Far East Empire" },
-  { id: "mirane-expedition", file: "map/Mirane.jpg", title: "Map of Mirane Expedition" }
+  { id: "lyrian-peninsula", file: "map/LyrPSNewJpeg.jpg", title: "Lyr Peninsula" },
+  { id: "houkaina", file: "map/Houkaina.PNG", title: "Houkaina" },
+  { id: "far-east-empire", file: "map/Map.jpg", title: "The Far East Empire" },
+  { id: "mirane-expedition", file: "map/Mirane.jpg", title: "Mirane Expedition" },
+  { id: "lyr-peninsula-726", file: "map/LyrPeninsula726.jpg", title: "726 Lyr Peninsula" },
+  { id: "dacquoise", file: "map/Dacquoise.jpg", title: "Dacquoise" }
 ];
 
 /* ─── Relic Registry ──────────────────────────────────────────────── */
