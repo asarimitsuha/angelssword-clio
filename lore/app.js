@@ -232,6 +232,14 @@ let voiceAudio = new Audio();
 
 /* ─── Init ────────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
+  // Register Begin button FIRST so it's always available
+  const beginBtn = document.getElementById("welcome-begin-btn");
+  if (beginBtn) {
+    beginBtn.addEventListener("click", () => {
+      showAcademyGates();
+    });
+  }
+
   // Initialize DialogueEngine instances for each NPC
   initDialogueEngines();
 
@@ -258,41 +266,41 @@ document.addEventListener("DOMContentLoaded", () => {
   initSceneNavigation();
 
   // Handle ?scene= URL parameter for direct scene navigation
-  const urlParams = new URLSearchParams(window.location.search);
-  const targetScene = urlParams.get("scene");
-  if (targetScene) {
-    // Skip the welcome screen and navigate through scenes to reach the target
-    const sceneChains = {
-      "mea-hq": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "mea-hq-overlay"],
-      "mirane": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay"],
-      "airship-docks": ["city-gates-overlay", "airship-docks-overlay"],
-      "city-gates": ["city-gates-overlay"],
-      "combat-school": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "combat-school-overlay"],
-    };
-    const chain = sceneChains[targetScene];
-    if (chain) {
-      // Immediately show the final scene without transitions
-      setTimeout(() => {
-        // Hide welcome screen
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetScene = urlParams.get("scene");
+    if (targetScene) {
+      const sceneChains = {
+        "mea-hq": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "mea-hq-overlay"],
+        "mirane": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay"],
+        "airship-docks": ["city-gates-overlay", "airship-docks-overlay"],
+        "city-gates": ["city-gates-overlay"],
+        "combat-school": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "combat-school-overlay"],
+      };
+      const chain = sceneChains[targetScene];
+      if (chain) {
+        // Remove welcome screen immediately
         const welcomeOverlay = document.getElementById("welcome-overlay");
-        if (welcomeOverlay) welcomeOverlay.classList.add("hidden");
-        // Hide all overlays first
+        if (welcomeOverlay) welcomeOverlay.remove();
+        // Hide all scene overlays
         document.querySelectorAll(".scene-overlay").forEach(el => el.classList.add("hidden"));
-        // Show the final target overlay
+        // Show the target scene
         const finalOverlay = document.getElementById(chain[chain.length - 1]);
         if (finalOverlay) {
           finalOverlay.classList.remove("hidden");
-          // Trigger intro for the scene's NPC
           if (targetScene === "mea-hq" && anielaEngine && !anielaEngine.introComplete) {
             startAnielaIntro();
           } else if (targetScene === "mirane" && mirrimeEngine && !mirrimeEngine.introComplete) {
             startMirrimeIntro();
           }
-          // Start correct BGM for the scene
           switchBGMForScene(chain[chain.length - 1]);
         }
-      }, 100);
+        // Clean the URL so back/refresh works normally
+        window.history.replaceState(null, "", window.location.pathname);
+      }
     }
+  } catch (e) {
+    console.log("Scene param handler error:", e);
   }
 });
 
@@ -416,19 +424,14 @@ function initDialogueEngines() {
    ═══════════════════════════════════════════════════════════════════ */
 function startAdventure() {
   const welcomeOverlay = document.getElementById("welcome-overlay");
-  const beginBtn = document.getElementById("welcome-begin-btn");
 
   // If returning from library via #gates, skip welcome and go straight to gates
   if (window.location.hash === "#gates") {
-    welcomeOverlay.remove();
+    if (welcomeOverlay) welcomeOverlay.remove();
     showAcademyGates();
     window.history.replaceState(null, "", window.location.pathname);
     return;
   }
-
-  beginBtn.addEventListener("click", () => {
-    showAcademyGates();
-  });
 }
 
 function showAcademyGates() {
@@ -464,8 +467,6 @@ function showAcademyGates() {
     guardEngine.startIntro();
   }, 1200);
 
-  // Click to advance intro
-  gatesOverlay.addEventListener("click", handleGuardIntroClick);
 }
 
 function handleGuardIntroClick(e) {
@@ -483,38 +484,10 @@ function handleGuardIntroClick(e) {
 
 function showGuardActions() {
   const actionsEl = document.getElementById("guard-actions");
-  const gatesOverlay = document.getElementById("city-gates-overlay");
-
-  // Remove intro click handler
-  gatesOverlay.removeEventListener("click", handleGuardIntroClick);
 
   actionsEl.style.display = "flex";
   requestAnimationFrame(() => {
     actionsEl.classList.add("visible");
-  });
-
-  // Talk to Guard button
-  document.getElementById("btn-guard-talk").addEventListener("click", (e) => {
-    e.stopPropagation();
-    guardEngine.talk();
-  });
-
-  // Riannon Institute button — enters the library
-  document.getElementById("btn-enter-riannon").addEventListener("click", (e) => {
-    e.stopPropagation();
-    enterEtoileLibrary();
-  });
-
-  // Airship Docks button
-  document.getElementById("btn-enter-airship-docks").addEventListener("click", (e) => {
-    e.stopPropagation();
-    navigateToScene("city-gates-overlay", "airship-docks-overlay");
-  });
-
-  // Back button
-  document.getElementById("btn-gates-back").addEventListener("click", (e) => {
-    e.stopPropagation();
-    window.location.href = window.location.pathname;
   });
 }
 
@@ -611,6 +584,22 @@ function navigateToScene(fromOverlayId, toOverlayId) {
       }
     }
 
+    // Handle city gates entry
+    if (toOverlayId === "city-gates-overlay") {
+      if (guardEngine.introComplete) {
+        document.getElementById("guard-actions").style.display = "flex";
+        document.getElementById("guard-actions").classList.add("visible");
+      } else {
+        // Ensure sprite and dialogue box are visible
+        const spriteContainer = document.getElementById("guard-sprite-container");
+        if (spriteContainer) spriteContainer.classList.add("visible");
+        const dialogueBox = document.getElementById("guard-dialogue-box");
+        if (dialogueBox) dialogueBox.classList.add("visible");
+        guardEngine.speakerNameEl.textContent = "Guard";
+        guardEngine.startIntro();
+      }
+    }
+
     // Handle airship docks entry
     if (toOverlayId === "airship-docks-overlay") {
       if (nixEngine.introComplete) {
@@ -643,6 +632,60 @@ function navigateToScene(fromOverlayId, toOverlayId) {
 }
 
 function initSceneNavigation() {
+  // City Gates — Click dialogue box or overlay to advance guard intro/talk
+  const guardDialogueBox = document.getElementById("guard-dialogue-box");
+  if (guardDialogueBox) {
+    guardDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!guardEngine.introComplete) {
+        guardEngine.advanceIntro();
+      } else {
+        guardEngine.talk();
+      }
+    });
+  }
+  const cityGatesOverlay = document.getElementById("city-gates-overlay");
+  if (cityGatesOverlay) {
+    cityGatesOverlay.addEventListener("click", (e) => {
+      if (e.target.closest(".city-gates-actions")) return;
+      if (e.target.closest(".scene-btn")) return;
+      if (e.target.closest(".scene-actions")) return;
+      if (!guardEngine.introComplete) {
+        guardEngine.advanceIntro();
+      }
+    });
+  }
+
+  // City Gates — Guard action buttons
+  const guardTalkBtn = document.getElementById("btn-guard-talk");
+  if (guardTalkBtn) {
+    guardTalkBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      guardEngine.talk();
+    });
+  }
+  const enterRiannonBtn = document.getElementById("btn-enter-riannon");
+  if (enterRiannonBtn) {
+    enterRiannonBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      enterEtoileLibrary();
+    });
+  }
+  const enterAirshipBtn = document.getElementById("btn-enter-airship-docks");
+  if (enterAirshipBtn) {
+    enterAirshipBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navigateToScene("city-gates-overlay", "airship-docks-overlay");
+    });
+  }
+  const gatesBackBtn = document.getElementById("btn-gates-back");
+  if (gatesBackBtn) {
+    gatesBackBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = window.location.pathname;
+    });
+  }
+
   // Airship Docks → Mirane
   const travelMiraneBtn = document.getElementById("btn-travel-mirane");
   if (travelMiraneBtn) {
@@ -707,15 +750,6 @@ function initSceneNavigation() {
     });
   }
 
-  // Guard — Click dialogue to advance talk
-  const guardDialogueBox = document.getElementById("guard-dialogue-box");
-  if (guardDialogueBox) {
-    guardDialogueBox.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!guardEngine.introComplete) return; // Intro handled by overlay click
-      guardEngine.talk();
-    });
-  }
 
   // Combat School — Replay Video button
   const replayBtn = document.getElementById("btn-replay-video");
