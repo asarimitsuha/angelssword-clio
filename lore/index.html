@@ -30,8 +30,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="../index.html" class="nav-logo">
-        <span class="logo-icon">⚔</span>
-        <span class="logo-text">Angel's Sword</span>
+        <img src="../img/logo/PaintedLogoLyrianLongColor_33pct.webp" alt="The Lyrian Chronicles" class="nav-logo-img">
       </a>
       <ul class="nav-links" id="nav-links">
         <li><a href="../index.html">Home</a></li>
@@ -239,10 +238,14 @@
           <span class="scene-btn-icon">🏛️</span>
           Expeditioner Alliance HQ
         </button>
-        <button class="scene-btn scene-btn-disabled" disabled>
-          <span class="scene-btn-icon">🪦</span>
-          View Memorial <span class="coming-soon-tag">(Coming Soon)</span>
+        <button class="scene-btn scene-btn-navigate" id="btn-enter-tavern">
+          <span class="scene-btn-icon">🍺</span>
+          No Pain No Mirane Tavern
         </button>
+        <a href="../memorial/index.html" target="_blank" class="scene-btn scene-btn-navigate" onclick="if(typeof muteBGMForMemorial!=='undefined'){muteBGMForMemorial();}">
+          <span class="scene-btn-icon">🪦</span>
+          View Memorial
+        </a>
         <button class="scene-btn scene-btn-back" id="btn-mirane-back">
           <span class="scene-btn-icon">←</span>
           Back to Airship Docks
@@ -371,7 +374,86 @@
           <span class="scene-btn-icon">🗺️</span>
           Enter the Strategy Room
         </button>
+        <button class="scene-btn scene-btn-disabled" id="btn-expedition-registration" disabled>
+          <span class="scene-btn-icon">📋</span>
+          Expedition Registration
+          <span class="coming-soon-tag">— Coming Soon</span>
+        </button>
         <button class="scene-btn scene-btn-back" id="btn-mea-hq-back">
+          <span class="scene-btn-icon">←</span>
+          Back to Mirane
+        </button>
+      </div>
+      <!-- Registration Mode Sub-Actions (hidden until Aniela's registration line finishes) -->
+      <div class="scene-actions" id="mea-hq-registration-actions" style="display: none;">
+        <button class="scene-btn scene-btn-disabled" id="btn-reg-walkthrough" disabled>
+          <span class="scene-btn-icon">📖</span>
+          Walkthrough Mode
+          <span class="coming-soon-tag">— Coming Soon</span>
+        </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-reg-creation">
+          <span class="scene-btn-icon">⚔️</span>
+          Creation Mode
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-reg-back">
+          <span class="scene-btn-icon">←</span>
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       TAVERN — No Pain No Mirane
+       ═══════════════════════════════════════════════════ -->
+  <div class="scene-overlay hidden" id="tavern-overlay">
+    <div class="scene-bg" id="tavern-bg"></div>
+    <header class="location-header">
+      <div class="location-header-inner">
+        <div class="location-crest">🍺</div>
+        <div class="location-titles">
+          <h1 class="location-name">No Pain No Mirane</h1>
+          <p class="location-sub">Tavern</p>
+        </div>
+        <div class="header-actions">
+          <div class="bgm-player-container">
+            <button class="bgm-btn bgm-mute-btn" title="Mute/Unmute Music">
+              <span class="bgm-btn-icon">🔊</span>
+            </button>
+            <div class="bgm-slider-wrapper">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+            </div>
+          </div>
+          <div class="room-breadcrumb">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-text">Tavern</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="scene-content">
+      <div class="scene-sprite-container" id="tavern-sprite-container">
+        <img src="../img/chara/yanyan/Yanyan Itia Neutral.png" alt="Tavern Patron" class="scene-sprite" id="tavern-sprite">
+      </div>
+      <div class="scene-dialogue-box" id="tavern-dialogue-box">
+        <div class="scene-speaker-plate">
+          <span class="scene-speaker-name" id="tavern-speaker-name">???</span>
+        </div>
+        <div class="scene-text-area">
+          <p class="scene-text" id="tavern-text"></p>
+          <span class="scene-next-indicator" id="tavern-next-indicator">▼</span>
+        </div>
+      </div>
+      <div class="scene-actions" id="tavern-actions" style="display: none;">
+        <button class="scene-btn scene-btn-talk" id="btn-tavern-talk">
+          <span class="scene-btn-icon">💬</span>
+          Talk
+        </button>
+        <button class="scene-btn scene-btn-navigate" id="btn-kinen-song" style="display: none;">
+          <span class="scene-btn-icon">🎵</span>
+          Listen to her Song
+        </button>
+        <button class="scene-btn scene-btn-back" id="btn-tavern-back">
           <span class="scene-btn-icon">←</span>
           Back to Mirane
         </button>
@@ -533,6 +615,24 @@
           </div>
         </section>
 
+        <!-- Short Stories Shelf -->
+        <section class="bookshelf" id="shelf-short-stories">
+          <div class="shelf-header">
+            <div class="shelf-label-plate">
+              <span class="shelf-icon">📓</span>
+              <h2 class="shelf-label">Short Stories</h2>
+            </div>
+            <p class="shelf-desc">A peek into the world of Lyr</p>
+          </div>
+          <div class="shelf-rack">
+            <div class="shelf-wood shelf-wood-top"></div>
+            <div class="books-row" id="books-short-stories">
+              <!-- Books rendered by JS -->
+            </div>
+            <div class="shelf-wood shelf-wood-bottom"></div>
+          </div>
+        </section>
+
         <!-- Lore Compendium Shelf -->
         <section class="bookshelf" id="shelf-lore">
           <div class="shelf-header">
@@ -545,10 +645,7 @@
           <div class="shelf-rack">
             <div class="shelf-wood shelf-wood-top"></div>
             <div class="books-row" id="books-lore">
-              <div class="book-placeholder">
-                <div class="placeholder-icon">🔒</div>
-                <span>Coming Soon</span>
-              </div>
+              <!-- Books rendered by JS -->
             </div>
             <div class="shelf-wood shelf-wood-bottom"></div>
           </div>

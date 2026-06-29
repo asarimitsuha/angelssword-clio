@@ -2,9 +2,15 @@
   "books": {
     "light-novels": [
       { "id": "wotk-ch1", "file": "books/will-of-the-king-ch1.js", "spineTitle": "Will of the King", "spineColor": "book-color-red", "width": 58 },
-      { "id": "aso-ch1", "file": "books/angels-sword-origin-ch1.js", "spineTitle": "Angel's Sword Origin", "spineColor": "book-color-blue", "width": 52 }
+      { "id": "aso-ch1", "file": "books/angels-sword-origin-ch1.js", "spineTitle": "Angel's Sword Origin", "spineColor": "book-color-blue", "width": 52 },
+      { "id": "unholy-ground", "file": "books/unholy-ground.js", "spineTitle": "Unholy Ground", "spineColor": "book-color-navy", "width": 54 }
     ],
-    "lore": [],
+    "short-stories": [
+      { "id": "mizi-marion", "file": "books/mizi-marion.js", "spineTitle": "Dr. Mizi Marion", "spineColor": "book-color-teal", "width": 50 }
+    ],
+    "lore": [
+      { "id": "vorra-annexation", "file": "books/vorra-annexation.js", "spineTitle": "The Vorra Annexation", "spineColor": "book-color-brown", "width": 56 }
+    ],
     "research": [
       { "id": "on-fiends", "file": "books/on-fiends.js", "spineTitle": "On Fiends", "spineColor": "book-color-green", "width": 48 },
       { "id": "nature-of-magic", "file": "books/on-the-nature-of-magic.js", "spineTitle": "On the Nature of Magic", "spineColor": "book-color-gold", "width": 54 }

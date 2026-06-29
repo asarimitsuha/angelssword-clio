@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Sheet — Angel's Sword</title>
+  <meta name="description" content="Full character sheet view for Angel's Sword TTRPG">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="vault.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+       ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Angel's Sword</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../lore/index.html">Adventure</a></li>
+        <li><a href="index.html">Character Builder</a></li>
+        <li><a href="vault.html" class="active-link">My Characters</a></li>
+        <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       FULL CHARACTER SHEET
+       ═══════════════════════════════════════════════════ -->
+  <div class="sheet-page" id="sheet-page">
+
+    <!-- Back link -->
+    <div class="sheet-topbar">
+      <a href="vault.html" class="vault-back-link">← My Characters</a>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="sheet-tab-nav" id="sheet-tab-nav">
+      <button class="sheet-tab-arrow sheet-tab-prev" id="sheet-tab-prev" title="Previous Page">‹</button>
+      <div class="sheet-tab-labels">
+        <button class="sheet-tab-btn active" data-tab="stats">Character Sheet</button>
+        <button class="sheet-tab-btn" data-tab="abilities">Abilities</button>
+        <button class="sheet-tab-btn" data-tab="inventory">Inventory</button>
+      </div>
+      <button class="sheet-tab-arrow sheet-tab-next" id="sheet-tab-next" title="Next Page">›</button>
+    </div>
+
+    <!-- Page: Character Sheet (existing) -->
+    <div class="sheet-tab-page active" id="sheet-page-stats">
+      <div class="cs-sheet" id="sheet-root">
+        <div class="cs-tip-loading" style="padding:60px;text-align:center;">Loading character…</div>
+      </div>
+    </div>
+
+    <!-- Page: Abilities -->
+    <div class="sheet-tab-page" id="sheet-page-abilities">
+      <div class="cs-sheet" id="abilities-root">
+        <div class="cs-tip-loading" style="padding:60px;text-align:center;">Loading abilities…</div>
+      </div>
+    </div>
+
+    <!-- Page: Inventory -->
+    <div class="sheet-tab-page" id="sheet-page-inventory">
+      <div class="cs-sheet" id="inventory-root">
+        <div class="cs-tip-loading" style="padding:60px;text-align:center;">Loading inventory…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── Tooltip Overlay (for class/item/skill/bt detail) ─── -->
+  <div class="cs-tooltip-overlay" id="cs-tooltip-overlay">
+    <div class="cs-tooltip-modal" id="cs-tooltip-modal">
+      <div class="cs-tooltip-header">
+        <h3 class="cs-tooltip-title" id="cs-tooltip-title"></h3>
+        <button class="cs-tooltip-close" id="cs-tooltip-close">✕</button>
+      </div>
+      <div class="cs-tooltip-body" id="cs-tooltip-body"></div>
+    </div>
+  </div>
+
+  <script src="js/character.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="sheet.js"></script>
+</body>
+</html>

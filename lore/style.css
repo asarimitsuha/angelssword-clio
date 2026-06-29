@@ -18,8 +18,7 @@ a:hover { color: var(--lib-blue); }
   box-shadow: 0 2px 30px rgba(0,0,0,0.4);
   border-bottom: 1px solid var(--lib-border);
 }
-.nav-logo { color: var(--lib-gold); }
-.logo-icon { font-size: 1.4rem; filter: drop-shadow(0 0 8px var(--lib-gold-glow)); }
+.nav-logo-img { height: 32px; width: auto; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.6)); }
 .nav-links li a { color: var(--lib-text-muted); }
 .nav-links li a:hover,
 .nav-links li a.active-link {
@@ -722,6 +721,16 @@ a:hover { color: var(--lib-blue); }
 .mea-hq-bg {
   background-image: url('img/mea.jpg');
   filter: brightness(0.45) saturate(1.2);
+}
+
+.tavern-bg-day {
+  background-image: url('img/no_pain_no_mirane-background.jpg');
+  filter: brightness(0.5) saturate(1.1);
+}
+
+.tavern-bg-night {
+  background-image: url('img/no_pain_no_mirane-background-night.jpg');
+  filter: brightness(0.4) saturate(1.2);
 }
 
 /* ─── Scene Content ───────────────────────────────────────────────── */
@@ -1819,6 +1828,37 @@ a:hover { color: var(--lib-blue); }
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--lib-text-dim);
+}
+
+/* ─── Book Illustrations (inline images) ─────────────────────────── */
+.reader-page .book-illustration {
+  margin: 1.8rem 0;
+  text-align: center;
+}
+
+.reader-page .book-illustration img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-spring), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reader-page .book-illustration img:hover {
+  transform: scale(1.015);
+  border-color: var(--lib-gold);
+  box-shadow: 0 12px 36px rgba(223, 184, 88, 0.15), 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.reader-page .book-illustration-caption {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--lib-text-dim);
+  line-height: 1.4;
 }
 
 /* ─── Reader Footer / Progress ────────────────────────────────────── */

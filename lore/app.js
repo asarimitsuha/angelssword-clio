@@ -7,9 +7,15 @@
 const BOOK_REGISTRY = {
   "light-novels": [
     { id: "wotk-ch1", file: "books/will-of-the-king-ch1.js", spineTitle: "Will of the King", spineColor: "book-color-red", width: 58 },
-    { id: "aso-ch1", file: "books/angels-sword-origin-ch1.js", spineTitle: "Angel's Sword Origin", spineColor: "book-color-blue", width: 52 }
+    { id: "aso-ch1", file: "books/angels-sword-origin-ch1.js", spineTitle: "Angel's Sword Origin", spineColor: "book-color-blue", width: 52 },
+    { id: "unholy-ground", file: "books/unholy-ground.js", spineTitle: "Unholy Ground", spineColor: "book-color-navy", width: 54 }
   ],
-  "lore": [],
+  "short-stories": [
+    { id: "mizi-marion", file: "books/mizi-marion.js", spineTitle: "Dr. Mizi Marion", spineColor: "book-color-teal", width: 50 }
+  ],
+  "lore": [
+    { id: "vorra-annexation", file: "books/vorra-annexation.js", spineTitle: "The Vorra Annexation", spineColor: "book-color-brown", width: 56 }
+  ],
   "research": [
     { id: "on-fiends", file: "books/on-fiends.js", spineTitle: "On Fiends", spineColor: "book-color-green", width: 48 },
     { id: "nature-of-magic", file: "books/on-the-nature-of-magic.js", spineTitle: "On the Nature of Magic", spineColor: "book-color-gold", width: 54 }
@@ -200,6 +206,135 @@ const ANIELA_DIALOGUE = [
   { text: "Princess Cherry of Madeline is always helping us out so much.  I don't mind the propaganda.", sprite: "1" }
 ];
 
+/* ─── Yanyan Itia Dialogue (Tavern) ───────────────────────────────── */
+const YANYAN_INTRO = [
+  { text: "Ah... hello... I'm sorry I just.  I don't feel like it anymore...", sprite: "Sad" }
+];
+
+const YANYAN_DIALOGUE = [
+  { text: "I'm Yanyan Itia... I'm an expeditioner... but I'm taking a break.", sprite: "Neutral" },
+  { text: "I wonder what Camielelileananu would do...", sprite: "Sad" },
+  { text: "I wonder how Selle is... I wish she were here with me now...", sprite: "Sad" },
+  { text: "I'm sorry... its just... the Astra Line took something precious from me.", sprite: "Devastated" },
+  { text: "I miss him so much...", sprite: "Devastated" },
+  { text: "He was my hero, you know?", sprite: "Sad" },
+  { text: "I heard there are new expeditioners arriving every day now... be careful out there, okay?", sprite: "Sad" },
+  { text: "Bioalchemistry can be painful... but it's a powerful skill.", sprite: "Neutral" }
+];
+
+/* ─── Kinen Arima Dialogue (Tavern) ───────────────────────────────── */
+const KINEN_INTRO = [
+  { text: "Knight of her highness Cherry, Kinen Arima at your service.", sprite: "Neutral" }
+];
+
+const KINEN_DIALOGUE = [
+  { text: "I served in the Madeline Cavalry under Captain Athena.  She is my mentor.", sprite: "Neutral" },
+  { text: "I'm a horsegirl, did you know that?", sprite: "Happy" },
+  { text: "Why the.... long face?", sprite: "Smug" },
+  { text: "Prince Casimir... the traitor wants to bring Slavery back to Nuren.  We won't allow it.", sprite: "Angry" },
+  { text: "Tanya Itia is my partner from Madeline, have you met her yet?", sprite: "Happy" },
+  { text: "Tanya's last name is Itia... but I've never seen her steal anything.  Isn't that weird?", sprite: "Smug" },
+  { text: "Have you ever seen Centaur P.P.?", sprite: "Smug" },
+  { text: "Did I mention that I am a horsefolk?  I ride a horse though.... funny huh?", sprite: "Happy" },
+  { text: "My favorite food?  Obviously... carrots, right?", sprite: "Smug" },
+  { text: "I'm always Anglin' and Scheming.", sprite: "Smug" },
+  { text: "My father is a Centaur, but I have this body.", sprite: "Neutral" },
+  { text: "Nurenese barbeque is the best, try it next time.", sprite: "Happy" },
+  { text: "Captain Yasha?  So cool....", sprite: "Happy" },
+  { text: "Helene?  She's from Nuren I think?  Hmm... probably. heh.", sprite: "Smug" },
+  { text: "Pecorine?  Yeah I know her.  Her sister is the Governor of Madeline, Fontina Caramello.", sprite: "Neutral" },
+  { text: "Why am I here?  To search for artifacts that will help Princess Cherry.", sprite: "Neutral" },
+  { text: "Princess Cherry will become Queen.", sprite: "Happy" }
+];
+
+/* ─── Kathelyne Van Dodenrijk Dialogue (Tavern) ───────────────────── */
+const KATHELYNE_INTRO = [
+  { text: "Out of my way LOSER, I'm Kathelyne Van Dodenrijk.  The HELL do you want?!", sprite: "Angry" }
+];
+
+const KATHELYNE_DIALOGUE = [
+  { text: "That stupid c... I mean... DIRECTOR.  I will defeat her next time just you wait.", sprite: "Angry" },
+  { text: "When I defeat the director, I will RULE Mirane! Waaaahahahaha!", sprite: "Happy" },
+  { text: "Necromancy isn't even that hard, are you an idiot?!", sprite: "Angry" },
+  { text: "So this guy fell into my Zombie trap and died... I think his name was Flonase or something.", sprite: "Drool" },
+  { text: "Yeah I killed that guy from Full Mental Alchemist, he shouldn't have sucked at soccer.", sprite: "Drool" },
+  { text: "That SHOPKEEPER! GAH!!!!!  You know she's going to eat your souls right?!", sprite: "Angry" },
+  { text: "Being a zombie is cooler than being alive, so you should just be okay with it.", sprite: "Neutral" },
+  { text: "Come visit the BONE ZONE and die for me!", sprite: "Happy" },
+  { text: "If the 725 election wasn't so rigged I'd be the ruler of that stupid fort.", sprite: "Angry" },
+  { text: "They stuffed the ballots!", sprite: "Angry" },
+  { text: "Nyanari Fumo?  Yeah she's basically my best friend.", sprite: "Happy" },
+  { text: "Now don't get me even STARTED on ISHARA.  Ishara is such a freakin' loser!", sprite: "Angry" },
+  { text: "If Ishara wasn't in my way... we could make Mirane great again.", sprite: "Drool" },
+  { text: "Arguing about this and that, who died whose fault it is... boring!!!  Have you tried asking the real question?  Is dying even BAD?!", sprite: "Happy" }
+];
+
+/* ─── Karin Wi Vanian Dialogue (Tavern) ───────────────────────────── */
+const KARIN_INTRO = [
+  { text: "Uisu~  Karin here!  Whats up?", sprite: "Happy" }
+];
+
+const KARIN_DIALOGUE = [
+  { text: "Me and Mylene go way back.  I was happy to be reunited with her again after so long.", sprite: "Happy" },
+  { text: "Yeah that Ayra idiot from the Angel's Sword guild made me lose her... but I won't lose her again.", sprite: "Angry" },
+  { text: "Wi Vanian... yes.  The famous saboteur house of Sorthen.  Endo is my dad.", sprite: "Neutral" },
+  { text: "Enrin?  Yeah, my big sis.  I wonder what she's up to right now... she's at the Angel's Sword Guild.", sprite: "Neutral" },
+  { text: "There was a lot of drama around my sis because of the civil war.  We share the same dad, but her mom...", sprite: "Sad" },
+  { text: "Yeah my dad is kind of very strict.", sprite: "Neutral" },
+  { text: "The Director?  Ah... I just want a safe place for me and Mylene thats all.", sprite: "Neutral" },
+  { text: "I know the director won't let anything serious happen to Mylene... I think...", sprite: "Sad" },
+  { text: "But if she gets hurt on one of your stupid expansion projects, I'LL KILL YOU.", sprite: "Evil Aura" },
+  { text: "My favorite food?  Fried Chicken.", sprite: "Happy" },
+  { text: "Me and Mylene were friends since we were kids.  I used to play over at the D'Escaido house when my sister was working there.", sprite: "Happy" },
+  { text: "The head of the house at the time was named Kyrie, she was great... she's gone now... rest in peace.", sprite: "Sad" },
+  { text: "The head of the house now is named Rodoreamon D'Escaido.  She wasn't originally a D'Escaido but she inhereted the name, just like Mylene.", sprite: "Neutral" },
+  { text: "Red Halo?  Yeah I used to be a member.  Maybe I still am a member?  Wouldn't you like to know?", sprite: "Happy" },
+  { text: "Ange?  I won't talk about her.", sprite: "Angry" },
+  { text: "We demonfolk can surpass the limits of Divine Release.  It can go all the way up to form 3.", sprite: "Neutral" },
+  { text: "We Vanians are well known for our mastery of Divine Release.", sprite: "Neutral" },
+  { text: "Kyrie could reach the third form when she was alive, but we all saw what it does to you.", sprite: "Sad" }
+];
+
+/* ─── Tavern Patron Registry ─────────────────────────────────────── */
+const TAVERN_PATRONS = [
+  {
+    id: 'yanyan',
+    name: 'Yanyan Itia',
+    introLines: YANYAN_INTRO,
+    talkLines: YANYAN_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/yanyan_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/yanyan/Yanyan Itia ${line.sprite}.png` : null,
+    defaultSprite: '../img/chara/yanyan/Yanyan Itia Neutral.png',
+  },
+  {
+    id: 'kinen',
+    name: 'Kinen Arima',
+    introLines: KINEN_INTRO,
+    talkLines: KINEN_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/kinen_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/kinen/Kinen Arima ${line.sprite}.png` : null,
+    defaultSprite: '../img/chara/kinen/Kinen Arima Neutral.png',
+  },
+  {
+    id: 'kathelyne',
+    name: 'Kathelyne Van Dodenrijk',
+    introLines: KATHELYNE_INTRO,
+    talkLines: KATHELYNE_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/kathelyne_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/kathelyn/Kathelyne ${line.sprite}.png` : null,
+    defaultSprite: '../img/chara/kathelyn/Kathelyne Neutral.png',
+  },
+  {
+    id: 'karin',
+    name: 'Karin Wi Vanian',
+    introLines: KARIN_INTRO,
+    talkLines: KARIN_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/karin_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/karin/Karin Wi Vanian ${line.sprite}.png` : null,
+    defaultSprite: '../img/chara/karin/Karin Wi Vanian Neutral.png',
+  }
+];
+
 /* ─── Scene Music Map ─────────────────────────────────────────────── */
 const DEFAULT_BGM = "../mu/Swords and Spells ~ Riannon Institute of Alchemy.mp3";
 const SCENE_MUSIC = {
@@ -207,7 +342,8 @@ const SCENE_MUSIC = {
   "airship-docks-overlay": "../mu/Fiona's Heist ~ Theft of Valkyria (2022 - Loop).mp3",
   "mirane-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
   "combat-school-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
-  "mea-hq-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3"
+  "mea-hq-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3",
+  "tavern-overlay": "../mu/Snow And Steel ~ The Theme of Mirane (Loop).mp3"
 };
 
 /* ─── State ───────────────────────────────────────────────────────── */
@@ -222,6 +358,10 @@ let combatSchoolVideoEnded = false;
 
 /* DialogueEngine instances — initialized in DOMContentLoaded */
 let guardEngine, queriEngine, nixEngine, mirrimeEngine, anielaEngine, vnEngine, deskEngine;
+let tavernEngine;
+let currentTavernPatron = null;
+let kinenSongAudio = null;
+let kinenSongPlaying = false;
 
 /* BGM State */
 let bgm = null;
@@ -278,6 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "airship-docks": ["city-gates-overlay", "airship-docks-overlay"],
         "city-gates": ["city-gates-overlay"],
         "combat-school": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "combat-school-overlay"],
+        "tavern": ["city-gates-overlay", "airship-docks-overlay", "mirane-overlay", "tavern-overlay"],
       };
       const chain = sceneChains[targetScene];
       if (chain) {
@@ -294,6 +435,10 @@ document.addEventListener("DOMContentLoaded", () => {
             startAnielaIntro();
           } else if (targetScene === "mirane" && mirrimeEngine && !mirrimeEngine.introComplete) {
             startMirrimeIntro();
+          } else if (targetScene === "tavern") {
+            applyTavernTimeOfDay();
+            loadTavernPatron();
+            startTavernIntro();
           }
           switchBGMForScene(chain[chain.length - 1]);
         }
@@ -418,6 +563,24 @@ function initDialogueEngines() {
     voiceVolume: 0.8,
     btnIconClass: 'desk-btn-icon',
     voiceAudio: voiceAudio,
+  });
+
+  // Tavern patron engine — reconfigured each visit via loadTavernPatron()
+  tavernEngine = new DialogueEngine({
+    id: 'tavern',
+    textEl: document.getElementById('tavern-text'),
+    indicatorEl: document.getElementById('tavern-next-indicator'),
+    spriteEl: document.getElementById('tavern-sprite'),
+    speakerNameEl: document.getElementById('tavern-speaker-name'),
+    actionsEl: document.getElementById('tavern-actions'),
+    introLines: YANYAN_INTRO,
+    talkLines: YANYAN_DIALOGUE,
+    voiceSrcFn: (type, index) => `assets/voice/yanyan_${type}_${index}.mp3`,
+    spriteSrcFn: (line) => line.sprite ? `../img/chara/yanyan/Yanyan Itia ${line.sprite}.png` : null,
+    voiceVolume: 0.8,
+    btnIconClass: 'scene-btn-icon',
+    voiceAudio: voiceAudio,
+    talkBtn: document.getElementById('btn-tavern-talk'),
   });
 }
 
@@ -555,6 +718,11 @@ function navigateToScene(fromOverlayId, toOverlayId) {
     }
   }
 
+  // Stop Kinen's song if leaving tavern
+  if (fromOverlayId === "tavern-overlay" && kinenSongPlaying) {
+    stopKinenSong();
+  }
+
   // Fade out current overlay
   fromOverlay.classList.add("hidden");
 
@@ -629,6 +797,13 @@ function navigateToScene(fromOverlayId, toOverlayId) {
       } else {
         startAnielaIntro();
       }
+    }
+
+    // Handle Tavern entry
+    if (toOverlayId === "tavern-overlay") {
+      applyTavernTimeOfDay();
+      loadTavernPatron();
+      startTavernIntro();
     }
   }, 600);
 }
@@ -845,6 +1020,60 @@ function initSceneNavigation() {
     });
   }
 
+  // MEA HQ → Expedition Registration
+  const regBtn = document.getElementById("btn-expedition-registration");
+  if (regBtn) {
+    regBtn.addEventListener("click", () => {
+      const mainActions = document.getElementById("mea-hq-actions");
+      const regActions = document.getElementById("mea-hq-registration-actions");
+
+      // Hide main action buttons
+      mainActions.style.display = "none";
+
+      // Play Aniela's registration line with voice and typewriter
+      const regLine = { text: "Oh?  Looking to sign up?", sprite: "3" };
+
+      // Use the engine's showLine to play voice + typewriter
+      // Voice file: aniela_registration_0.mp3
+      const origVoiceFn = anielaEngine.voiceSrcFn;
+      anielaEngine.voiceSrcFn = () => "assets/voice/aniela_registration_0.mp3";
+      anielaEngine.showLine(regLine, "registration", 0);
+      anielaEngine.voiceSrcFn = origVoiceFn;
+
+      // Wait for typing to complete, then show registration sub-actions
+      const waitForTyping = setInterval(() => {
+        if (!anielaEngine.isTyping) {
+          clearInterval(waitForTyping);
+          regActions.style.display = "flex";
+        }
+      }, 100);
+    });
+  }
+
+  // Registration → Creation Mode (opens character builder)
+  const regCreationBtn = document.getElementById("btn-reg-creation");
+  if (regCreationBtn) {
+    regCreationBtn.addEventListener("click", () => {
+      playSFX("footsteps");
+      window.open("../characterbuilder/index.html", "_blank");
+    });
+  }
+
+  // Registration → Back (return to main MEA HQ actions)
+  const regBackBtn = document.getElementById("btn-reg-back");
+  if (regBackBtn) {
+    regBackBtn.addEventListener("click", () => {
+      const mainActions = document.getElementById("mea-hq-actions");
+      const regActions = document.getElementById("mea-hq-registration-actions");
+      regActions.style.display = "none";
+      mainActions.style.display = "flex";
+
+      // Restore Aniela's last intro line
+      const lastIntro = ANIELA_INTRO[ANIELA_INTRO.length - 1];
+      anielaEngine.showLine(lastIntro, "intro", ANIELA_INTRO.length - 1);
+    });
+  }
+
   // MEA HQ — Talk to Aniela button
   const anielaTalkBtn = document.getElementById("btn-aniela-talk");
   if (anielaTalkBtn) {
@@ -863,6 +1092,57 @@ function initSceneNavigation() {
         advanceAnielaIntro();
       } else {
         anielaEngine.talk();
+      }
+    });
+  }
+
+  // Mirane → Tavern
+  const enterTavernBtn = document.getElementById("btn-enter-tavern");
+  if (enterTavernBtn) {
+    enterTavernBtn.addEventListener("click", () => {
+      navigateToScene("mirane-overlay", "tavern-overlay");
+    });
+  }
+
+  // Tavern → Back to Mirane
+  const tavernBackBtn = document.getElementById("btn-tavern-back");
+  if (tavernBackBtn) {
+    tavernBackBtn.addEventListener("click", () => {
+      navigateToScene("tavern-overlay", "mirane-overlay");
+    });
+  }
+
+  // Tavern — Talk button
+  const tavernTalkBtn = document.getElementById("btn-tavern-talk");
+  if (tavernTalkBtn) {
+    tavernTalkBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      tavernEngine.talk();
+    });
+  }
+
+  // Tavern — Click dialogue to advance intro or talk
+  const tavernDialogueBox = document.getElementById("tavern-dialogue-box");
+  if (tavernDialogueBox) {
+    tavernDialogueBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!tavernEngine.introComplete) {
+        advanceTavernIntro();
+      } else {
+        tavernEngine.talk();
+      }
+    });
+  }
+
+  // Tavern — Kinen's Song button
+  const kinenSongBtn = document.getElementById("btn-kinen-song");
+  if (kinenSongBtn) {
+    kinenSongBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (kinenSongPlaying) {
+        stopKinenSong();
+      } else {
+        playKinenSong();
       }
     });
   }
@@ -954,6 +1234,129 @@ function startAnielaIntro() {
 
 function advanceAnielaIntro() {
   anielaEngine.advanceIntro();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TAVERN — "No Pain No Mirane" Random Patron System
+   ═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * Randomly select a patron from TAVERN_PATRONS and reconfigure the engine.
+ * Called each time the player enters the tavern.
+ */
+function loadTavernPatron() {
+  const patron = TAVERN_PATRONS[Math.floor(Math.random() * TAVERN_PATRONS.length)];
+  currentTavernPatron = patron;
+
+  // Reconfigure engine with patron's data
+  tavernEngine.id = patron.id;
+  tavernEngine.introLines = patron.introLines;
+  tavernEngine.talkLines = patron.talkLines;
+  tavernEngine.voiceSrcFn = patron.voiceSrcFn;
+  tavernEngine.spriteSrcFn = patron.spriteSrcFn;
+  tavernEngine.reset();
+
+  // Update DOM
+  document.getElementById('tavern-speaker-name').textContent = patron.name;
+  document.getElementById('tavern-sprite').src = patron.defaultSprite;
+  document.getElementById('tavern-sprite').alt = patron.name;
+
+  // Update talk button label
+  const talkBtn = document.getElementById('btn-tavern-talk');
+  if (talkBtn) {
+    talkBtn.innerHTML = `<span class="scene-btn-icon">💬</span> Talk to ${patron.name}`;
+  }
+
+  // Show/hide Kinen's song button
+  const songBtn = document.getElementById('btn-kinen-song');
+  if (songBtn) {
+    songBtn.style.display = (patron.id === 'kinen') ? '' : 'none';
+  }
+}
+
+/**
+ * Apply day or night tavern background based on system clock.
+ * Day = 6:00-17:59, Night = 18:00-5:59
+ */
+function applyTavernTimeOfDay() {
+  const bg = document.getElementById('tavern-bg');
+  const hour = new Date().getHours();
+  const isNight = hour >= 18 || hour < 6;
+  bg.className = 'scene-bg ' + (isNight ? 'tavern-bg-night' : 'tavern-bg-day');
+}
+
+function startTavernIntro() {
+  tavernEngine.startIntro();
+}
+
+function advanceTavernIntro() {
+  tavernEngine.advanceIntro();
+}
+
+/**
+ * Play Kinen's lute song — swap sprite, mute BGM, play song.
+ * When the song finishes, auto-restore to Smug sprite + BGM.
+ */
+function playKinenSong() {
+  kinenSongPlaying = true;
+
+  // Swap to Lute sprite
+  const sprite = document.getElementById('tavern-sprite');
+  if (sprite) sprite.src = '../img/chara/kinen/Kinen Arima Lute.png';
+
+  // Show narration text
+  const textEl = document.getElementById('tavern-text');
+  if (textEl) textEl.textContent = 'Kinen Arima sings you a song.';
+
+  // Pause voice if playing
+  voiceAudio.pause();
+  voiceAudio.src = '';
+
+  // Mute BGM
+  if (bgm) bgm.volume = 0;
+
+  // Create and play the song
+  kinenSongAudio = new Audio('assets/music/Kinen\'s Song.mp3');
+  kinenSongAudio.volume = 0.8;
+  kinenSongAudio.play().catch(err => console.log('Kinen song blocked:', err));
+
+  // When song ends, restore everything
+  kinenSongAudio.addEventListener('ended', () => {
+    stopKinenSong();
+  });
+
+  // Update button text
+  const btn = document.getElementById('btn-kinen-song');
+  if (btn) btn.innerHTML = '<span class="scene-btn-icon">⏹</span> Stop Song';
+}
+
+/**
+ * Stop Kinen's song — restore Smug sprite and BGM.
+ */
+function stopKinenSong() {
+  kinenSongPlaying = false;
+
+  // Stop the song
+  if (kinenSongAudio) {
+    kinenSongAudio.pause();
+    kinenSongAudio.src = '';
+    kinenSongAudio = null;
+  }
+
+  // Restore Smug sprite
+  const sprite = document.getElementById('tavern-sprite');
+  if (sprite && currentTavernPatron && currentTavernPatron.id === 'kinen') {
+    sprite.src = '../img/chara/kinen/Kinen Arima Smug.png';
+  }
+
+  // Restore BGM
+  if (bgm && !bgmIsMuted) {
+    bgm.volume = bgmVolume;
+  }
+
+  // Restore button text
+  const btn = document.getElementById('btn-kinen-song');
+  if (btn) btn.innerHTML = '<span class="scene-btn-icon">🎵</span> Listen to her Song';
 }
 
 function returnToGates() {
@@ -1580,12 +1983,19 @@ function initImageLightbox() {
   const contentArea = document.querySelector(".reader-content-area");
   if (contentArea) {
     contentArea.addEventListener("click", (e) => {
-      const img = e.target.closest(".book-image, .book-cover-img");
+      // Support both novel-style .book-image and lore-style .book-illustration img
+      let img = e.target.closest(".book-image, .book-cover-img");
+      if (!img && e.target.tagName === "IMG" && e.target.closest(".book-illustration")) {
+        img = e.target;
+      }
       if (!img) return;
       
       modal.style.display = "flex";
       modalImg.src = img.src;
-      captionText.textContent = img.alt || "";
+      // Use the illustration caption if available, otherwise fall back to alt text
+      const caption = img.closest(".book-illustration");
+      const captionEl = caption && caption.querySelector(".book-illustration-caption");
+      captionText.textContent = captionEl ? captionEl.textContent : (img.alt || "");
       
       // Trigger reflow and show animation
       requestAnimationFrame(() => {
@@ -1869,8 +2279,14 @@ function initBGM() {
     slider.value = bgmVolume;
     slider.addEventListener("input", (e) => {
       bgmVolume = parseFloat(e.target.value);
-      if (!bgmIsMuted) {
-        bgm.volume = bgmVolume;
+      if (bgmVolume > 0) {
+        bgmIsMuted = false;
+      }
+      if (bgm) {
+        bgm.volume = bgmIsMuted ? 0 : bgmVolume;
+        if (!bgmIsMuted && bgm.paused) {
+          bgm.play().catch(err => console.log("BGM play failed on slider change:", err));
+        }
       }
       syncBGMControls();
     });
@@ -1889,6 +2305,9 @@ function toggleMute() {
   bgmIsMuted = !bgmIsMuted;
   if (bgm) {
     bgm.volume = bgmIsMuted ? 0 : bgmVolume;
+    if (!bgmIsMuted && bgm.paused) {
+      bgm.play().catch(err => console.log("BGM play failed on unmute:", err));
+    }
   }
   syncBGMControls();
 }
@@ -1937,4 +2356,13 @@ function switchBGMForScene(sceneId) {
   if (wasPlaying) {
     bgm.play().catch(err => console.log("BGM switch blocked:", err));
   }
+}
+
+function muteBGMForMemorial() {
+  bgmIsMuted = true;
+  if (bgm) {
+    bgm.volume = 0;
+    bgm.pause();
+  }
+  syncBGMControls();
 }

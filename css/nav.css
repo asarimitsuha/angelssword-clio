@@ -35,21 +35,16 @@
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--clr-gold);
   text-decoration: none;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s var(--ease-spring);
 }
 .nav-logo:hover {
   transform: scale(1.05);
-  color: var(--clr-gold);
 }
-.logo-icon {
-  font-size: 1.6rem;
-  filter: drop-shadow(0 0 8px var(--clr-gold-glow));
+.nav-logo-img {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.6));
 }
 
 .nav-links {

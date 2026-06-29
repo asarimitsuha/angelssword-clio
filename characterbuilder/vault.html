@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Characters — Angel's Sword</title>
+  <meta name="description" content="Your character vault for Angel's Sword TTRPG">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="vault.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="vault-scene">
+    <!-- Header -->
+    <header class="vault-header">
+      <a href="index.html" class="vault-back-link">← Character Builder</a>
+      <h1 class="vault-title">My Characters</h1>
+      <p class="vault-subtitle">Your completed adventurers</p>
+    </header>
+
+    <!-- Character Grid -->
+    <div class="vault-grid" id="vault-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="vault-empty" id="vault-empty" style="display:none;">
+      <div class="vault-empty-icon">⚔️</div>
+      <h2 class="vault-empty-title">No Characters Yet</h2>
+      <p class="vault-empty-text">Complete a character in the builder to see them here.</p>
+      <a href="index.html" class="builder-btn vault-empty-btn">Create a Character</a>
+    </div>
+
+    <!-- Character Detail Modal -->
+    <div class="vault-detail-overlay" id="vault-detail-overlay">
+      <div class="vault-detail-modal" id="vault-detail-modal">
+        <div class="vault-detail-header">
+          <h2 class="vault-detail-name" id="vault-detail-name"></h2>
+          <div class="vault-detail-header-actions">
+            <a class="vault-open-sheet-btn" id="vault-open-sheet-btn" title="Open Full Sheet">📋 Open Sheet</a>
+            <button class="vault-detail-close" id="vault-detail-close">✕</button>
+          </div>
+        </div>
+        <div class="vault-detail-body" id="vault-detail-body">
+          <!-- Full character sheet rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/character.js"></script>
+  <script src="vault.js"></script>
+</body>
+</html>

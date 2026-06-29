@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Builder — The Chronicles of Lyr</title>
+  <meta name="description" content="Build your adventurer for Angel's Sword RPG. Browse ancestries, classes, races, items, and more from the world of Lyr.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/nav.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="../../combattutorial/assets/queri_normal.png">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       AMBIENT PARTICLES CANVAS
+       ═══════════════════════════════════════════════════ -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+       ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Angel's Sword</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../combattutorial/index.html">Combat School</a></li>
+        <li><a href="../../lore/index.html">Adventure</a></li>
+        <li><a href="index.html" class="active-link">Character Builder</a></li>
+        <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       HERO / PAGE HEADER
+       ═══════════════════════════════════════════════════ -->
+  <section class="cb-hero" id="cb-hero">
+    <div class="cb-hero-bg"></div>
+    <div class="cb-hero-content">
+      <span class="cb-ornament">✦ ━━━━━━ ✦</span>
+      <h1 class="cb-title">Character Builder</h1>
+      <p class="cb-subtitle">API Connection Explorer — Phase 1</p>
+      <p class="cb-desc">Testing connectivity to the Angel's Sword TTRPG API. Each card below represents an endpoint group — click <strong>Test</strong> to verify access.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       CONNECTION STATUS BAR
+       ═══════════════════════════════════════════════════ -->
+  <div class="status-bar" id="status-bar">
+    <div class="status-bar-inner">
+      <div class="status-indicator" id="status-indicator">
+        <span class="status-dot"></span>
+        <span class="status-text">Not Connected</span>
+      </div>
+      <div class="status-version" id="status-version"></div>
+      <button class="btn-test-all" id="btn-test-all">
+        <span class="btn-icon">⚡</span>
+        Test All Endpoints
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       ENDPOINT TEST GRID
+       ═══════════════════════════════════════════════════ -->
+  <main class="cb-main">
+    <div class="cb-container">
+
+      <!-- Version -->
+      <div class="endpoint-card scroll-reveal" data-endpoint="version" id="card-version">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">📋</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Versioning</h3>
+            <code class="card-route">/version/latest</code>
+          </div>
+          <button class="btn-test" data-target="version">Test</button>
+        </div>
+        <div class="card-result" id="result-version"></div>
+      </div>
+
+      <!-- Ancestries -->
+      <div class="endpoint-card scroll-reveal" data-delay="100" data-endpoint="ancestries" id="card-ancestries">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">🧬</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Ancestries</h3>
+            <code class="card-route">/:ver/ancestries</code>
+          </div>
+          <button class="btn-test" data-target="ancestries">Test</button>
+        </div>
+        <div class="card-result" id="result-ancestries"></div>
+      </div>
+
+      <!-- Classes -->
+      <div class="endpoint-card scroll-reveal" data-delay="200" data-endpoint="classes" id="card-classes">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">⚔️</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Classes</h3>
+            <code class="card-route">/:ver/classes</code>
+          </div>
+          <button class="btn-test" data-target="classes">Test</button>
+        </div>
+        <div class="card-result" id="result-classes"></div>
+      </div>
+
+      <!-- Primary Races -->
+      <div class="endpoint-card scroll-reveal" data-delay="300" data-endpoint="primary-races" id="card-primary-races">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">🧝</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Primary Races</h3>
+            <code class="card-route">/:ver/primary-races</code>
+          </div>
+          <button class="btn-test" data-target="primary-races">Test</button>
+        </div>
+        <div class="card-result" id="result-primary-races"></div>
+      </div>
+
+      <!-- Breakthroughs -->
+      <div class="endpoint-card scroll-reveal" data-delay="100" data-endpoint="breakthroughs" id="card-breakthroughs">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">💥</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Breakthroughs</h3>
+            <code class="card-route">/:ver/breakthroughs</code>
+          </div>
+          <button class="btn-test" data-target="breakthroughs">Test</button>
+        </div>
+        <div class="card-result" id="result-breakthroughs"></div>
+      </div>
+
+      <!-- True Abilities -->
+      <div class="endpoint-card scroll-reveal" data-delay="200" data-endpoint="true-abilities" id="card-true-abilities">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">✨</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">True Abilities</h3>
+            <code class="card-route">/:ver/true-abilities</code>
+          </div>
+          <button class="btn-test" data-target="true-abilities">Test</button>
+        </div>
+        <div class="card-result" id="result-true-abilities"></div>
+      </div>
+
+      <!-- Key Abilities -->
+      <div class="endpoint-card scroll-reveal" data-delay="300" data-endpoint="key-abilities" id="card-key-abilities">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">🔑</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Key Abilities</h3>
+            <code class="card-route">/:ver/key-abilities</code>
+          </div>
+          <button class="btn-test" data-target="key-abilities">Test</button>
+        </div>
+        <div class="card-result" id="result-key-abilities"></div>
+      </div>
+
+      <!-- Items -->
+      <div class="endpoint-card scroll-reveal" data-delay="100" data-endpoint="items" id="card-items">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">🎒</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Items</h3>
+            <code class="card-route">/:ver/items</code>
+          </div>
+          <button class="btn-test" data-target="items">Test</button>
+        </div>
+        <div class="card-result" id="result-items"></div>
+      </div>
+
+      <!-- Keywords -->
+      <div class="endpoint-card scroll-reveal" data-delay="200" data-endpoint="keywords" id="card-keywords">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">🏷️</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Keywords</h3>
+            <code class="card-route">/:ver/keywords</code>
+          </div>
+          <button class="btn-test" data-target="keywords">Test</button>
+        </div>
+        <div class="card-result" id="result-keywords"></div>
+      </div>
+
+      <!-- Monsters -->
+      <div class="endpoint-card scroll-reveal" data-delay="300" data-endpoint="monsters" id="card-monsters">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">👹</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Bestiary</h3>
+            <code class="card-route">/:ver/monsters</code>
+          </div>
+          <button class="btn-test" data-target="monsters">Test</button>
+        </div>
+        <div class="card-result" id="result-monsters"></div>
+      </div>
+
+      <!-- Blogs -->
+      <div class="endpoint-card scroll-reveal" data-delay="100" data-endpoint="blogs" id="card-blogs">
+        <div class="card-header">
+          <div class="card-icon-wrap"><span class="card-icon">📰</span></div>
+          <div class="card-titles">
+            <h3 class="card-name">Blogs</h3>
+            <code class="card-route">/blogs</code>
+          </div>
+          <button class="btn-test" data-target="blogs">Test</button>
+        </div>
+        <div class="card-result" id="result-blogs"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">⚔ Angel's Sword</span>
+        <p class="footer-tagline">The Chronicles of Lyr — Character Builder</p>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024-2026 Angel's Sword Studios, LLC. All rights reserved.</p>
+        <p class="footer-made-with">Crafted with ✦ for adventurers everywhere</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/shared.js"></script>
+  <script src="api-test.js"></script>
+</body>
+</html>

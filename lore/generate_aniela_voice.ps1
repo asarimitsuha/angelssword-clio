@@ -50,7 +50,11 @@ $talkLines = @(
     @{ text = "Princess Cherry of Madeline is always helping us out so much.  I don't mind the propaganda."; tag = "[appreciatively, slightly amused] "; id = "aniela_talk_21" }
 )
 
-$allLines = $introLines + $talkLines
+$registrationLines = @(
+    @{ text = "Oh?  Looking to sign up?"; tag = "[playfully, curious] "; id = "aniela_registration_0" }
+)
+
+$allLines = $introLines + $talkLines + $registrationLines
 $voiceDir = "h:\Git\angelssword-clio\lore\assets\voice"
 
 Write-Host "Generating Aniela voice lines ($($allLines.Count) total)..."

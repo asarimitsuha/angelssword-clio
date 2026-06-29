@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Builder — The Chronicles of Lyr</title>
+  <meta name="description" content="Create your adventurer for Angel's Sword RPG. Guided character creation wizard with Aniela from the Mirane Expedition Alliance.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
+</head>
+<body>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION BAR
+       ═══════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Angel's Sword</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../lore/index.html">Adventure</a></li>
+        <li><a href="index.html" class="active-link">Character Builder</a></li>
+        <li><a href="vault.html">My Characters</a></li>
+        <li><a href="https://rpg.angelssword.com" target="_blank" class="nav-cta">Play Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       FULL-SCREEN VN SCENE
+       ═══════════════════════════════════════════════════ -->
+  <div class="builder-scene" id="builder-scene">
+
+    <!-- Background -->
+    <div class="builder-scene-bg"></div>
+
+    <!-- ─── Step Progress Bar ──────────────────────────── -->
+    <div class="step-progress" id="step-progress">
+      <div class="step-track">
+        <div class="step-pip active" data-step="1"><span class="pip-num">1</span><span class="pip-label">Race</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="2"><span class="pip-num">2</span><span class="pip-label">Stats</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="3"><span class="pip-num">3</span><span class="pip-label">Breakthroughs</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="4"><span class="pip-num">4</span><span class="pip-label">Classes</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="5"><span class="pip-num">5</span><span class="pip-label">Skills</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="6"><span class="pip-num">6</span><span class="pip-label">Equipment</span></div>
+        <div class="step-connector"></div>
+        <div class="step-pip" data-step="7"><span class="pip-num">7</span><span class="pip-label">Review</span></div>
+      </div>
+    </div>
+
+    <!-- ─── Phase Header (always visible above scroll) ─── -->
+    <div class="phase-header" id="phase-header" style="display: none;">
+      <h2 class="phase-title" id="phase-header-title"></h2>
+      <!-- Dynamic extras (budget, search) injected by JS -->
+      <div class="phase-header-extras" id="phase-header-extras"></div>
+    </div>
+
+    <!-- ─── Scene Content ──────────────────────────────── -->
+    <div class="builder-scene-content">
+
+      <!-- Aniela Sprite (behind dialogue, like the lore system) -->
+      <div class="builder-sprite-container">
+        <img src="../img/chara/aniela/aniela1.png" alt="Aniela" class="builder-sprite" id="aniela-sprite">
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: RACE SELECTION
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase" id="phase-race">
+        <div class="phase-ui" id="ui-race" style="display: none;">
+          <h2 class="phase-title">Choose Your Race</h2>
+          <div class="race-grid" id="race-grid">
+            <!-- Populated by JS from API -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: SUBRACE / ANCESTRY SELECTION
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-subrace">
+        <div class="phase-ui" id="ui-subrace" style="display: none;">
+          <h2 class="phase-title" id="subrace-title">Choose Your Ancestry</h2>
+          <div class="subrace-grid" id="subrace-grid">
+            <!-- Populated by JS from API -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: DEMON HOUSE SELECTION
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-demon-house">
+        <div class="phase-ui" id="ui-demon-house" style="display: none;">
+          <h2 class="phase-title">Demon House</h2>
+          <p class="phase-subtitle">Your house name becomes your middle name and grants a unique ability.</p>
+          <div class="house-grid" id="house-grid">
+            <!-- Built by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: HUMAN BONUS SELECTION
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-human-bonus">
+        <div class="phase-ui" id="ui-human-bonus" style="display: none;">
+          <h2 class="phase-title">Human Versatility</h2>
+          <p class="phase-subtitle">Choose one main stat and one sub stat to receive <span class="bonus-highlight">+1</span></p>
+
+          <h3 class="bonus-group-label">Main Stat (+1)</h3>
+          <div class="stat-slots bonus-pick-slots" id="human-main-pick">
+            <div class="stat-slot bonus-pick" data-stat="power">
+              <div class="slot-icon">⚔️</div>
+              <div class="slot-name">Power</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="focus">
+              <div class="slot-icon">🎯</div>
+              <div class="slot-name">Focus</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="agility">
+              <div class="slot-icon">💨</div>
+              <div class="slot-name">Agility</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="toughness">
+              <div class="slot-icon">🛡️</div>
+              <div class="slot-name">Toughness</div>
+            </div>
+          </div>
+
+          <h3 class="bonus-group-label">Sub Stat (+1)</h3>
+          <div class="stat-slots bonus-pick-slots" id="human-sub-pick">
+            <div class="stat-slot bonus-pick" data-stat="fitness">
+              <div class="slot-icon">💪</div>
+              <div class="slot-name">Fitness</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="cunning">
+              <div class="slot-icon">🗡️</div>
+              <div class="slot-name">Cunning</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="reason">
+              <div class="slot-icon">📖</div>
+              <div class="slot-name">Reason</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="awareness">
+              <div class="slot-icon">👁️</div>
+              <div class="slot-name">Awareness</div>
+            </div>
+            <div class="stat-slot bonus-pick" data-stat="presence">
+              <div class="slot-icon">👑</div>
+              <div class="slot-name">Presence</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: MAIN STATS
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-main-stats">
+        <div class="phase-ui" id="ui-main-stats" style="display: none;">
+          <h2 class="phase-title">Main Stats</h2>
+
+          <div class="stat-tokens" id="main-stat-tokens">
+            <button class="stat-token" data-value="5">5</button>
+            <button class="stat-token" data-value="4">4</button>
+            <button class="stat-token" data-value="4">4</button>
+            <button class="stat-token" data-value="3">3</button>
+          </div>
+
+          <div class="stat-slots" id="main-stat-slots">
+            <div class="stat-slot" data-stat="power">
+              <div class="slot-icon">⚔️</div>
+              <div class="slot-name">Power</div>
+              <div class="slot-value" data-stat="power">—</div>
+              <div class="slot-desc">Damage &amp; max mana</div>
+            </div>
+            <div class="stat-slot" data-stat="focus">
+              <div class="slot-icon">🎯</div>
+              <div class="slot-name">Focus</div>
+              <div class="slot-value" data-stat="focus">—</div>
+              <div class="slot-desc">Accuracy &amp; effect DCs</div>
+            </div>
+            <div class="stat-slot" data-stat="agility">
+              <div class="slot-icon">💨</div>
+              <div class="slot-name">Agility</div>
+              <div class="slot-value" data-stat="agility">—</div>
+              <div class="slot-desc">Evasion, RP &amp; initiative</div>
+            </div>
+            <div class="stat-slot" data-stat="toughness">
+              <div class="slot-icon">🛡️</div>
+              <div class="slot-name">Toughness</div>
+              <div class="slot-value" data-stat="toughness">—</div>
+              <div class="slot-desc">HP, guard &amp; saves</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: SUB STATS
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-sub-stats">
+        <div class="phase-ui" id="ui-sub-stats" style="display: none;">
+          <h2 class="phase-title">Sub Stats</h2>
+
+          <div class="stat-tokens" id="sub-stat-tokens">
+            <button class="stat-token" data-value="5">5</button>
+            <button class="stat-token" data-value="4">4</button>
+            <button class="stat-token" data-value="3">3</button>
+            <button class="stat-token" data-value="2">2</button>
+            <button class="stat-token" data-value="1">1</button>
+          </div>
+
+          <div class="stat-slots" id="sub-stat-slots">
+            <div class="stat-slot" data-stat="fitness">
+              <div class="slot-icon">💪</div>
+              <div class="slot-name">Fitness</div>
+              <div class="slot-value" data-stat="fitness">—</div>
+              <div class="slot-desc">Athletics, Riding</div>
+            </div>
+            <div class="stat-slot" data-stat="cunning">
+              <div class="slot-icon">🗡️</div>
+              <div class="slot-name">Cunning</div>
+              <div class="slot-value" data-stat="cunning">—</div>
+              <div class="slot-desc">Deception, Stealth, Roguecraft</div>
+            </div>
+            <div class="stat-slot" data-stat="reason">
+              <div class="slot-icon">📖</div>
+              <div class="slot-name">Reason</div>
+              <div class="slot-value" data-stat="reason">—</div>
+              <div class="slot-desc">Magic, History, Medicine &amp; more</div>
+            </div>
+            <div class="stat-slot" data-stat="awareness">
+              <div class="slot-icon">👁️</div>
+              <div class="slot-name">Awareness</div>
+              <div class="slot-value" data-stat="awareness">—</div>
+              <div class="slot-desc">Perception, Insight, Survival</div>
+            </div>
+            <div class="stat-slot" data-stat="presence">
+              <div class="slot-icon">👑</div>
+              <div class="slot-name">Presence</div>
+              <div class="slot-value" data-stat="presence">—</div>
+              <div class="slot-desc">Art, Intimidation, Negotiation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: DERIVED STATS REVIEW
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-derived">
+        <div class="phase-ui" id="ui-derived" style="display: none;">
+          <h2 class="phase-title">Your Stats</h2>
+
+          <!-- Main Stat Summary with Race Bonuses -->
+          <h3 class="bonus-group-label">Main Stats</h3>
+          <div class="stat-summary-row" id="summary-main-stats">
+            <!-- Built by JS -->
+          </div>
+
+          <!-- Sub Stat Summary with Race Bonuses -->
+          <h3 class="bonus-group-label">Sub Stats</h3>
+          <div class="stat-summary-row" id="summary-sub-stats">
+            <!-- Built by JS -->
+          </div>
+
+          <!-- Derived Stats -->
+          <h3 class="bonus-group-label" style="margin-top: 28px;">Derived Stats</h3>
+          <div class="derived-grid">
+            <div class="derived-item">
+              <span class="derived-label">HP</span>
+              <span class="derived-value" id="derived-hp">—</span>
+              <span class="derived-formula">20 + (Tough × 10)</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Mana</span>
+              <span class="derived-value" id="derived-mana">—</span>
+              <span class="derived-formula">6 + Power</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">RP</span>
+              <span class="derived-value" id="derived-rp">—</span>
+              <span class="derived-formula">2 + Agility</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Evasion</span>
+              <span class="derived-value" id="derived-evasion">—</span>
+              <span class="derived-formula">7 + Agility</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Potency</span>
+              <span class="derived-value" id="derived-potency">—</span>
+              <span class="derived-formula">11 + Focus</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Guard</span>
+              <span class="derived-value" id="derived-guard">—</span>
+              <span class="derived-formula">Equip + Tough</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Initiative</span>
+              <span class="derived-value" id="derived-initiative">—</span>
+              <span class="derived-formula">= Agility</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Save Bonus</span>
+              <span class="derived-value" id="derived-save">—</span>
+              <span class="derived-formula">= Toughness</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">AP</span>
+              <span class="derived-value">4</span>
+              <span class="derived-formula">Always 4</span>
+            </div>
+            <div class="derived-item">
+              <span class="derived-label">Speed</span>
+              <span class="derived-value">20</span>
+              <span class="derived-formula">Base 20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: BREAKTHROUGHS
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-breakthroughs">
+        <div class="phase-ui" id="ui-breakthroughs" style="display: none;">
+          <h2 class="phase-title">Breakthroughs</h2>
+
+          <div class="bt-layout">
+            <!-- Cards grid -->
+            <div class="bt-grid" id="bt-grid">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Cart sidebar -->
+            <div class="bt-cart" id="bt-cart">
+              <div class="bt-cart-header">
+                <span class="bt-cart-title">Selected</span>
+                <span class="bt-cart-count" id="bt-cart-count">0</span>
+              </div>
+              <div class="bt-cart-items" id="bt-cart-items">
+                <div class="bt-cart-empty">No breakthroughs selected</div>
+              </div>
+              <div class="bt-cart-total">
+                <span>Total Cost</span>
+                <span id="bt-cart-total-cost">0 EXP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Breakthrough Detail Modal ─── -->
+      <div class="bt-detail-overlay" id="bt-detail-overlay">
+        <div class="bt-detail-modal" id="bt-detail-modal">
+          <button class="bt-detail-close" id="bt-detail-close">✕</button>
+          <div class="bt-detail-header">
+            <h3 class="bt-detail-name" id="bt-detail-name"></h3>
+            <span class="bt-detail-cost" id="bt-detail-cost"></span>
+          </div>
+          <div class="bt-detail-req" id="bt-detail-req"></div>
+          <div class="bt-detail-desc" id="bt-detail-desc"></div>
+          <button class="bt-detail-toggle-btn" id="bt-detail-toggle-btn">Select</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: CLASSES
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-classes">
+        <div class="phase-ui" id="ui-classes" style="display: none;">
+
+          <div class="bt-layout">
+            <!-- Cards grid (reuses bt-grid styling) -->
+            <div class="cls-grid" id="cls-grid">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Cart sidebar -->
+            <div class="bt-cart cls-cart" id="cls-cart">
+              <div class="bt-cart-header">
+                <span class="bt-cart-title">Classes</span>
+                <span class="bt-cart-count" id="cls-cart-count">0</span>
+              </div>
+              <div class="bt-cart-items" id="cls-cart-items">
+                <div class="bt-cart-empty">No classes selected</div>
+              </div>
+              <div class="bt-cart-total">
+                <span>Total Cost</span>
+                <span id="cls-cart-total-cost">0 EXP</span>
+              </div>
+              <div class="cls-cart-ip">
+                <span>IP Used</span>
+                <span id="cls-cart-ip-used">0 / 3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: SKILLS
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-skills">
+        <div class="phase-ui" id="ui-skills" style="display: none;">
+
+          <!-- Source resolution box (shows current skill source) -->
+          <div class="skill-source-box" id="skill-source-box">
+            <div class="skill-source-title" id="skill-source-name">Personal Skills</div>
+            <div class="skill-source-subtitle">
+              Remaining: <span class="skill-points-remaining" id="skill-points-remaining">10</span>
+            </div>
+          </div>
+
+          <div class="skill-layout">
+            <!-- Skills grid (organized by sub-stat) -->
+            <div class="skill-grid" id="skill-grid">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Skill summary sidebar -->
+            <div class="skill-summary" id="skill-summary">
+              <div class="skill-summary-header">
+                <span class="skill-summary-title">Skill Allocation</span>
+              </div>
+              <div class="skill-summary-items" id="skill-summary-items">
+                <div class="bt-cart-empty">No skills allocated</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: ITEMS / EQUIPMENT
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-items">
+        <div class="phase-ui" id="ui-items" style="display: none;">
+
+          <!-- Budget header -->
+          <div class="item-budget-box" id="item-budget-box">
+            <div class="item-budget-title">Equipment Budget</div>
+            <div class="item-budget-amount" id="item-budget-amount">3000</div>
+            <div class="item-budget-label">Clim remaining</div>
+          </div>
+
+          <!-- Category filter tabs -->
+          <div class="item-category-tabs" id="item-category-tabs">
+            <button class="item-tab active" data-category="all">All</button>
+            <button class="item-tab" data-category="Weapon">Weapons</button>
+            <button class="item-tab" data-category="Armor">Armor</button>
+            <button class="item-tab" data-category="Adventuring">Adventuring</button>
+            <button class="item-tab" data-category="Alchemy">Alchemy</button>
+            <button class="item-tab" data-category="Artifice">Artifice</button>
+            <button class="item-tab" data-category="Crafting">Crafting</button>
+            <button class="item-tab" data-category="Mount">Mounts</button>
+          </div>
+
+          <!-- Main layout: grid + cart -->
+          <div class="item-layout">
+            <div class="item-grid" id="item-grid">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Shopping cart sidebar -->
+            <div class="item-cart" id="item-cart">
+              <div class="item-cart-header">
+                <span class="item-cart-title">Shopping Cart</span>
+              </div>
+              <div class="item-cart-items" id="item-cart-items">
+                <div class="item-cart-empty">No items purchased</div>
+              </div>
+              <div class="item-cart-total" id="item-cart-total">
+                <span>Total</span>
+                <span class="item-cart-total-amount" id="item-cart-total-amount">0 Clim</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           PHASE: CHARACTER SHEET (REVIEW)
+           ═══════════════════════════════════════════════ -->
+      <div class="builder-phase hidden" id="phase-review">
+        <div class="phase-ui" id="ui-review" style="display: none;">
+          <div class="cs-sheet">
+
+            <!-- ─── Top Row: Portrait + Identity + Stats ─── -->
+            <div class="cs-top-row">
+
+              <!-- Portrait -->
+              <div class="cs-portrait-frame">
+                <div class="cs-portrait-area" id="cs-portrait-area">
+                  <canvas id="cs-portrait-canvas" width="220" height="280"></canvas>
+                  <div class="cs-portrait-placeholder" id="cs-portrait-placeholder">
+                    <span class="cs-portrait-icon">📷</span>
+                    <span class="cs-portrait-label">Upload Portrait</span>
+                  </div>
+                  <input type="file" id="cs-portrait-input" accept="image/*" style="display:none;">
+                </div>
+                <div class="cs-portrait-controls" id="cs-portrait-controls" style="display:none;">
+                  <button class="cs-portrait-btn" id="cs-zoom-in" title="Zoom In">+</button>
+                  <button class="cs-portrait-btn" id="cs-zoom-out" title="Zoom Out">−</button>
+                  <button class="cs-portrait-btn" id="cs-portrait-reset" title="Reset">↺</button>
+                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-change" title="Change Image">📷</button>
+                  <button class="cs-portrait-btn cs-portrait-btn-commit" id="cs-portrait-commit" title="Lock Portrait">✓</button>
+                </div>
+                <div class="cs-portrait-controls cs-portrait-locked" id="cs-portrait-locked" style="display:none;">
+                  <span class="cs-portrait-locked-label">Portrait Locked</span>
+                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-edit" title="Edit Portrait">✎</button>
+                </div>
+              </div>
+
+              <!-- Identity + Stats Block -->
+              <div class="cs-identity-stats">
+                <!-- Name + Race -->
+                <div class="cs-identity">
+                  <input type="text" class="cs-name-input" id="cs-char-name" placeholder="Character Name" spellcheck="false">
+                  <div class="cs-identity-row">
+                    <div class="cs-race-line" id="cs-race-line"></div>
+                    <div class="cs-gender-select">
+                      <label class="cs-gender-label">Gender</label>
+                      <div class="cs-gender-options" id="cs-gender-options">
+                        <button class="cs-gender-btn" data-gender="Male">Male</button>
+                        <button class="cs-gender-btn" data-gender="Female">Female</button>
+                        <button class="cs-gender-btn" data-gender="N/A">N/A</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Main Stats -->
+                <div class="cs-stat-group">
+                  <div class="cs-stat-group-title">Main Stats</div>
+                  <div class="cs-stat-blocks" id="cs-main-stats">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+
+                <!-- Sub Stats -->
+                <div class="cs-stat-group">
+                  <div class="cs-stat-group-title">Sub Stats</div>
+                  <div class="cs-stat-blocks" id="cs-sub-stats">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ─── Derived Stats Bar ─── -->
+            <div class="cs-derived-bar" id="cs-derived-bar">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- ─── Soul Core + EXP ─── -->
+            <div class="cs-sc-exp-bar" id="cs-sc-exp-bar">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- ─── Two-Column: Classes + Breakthroughs ─── -->
+            <div class="cs-two-col">
+              <div class="cs-section">
+                <div class="cs-section-title">Classes</div>
+                <div class="cs-list" id="cs-classes-list">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+              <div class="cs-section">
+                <div class="cs-section-title">Breakthroughs</div>
+                <div class="cs-list" id="cs-breakthroughs-list">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- ─── Skills ─── -->
+            <div class="cs-section cs-section-full">
+              <div class="cs-section-title">Skills</div>
+              <div class="cs-skills-grid" id="cs-skills-grid">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ─── Equipment ─── -->
+            <div class="cs-section cs-section-full">
+              <div class="cs-section-title">
+                Equipment
+                <span class="cs-budget-tag" id="cs-clim-remaining"></span>
+              </div>
+              <div class="cs-equip-list" id="cs-equip-list">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ─── Complete Character ─── -->
+            <div class="cs-complete-section">
+              <button class="builder-btn cs-complete-btn" id="cs-complete-btn">
+                <span class="cs-complete-btn-icon">✦</span>
+                Complete Character
+              </button>
+            </div>
+
+          </div><!-- end cs-sheet -->
+        </div>
+      </div>
+
+      <!-- ─── Character Sheet Tooltip Overlay ─── -->
+      <div class="cs-tooltip-overlay" id="cs-tooltip-overlay">
+        <div class="cs-tooltip-modal" id="cs-tooltip-modal">
+          <div class="cs-tooltip-header">
+            <h3 class="cs-tooltip-title" id="cs-tooltip-title"></h3>
+            <button class="cs-tooltip-close" id="cs-tooltip-close">✕</button>
+          </div>
+          <div class="cs-tooltip-body" id="cs-tooltip-body"></div>
+        </div>
+      </div>
+
+      <!-- ─── Heart/Soul Stat Pick Modal ─── -->
+      <div class="stat-pick-overlay" id="stat-pick-overlay">
+        <div class="stat-pick-modal">
+          <h3 class="stat-pick-title" id="stat-pick-title">Choose a Stat Increase</h3>
+          <p class="stat-pick-desc" id="stat-pick-desc"></p>
+          <div class="stat-pick-options" id="stat-pick-options">
+            <!-- Buttons injected by JS -->
+          </div>
+        </div>
+      </div>
+      <!-- Item Detail Modal (reused for any item click) -->
+      <div class="item-detail-overlay" id="item-detail-overlay">
+        <div class="item-detail-modal" id="item-detail-modal">
+          <div class="item-detail-header">
+            <h2 class="item-detail-name" id="item-detail-name"></h2>
+            <button class="item-detail-close" id="item-detail-close">✕</button>
+          </div>
+          <div class="item-detail-img-zone" id="item-detail-img-zone">
+            <img class="item-detail-img" id="item-detail-img" src="" alt="">
+            <!-- Applied mod badges appear here -->
+          </div>
+          <div class="item-detail-info" id="item-detail-info">
+            <span class="item-detail-info-tag" id="item-detail-type"></span>
+            <span class="item-detail-info-tag cost" id="item-detail-cost"></span>
+          </div>
+          <div class="item-detail-mods-section" id="item-detail-mods-section">
+            <h4 class="item-detail-mods-title">Available Mods</h4>
+            <div class="item-detail-mods-list" id="item-detail-mods-list">
+              <!-- Mod chips rendered by JS -->
+            </div>
+          </div>
+          <div class="item-detail-actions">
+            <button class="item-detail-add-btn" id="item-add-to-cart-btn">
+              🛒 Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end builder-scene-content -->
+
+    <!-- ─── Bottom Fixed Area (dialogue + actions) ──── -->
+    <div class="builder-bottom-bar">
+      <!-- ─── Dialogue Box (VN-style, at the bottom) ──── -->
+      <div class="builder-dialogue-box" id="builder-dialogue-box">
+        <div class="builder-speaker-plate">
+          <span class="builder-speaker-name">Aniela</span>
+        </div>
+        <div class="builder-text-area">
+          <p class="builder-text" id="aniela-text"></p>
+          <span class="builder-next-indicator" id="aniela-next-indicator">▼</span>
+        </div>
+      </div>
+
+      <!-- ─── Action Buttons (appear contextually) ──── -->
+      <div class="builder-actions" id="builder-actions" style="display: none;">
+        <button class="builder-btn builder-btn-back" id="btn-back" style="display: none;">
+          <span class="builder-btn-icon">←</span> Back
+        </button>
+        <button class="builder-btn builder-btn-reset" id="btn-reset">
+          <span class="builder-btn-icon">↺</span> Reset
+        </button>
+        <button class="builder-btn builder-btn-next" id="btn-next">
+          Next <span class="builder-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div> <!-- end builder-scene -->
+
+  <script src="../js/shared.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/aniela.js"></script>
+  <script src="js/builder.js"></script>
+
+  <!-- ─── Class Detail Modal (outside all stacking contexts) ─── -->
+  <div class="cls-detail-overlay" id="cls-detail-overlay">
+    <div class="cls-detail-modal" id="cls-detail-modal">
+      <button class="bt-detail-close" id="cls-detail-close">✕</button>
+
+      <!-- Header: image + info -->
+      <div class="cls-detail-top">
+        <img class="cls-detail-img" id="cls-detail-img" src="" alt="">
+        <div class="cls-detail-info">
+          <h3 class="cls-detail-name" id="cls-detail-name"></h3>
+          <div class="cls-detail-meta">
+            <span class="cls-tier-badge" id="cls-detail-tier"></span>
+            <span class="cls-diff-badge" id="cls-detail-diff"></span>
+            <span class="cls-role-tag" id="cls-detail-role1"></span>
+            <span class="cls-role-tag" id="cls-detail-role2"></span>
+          </div>
+          <div class="cls-detail-req" id="cls-detail-req"></div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="cls-detail-desc" id="cls-detail-desc"></div>
+
+      <!-- Progression Table -->
+      <div class="cls-progression">
+        <h4 class="cls-progression-title">Progression</h4>
+        <div class="cls-progression-table" id="cls-progression-table">
+          <!-- 8 rows built by JS -->
+        </div>
+      </div>
+
+      <!-- Guide -->
+      <div class="cls-detail-guide" id="cls-detail-guide"></div>
+
+      <!-- Action buttons -->
+      <div class="cls-detail-actions">
+        <button class="cls-detail-unlock-btn" id="cls-detail-unlock-btn">Unlock Class</button>
+        <button class="cls-detail-level-btn" id="cls-detail-level-btn" style="display:none;">Level Up (100 EXP)</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

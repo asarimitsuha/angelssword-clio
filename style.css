@@ -100,14 +100,18 @@ body {
   padding: 0 24px;
 }
 
-.hero-pre-title {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--clr-gold);
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  text-shadow: 0 0 20px var(--clr-gold-glow);
+.hero-logo-wrap {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.hero-logo-img {
+  max-width: 340px;
+  width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
 }
 
 .hero-title {
@@ -733,10 +737,10 @@ body {
   margin-bottom: 40px;
 }
 
-.footer-logo {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  color: var(--clr-gold);
+.footer-logo-img {
+  height: 40px;
+  width: auto;
+  opacity: 0.9;
 }
 
 .footer-tagline {
