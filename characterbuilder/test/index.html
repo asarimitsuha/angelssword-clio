@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y55CCTEL2S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y55CCTEL2S');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Builder — The Chronicles of Lyr</title>
-  <meta name="description" content="Build your adventurer for Angel's Sword RPG. Browse ancestries, classes, races, items, and more from the world of Lyr.">
+  <meta name="description"
+    content="Build your adventurer for Angel's Sword RPG. Browse ancestries, classes, races, items, and more from the world of Lyr.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/tokens.css">
   <link rel="stylesheet" href="../../css/base.css">
@@ -17,6 +34,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="../../combattutorial/assets/queri_normal.png">
 </head>
+
 <body>
 
   <!-- ═══════════════════════════════════════════════════
@@ -55,7 +73,8 @@
       <span class="cb-ornament">✦ ━━━━━━ ✦</span>
       <h1 class="cb-title">Character Builder</h1>
       <p class="cb-subtitle">API Connection Explorer — Phase 1</p>
-      <p class="cb-desc">Testing connectivity to the Angel's Sword TTRPG API. Each card below represents an endpoint group — click <strong>Test</strong> to verify access.</p>
+      <p class="cb-desc">Testing connectivity to the Angel's Sword TTRPG API. Each card below represents an endpoint
+        group — click <strong>Test</strong> to verify access.</p>
     </div>
   </section>
 
@@ -247,4 +266,5 @@
   <script src="../../js/shared.js"></script>
   <script src="api-test.js"></script>
 </body>
+
 </html>

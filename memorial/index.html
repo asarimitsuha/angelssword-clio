@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y55CCTEL2S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y55CCTEL2S');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memorial — Town of Mirane — The Lyrian Chronicles</title>
-  <meta name="description" content="The Memorial of Mirane — a stone slab monument honoring the fallen warriors of the Town of Pioneers.">
-  <meta name="keywords" content="Lyrian Chronicles, Angel's Sword Studios, Mirane, Memorial, fallen warriors, TTRPG, Chronicles of Lyr">
+  <meta name="description"
+    content="The Memorial of Mirane — a stone slab monument honoring the fallen warriors of the Town of Pioneers.">
+  <meta name="keywords"
+    content="Lyrian Chronicles, Angel's Sword Studios, Mirane, Memorial, fallen warriors, TTRPG, Chronicles of Lyr">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
 
   <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
 
@@ -52,9 +70,6 @@
       background-color: rgba(13, 15, 26, 0.92);
     }
 
-    /* Memorial nav-logo image */
-    .nav-logo-img { height: 32px; width: auto; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.6)); }
-
     /* ─── Hero Banner ──────────────────────────────────────────────────── */
     .memorial-hero {
       position: relative;
@@ -80,14 +95,12 @@
     .memorial-hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(13, 15, 26, 0.6) 0%,
-        rgba(13, 15, 26, 0.55) 30%,
-        rgba(13, 15, 26, 0.65) 60%,
-        rgba(13, 15, 26, 0.85) 85%,
-        rgba(13, 15, 26, 1) 100%
-      );
+      background: linear-gradient(180deg,
+          rgba(13, 15, 26, 0.6) 0%,
+          rgba(13, 15, 26, 0.55) 30%,
+          rgba(13, 15, 26, 0.65) 60%,
+          rgba(13, 15, 26, 0.85) 85%,
+          rgba(13, 15, 26, 1) 100%);
       z-index: 0;
     }
 
@@ -97,20 +110,16 @@
       position: absolute;
       inset: 0;
       background-image:
-        repeating-linear-gradient(
-          90deg,
+        repeating-linear-gradient(90deg,
           transparent,
           transparent 2px,
           rgba(0, 0, 0, 0.03) 2px,
-          rgba(0, 0, 0, 0.03) 4px
-        ),
-        repeating-linear-gradient(
-          0deg,
+          rgba(0, 0, 0, 0.03) 4px),
+        repeating-linear-gradient(0deg,
           transparent,
           transparent 3px,
           rgba(0, 0, 0, 0.02) 3px,
-          rgba(0, 0, 0, 0.02) 6px
-        );
+          rgba(0, 0, 0, 0.02) 6px);
       opacity: 0.5;
     }
 
@@ -142,7 +151,7 @@
       line-height: 1.1;
       margin-bottom: 12px;
       color: var(--stone-text);
-      text-shadow: 
+      text-shadow:
         0 2px 6px rgba(0, 0, 0, 1),
         0 4px 16px rgba(0, 0, 0, 0.8),
         0 0 40px var(--memorial-gold-glow);
@@ -184,15 +193,13 @@
       position: relative;
       max-width: 900px;
       margin: 0 auto;
-      background: 
-        linear-gradient(
-          170deg,
+      background:
+        linear-gradient(170deg,
           var(--stone-surface) 0%,
           var(--stone-bg) 30%,
           #332d27 50%,
           var(--stone-surface) 70%,
-          var(--stone-bg) 100%
-        );
+          var(--stone-bg) 100%);
       border-radius: 12px;
       border: 1px solid rgba(100, 90, 78, 0.3);
       box-shadow:
@@ -209,20 +216,16 @@
       position: absolute;
       inset: 0;
       background-image:
-        repeating-linear-gradient(
-          -45deg,
+        repeating-linear-gradient(-45deg,
           transparent,
           transparent 6px,
           rgba(0, 0, 0, 0.02) 6px,
-          rgba(0, 0, 0, 0.02) 12px
-        ),
-        repeating-linear-gradient(
-          45deg,
+          rgba(0, 0, 0, 0.02) 12px),
+        repeating-linear-gradient(45deg,
           transparent,
           transparent 8px,
           rgba(255, 255, 255, 0.008) 8px,
-          rgba(255, 255, 255, 0.008) 16px
-        );
+          rgba(255, 255, 255, 0.008) 16px);
       pointer-events: none;
       border-radius: 12px;
       z-index: 1;
@@ -262,7 +265,7 @@
       color: var(--stone-text);
       letter-spacing: 4px;
       text-transform: uppercase;
-      text-shadow: 
+      text-shadow:
         0 1px 2px rgba(0, 0, 0, 0.8),
         0 0 20px rgba(184, 160, 112, 0.1);
     }
@@ -281,13 +284,11 @@
       max-width: 400px;
       height: 1px;
       margin: 20px auto 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--memorial-gold) 20%,
-        var(--memorial-gold) 80%,
-        transparent
-      );
+      background: linear-gradient(90deg,
+          transparent,
+          var(--memorial-gold) 20%,
+          var(--memorial-gold) 80%,
+          transparent);
       opacity: 0.25;
     }
 
@@ -337,7 +338,7 @@
       color: var(--stone-text);
       letter-spacing: 2px;
       text-transform: uppercase;
-      text-shadow: 
+      text-shadow:
         0 1px 1px rgba(0, 0, 0, 0.6),
         0 -1px 0 rgba(255, 255, 255, 0.04);
       transition: color 0.3s ease, text-shadow 0.3s ease;
@@ -414,14 +415,12 @@
       position: relative;
       max-width: 560px;
       width: 100%;
-      background: 
-        linear-gradient(
-          160deg,
+      background:
+        linear-gradient(160deg,
           var(--stone-surface) 0%,
           var(--stone-bg) 40%,
           #2e2823 60%,
-          var(--stone-surface) 100%
-        );
+          var(--stone-surface) 100%);
       border: 1px solid rgba(184, 160, 112, 0.2);
       border-radius: 16px;
       padding: 48px 40px 40px;
@@ -441,13 +440,11 @@
       inset: 0;
       border-radius: 16px;
       background-image:
-        repeating-linear-gradient(
-          -45deg,
+        repeating-linear-gradient(-45deg,
           transparent,
           transparent 6px,
           rgba(0, 0, 0, 0.015) 6px,
-          rgba(0, 0, 0, 0.015) 12px
-        );
+          rgba(0, 0, 0, 0.015) 12px);
       pointer-events: none;
     }
 
@@ -495,13 +492,11 @@
       width: 60%;
       height: 1px;
       margin: 0 auto 24px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--memorial-gold) 30%,
-        var(--memorial-gold) 70%,
-        transparent
-      );
+      background: linear-gradient(90deg,
+          transparent,
+          var(--memorial-gold) 30%,
+          var(--memorial-gold) 70%,
+          transparent);
       opacity: 0.3;
     }
 
@@ -524,13 +519,11 @@
       width: 50%;
       height: 1px;
       margin: 0 auto 20px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(184, 160, 112, 0.2) 30%,
-        rgba(184, 160, 112, 0.2) 70%,
-        transparent
-      );
+      background: linear-gradient(90deg,
+          transparent,
+          rgba(184, 160, 112, 0.2) 30%,
+          rgba(184, 160, 112, 0.2) 70%,
+          transparent);
     }
 
     .flower-offering-label {
@@ -777,13 +770,11 @@
       max-width: 400px;
       height: 1px;
       margin: 0 auto 20px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--memorial-gold) 20%,
-        var(--memorial-gold) 80%,
-        transparent
-      );
+      background: linear-gradient(90deg,
+          transparent,
+          var(--memorial-gold) 20%,
+          var(--memorial-gold) 80%,
+          transparent);
       opacity: 0.2;
     }
 
@@ -837,6 +828,7 @@
       filter: blur(120px);
       opacity: 0.08;
     }
+
     .ambient-orb-1 {
       width: 500px;
       height: 500px;
@@ -845,6 +837,7 @@
       right: -200px;
       animation: orbFloat 22s ease-in-out infinite;
     }
+
     .ambient-orb-2 {
       width: 400px;
       height: 400px;
@@ -855,14 +848,29 @@
     }
 
     @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(30px, -40px); }
-      66% { transform: translate(-20px, 30px); }
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      33% {
+        transform: translate(30px, -40px);
+      }
+
+      66% {
+        transform: translate(-20px, 30px);
+      }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes cardAppear {
@@ -872,8 +880,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
+
+      0%,
+      100% {
+        opacity: 0.5;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     /* ─── Name stagger animation ───────────────────────────────────────── */
@@ -906,7 +921,9 @@
       text-align: center;
     }
 
-    .footer-brand { margin-bottom: 24px; }
+    .footer-brand {
+      margin-bottom: 24px;
+    }
 
     .footer-logo {
       font-family: var(--font-display);
@@ -915,7 +932,10 @@
       text-decoration: none;
       transition: color 0.3s ease;
     }
-    .footer-logo:hover { color: var(--clr-teal); }
+
+    .footer-logo:hover {
+      color: var(--clr-teal);
+    }
 
     .footer-tagline {
       font-size: 0.9rem;
@@ -934,6 +954,7 @@
       text-decoration: none;
       transition: gap 0.3s ease, color 0.3s ease;
     }
+
     .footer-back-link:hover {
       gap: 14px;
       color: var(--clr-teal);
@@ -1089,11 +1110,24 @@
         gap: 24px;
         z-index: 999;
       }
-      .nav-links.open { display: flex; }
-      .nav-links li a { font-size: 1.2rem; padding: 12px 24px; }
-      .mobile-toggle { display: flex; }
 
-      .memorial-hero { height: 35vh; min-height: 280px; }
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li a {
+        font-size: 1.2rem;
+        padding: 12px 24px;
+      }
+
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .memorial-hero {
+        height: 35vh;
+        min-height: 280px;
+      }
 
       .bgm-control {
         bottom: 16px;
@@ -1101,20 +1135,35 @@
         padding: 6px 12px;
       }
 
-      .bgm-label { display: none; }
-      .bgm-slider-wrapper { width: 60px; }
+      .bgm-label {
+        display: none;
+      }
+
+      .bgm-slider-wrapper {
+        width: 60px;
+      }
 
       .memorial-names {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         padding: 24px 16px 40px;
       }
 
-      .memorial-name { padding: 12px 12px; }
-      .name-text { font-size: 0.85rem; letter-spacing: 1.5px; }
+      .memorial-name {
+        padding: 12px 12px;
+      }
 
-      .slab-header { padding: 36px 24px 8px; }
+      .name-text {
+        font-size: 0.85rem;
+        letter-spacing: 1.5px;
+      }
 
-      .death-card { padding: 40px 28px 32px; }
+      .slab-header {
+        padding: 36px 24px 8px;
+      }
+
+      .death-card {
+        padding: 40px 28px 32px;
+      }
 
       .footer-bottom {
         flex-direction: column;
@@ -1127,8 +1176,14 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .name-text { font-size: 0.78rem; letter-spacing: 1px; }
-      .memorial-title { font-size: 2.2rem; }
+      .name-text {
+        font-size: 0.78rem;
+        letter-spacing: 1px;
+      }
+
+      .memorial-title {
+        font-size: 2.2rem;
+      }
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -1157,21 +1212,40 @@
       animation: petalFall linear infinite;
     }
 
-    .petal-1 { background: rgba(255, 183, 197, 0.7); }
-    .petal-2 { background: rgba(255, 160, 180, 0.6); }
-    .petal-3 { background: rgba(255, 200, 210, 0.5); }
-    .petal-4 { background: rgba(245, 150, 170, 0.65); }
+    .petal-1 {
+      background: rgba(255, 183, 197, 0.7);
+    }
+
+    .petal-2 {
+      background: rgba(255, 160, 180, 0.6);
+    }
+
+    .petal-3 {
+      background: rgba(255, 200, 210, 0.5);
+    }
+
+    .petal-4 {
+      background: rgba(245, 150, 170, 0.65);
+    }
 
     @keyframes petalFall {
       0% {
         transform: translateY(-20px) rotate(0deg) translateX(0px);
         opacity: 0;
       }
-      8% { opacity: 0.8; }
+
+      8% {
+        opacity: 0.8;
+      }
+
       50% {
         transform: translateY(50vh) rotate(180deg) translateX(80px);
       }
-      85% { opacity: 0.5; }
+
+      85% {
+        opacity: 0.5;
+      }
+
       100% {
         transform: translateY(105vh) rotate(360deg) translateX(-30px);
         opacity: 0;
@@ -1219,14 +1293,23 @@
         transform: translateX(10vw) translateY(0px) rotate(0deg);
         opacity: 0;
       }
-      10% { opacity: 0.7; }
+
+      10% {
+        opacity: 0.7;
+      }
+
       30% {
         transform: translateX(-20vw) translateY(-15vh) rotate(60deg);
       }
+
       60% {
         transform: translateX(-50vw) translateY(-8vh) rotate(130deg);
       }
-      80% { opacity: 0.4; }
+
+      80% {
+        opacity: 0.4;
+      }
+
       100% {
         transform: translateX(-80vw) translateY(-20vh) rotate(200deg);
         opacity: 0;
@@ -1244,35 +1327,54 @@
     .leaf-shape {
       width: 100%;
       height: 100%;
-      clip-path: polygon(
-        50% 0%, 61% 18%, 85% 12%, 72% 32%, 100% 40%,
-        76% 52%, 85% 75%, 62% 62%, 50% 100%,
-        38% 62%, 15% 75%, 24% 52%, 0% 40%,
-        28% 32%, 15% 12%, 39% 18%
-      );
+      clip-path: polygon(50% 0%, 61% 18%, 85% 12%, 72% 32%, 100% 40%,
+          76% 52%, 85% 75%, 62% 62%, 50% 100%,
+          38% 62%, 15% 75%, 24% 52%, 0% 40%,
+          28% 32%, 15% 12%, 39% 18%);
     }
 
-    .leaf-1 .leaf-shape { background: rgba(200, 80, 40, 0.75); }
-    .leaf-2 .leaf-shape { background: rgba(220, 140, 30, 0.7); }
-    .leaf-3 .leaf-shape { background: rgba(180, 60, 30, 0.65); }
-    .leaf-4 .leaf-shape { background: rgba(230, 160, 50, 0.6); }
+    .leaf-1 .leaf-shape {
+      background: rgba(200, 80, 40, 0.75);
+    }
+
+    .leaf-2 .leaf-shape {
+      background: rgba(220, 140, 30, 0.7);
+    }
+
+    .leaf-3 .leaf-shape {
+      background: rgba(180, 60, 30, 0.65);
+    }
+
+    .leaf-4 .leaf-shape {
+      background: rgba(230, 160, 50, 0.6);
+    }
 
     @keyframes leafTumble {
       0% {
         transform: translateY(-20px) rotate(0deg) translateX(0px);
         opacity: 0;
       }
-      8% { opacity: 0.8; }
+
+      8% {
+        opacity: 0.8;
+      }
+
       25% {
         transform: translateY(25vh) rotate(120deg) translateX(60px);
       }
+
       50% {
         transform: translateY(50vh) rotate(200deg) translateX(-20px);
       }
+
       75% {
         transform: translateY(75vh) rotate(310deg) translateX(40px);
       }
-      90% { opacity: 0.4; }
+
+      90% {
+        opacity: 0.4;
+      }
+
       100% {
         transform: translateY(105vh) rotate(400deg) translateX(-10px);
         opacity: 0;
@@ -1286,20 +1388,36 @@
       animation: snowDrift linear infinite;
     }
 
-    .snowflake-1 { background: rgba(220, 230, 255, 0.7); }
-    .snowflake-2 { background: rgba(200, 215, 240, 0.5); }
-    .snowflake-3 { background: rgba(240, 245, 255, 0.6); }
+    .snowflake-1 {
+      background: rgba(220, 230, 255, 0.7);
+    }
+
+    .snowflake-2 {
+      background: rgba(200, 215, 240, 0.5);
+    }
+
+    .snowflake-3 {
+      background: rgba(240, 245, 255, 0.6);
+    }
 
     @keyframes snowDrift {
       0% {
         transform: translateY(-10px) translateX(0px);
         opacity: 0;
       }
-      10% { opacity: 0.7; }
+
+      10% {
+        opacity: 0.7;
+      }
+
       50% {
         transform: translateY(50vh) translateX(30px);
       }
-      90% { opacity: 0.3; }
+
+      90% {
+        opacity: 0.3;
+      }
+
       100% {
         transform: translateY(105vh) translateX(-20px);
         opacity: 0;
@@ -1370,6 +1488,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Ambient floating orbs -->
@@ -1436,50 +1555,138 @@
         </div>
 
         <div class="memorial-names" id="memorial-names">
-          <div class="memorial-name" style="animation-delay:0ms" data-name="Voltaire" data-reason="Fell to a large group of zombies under command of Kathelyne during an expedition. Body eventually recovered after a battle against Kathelyne." role="button" tabindex="0"><span class="name-text">Voltaire</span></div>
-          <div class="memorial-name" style="animation-delay:40ms" data-name="Teraval" data-reason="Executed by Maelis during the main camp assault against the DCA. Body returned by Kathelyne." role="button" tabindex="0"><span class="name-text">Teraval</span></div>
-          <div class="memorial-name" style="animation-delay:80ms" data-name="Wizard of Poop" data-reason="Eaten by a swarm of rat fiends during an expedition. Body not recovered." role="button" tabindex="0"><span class="name-text">Wizard of Poop</span></div>
-          <div class="memorial-name" style="animation-delay:120ms" data-name="Rai" data-reason="Killed by Helvetica during an escort mission to enable teleportation to the outpost. Body not recovered." role="button" tabindex="0"><span class="name-text">Rai</span></div>
-          <div class="memorial-name" style="animation-delay:160ms" data-name="Jay" data-reason="Killed by the Heira Rangers during an expedition. Or did he?" role="button" tabindex="0"><span class="name-text">Jay</span></div>
-          <div class="memorial-name" style="animation-delay:200ms" data-name="Zolong" data-reason="Partially eaten by piranha's during an expedition. Body recovered." role="button" tabindex="0"><span class="name-text">Zolong</span></div>
-          <div class="memorial-name" style="animation-delay:240ms" data-name="Bobo" data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered." role="button" tabindex="0"><span class="name-text">Bobo</span></div>
-          <div class="memorial-name" style="animation-delay:280ms" data-name="Dogbert" data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered." role="button" tabindex="0"><span class="name-text">Dogbert</span></div>
-          <div class="memorial-name" style="animation-delay:320ms" data-name="Drogan" data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered." role="button" tabindex="0"><span class="name-text">Drogan</span></div>
-          <div class="memorial-name" style="animation-delay:360ms" data-name="Evenfall" data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered." role="button" tabindex="0"><span class="name-text">Evenfall</span></div>
-          <div class="memorial-name" style="animation-delay:400ms" data-name="Deryn Ennastis" data-reason="Killed by mantises in the corwood." role="button" tabindex="0"><span class="name-text">Deryn Ennastis</span></div>
-          <div class="memorial-name" style="animation-delay:440ms" data-name="Draig" data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric." role="button" tabindex="0"><span class="name-text">Draig</span></div>
-          <div class="memorial-name" style="animation-delay:480ms" data-name="Icarus" data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric." role="button" tabindex="0"><span class="name-text">Icarus</span></div>
-          <div class="memorial-name" style="animation-delay:520ms" data-name="Amaya" data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric." role="button" tabindex="0"><span class="name-text">Amaya</span></div>
-          <div class="memorial-name" style="animation-delay:560ms" data-name="Atriga" data-reason="Killed by a Horseman Kratos in Corwood. Body recovered." role="button" tabindex="0"><span class="name-text">Atriga</span></div>
-          <div class="memorial-name" style="animation-delay:600ms" data-name="V-I7" data-reason="Sucked to death by a vampire in attempt to become a vampire in the corwood." role="button" tabindex="0"><span class="name-text">V-I7</span></div>
-          <div class="memorial-name" style="animation-delay:640ms" data-name="Teo" data-reason="Killed by bandits in the Corwood." role="button" tabindex="0"><span class="name-text">Teo</span></div>
-          <div class="memorial-name" style="animation-delay:680ms" data-name="Mira" data-reason="Killed by fiends in the Death's Pass." role="button" tabindex="0"><span class="name-text">Mira</span></div>
-          <div class="memorial-name" style="animation-delay:720ms" data-name="Ahlten" data-reason="Killed by fiends in the Death's Pass." role="button" tabindex="0"><span class="name-text">Ahlten</span></div>
-          <div class="memorial-name" style="animation-delay:760ms" data-name="Kuro" data-reason="Killed by the Hei clan in the swamp. Body recovered... by Kathelyne." role="button" tabindex="0"><span class="name-text">Kuro</span></div>
-          <div class="memorial-name" style="animation-delay:800ms" data-name="Roy" data-reason="Executed by Kathelyne after losing the bonezone." role="button" tabindex="0"><span class="name-text">Roy</span></div>
-          <div class="memorial-name" style="animation-delay:840ms" data-name="Elvara" data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span class="name-text">Elvara</span></div>
-          <div class="memorial-name" style="animation-delay:880ms" data-name="Mirai" data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span class="name-text">Mirai</span></div>
-          <div class="memorial-name" style="animation-delay:920ms" data-name="Vesper" data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span class="name-text">Vesper</span></div>
-          <div class="memorial-name" style="animation-delay:960ms" data-name="Elise" data-reason="Killed by Helvetica in the cult fort assault." role="button" tabindex="0"><span class="name-text">Elise</span></div>
-          <div class="memorial-name" style="animation-delay:1000ms" data-name="Ayanami" data-reason="Killed by Helvetica in the cult fort assault." role="button" tabindex="0"><span class="name-text">Ayanami</span></div>
-          <div class="memorial-name" style="animation-delay:1040ms" data-name="Cendarion" data-reason="Killed by wasps in Sarjes Pass. Body eventually recovered by expeditioners." role="button" tabindex="0"><span class="name-text">Cendarion</span></div>
-          <div class="memorial-name" style="animation-delay:1080ms" data-name="Del" data-reason="Killed by an Isekai person in Corwood. Body situation.. it's complicated." role="button" tabindex="0"><span class="name-text">Del</span></div>
-          <div class="memorial-name" style="animation-delay:1120ms" data-name="Vynora" data-reason="Killed by clowns in the swamp. Body recovered." role="button" tabindex="0"><span class="name-text">Vynora</span></div>
-          <div class="memorial-name" style="animation-delay:1160ms" data-name="Decimus" data-reason="Killed by robots in corwood." role="button" tabindex="0"><span class="name-text">Decimus</span></div>
-          <div class="memorial-name" style="animation-delay:1200ms" data-name="Axel" data-reason="Killed by flaming chickens in corwood." role="button" tabindex="0"><span class="name-text">Axel</span></div>
-          <div class="memorial-name" style="animation-delay:1240ms" data-name="Decimus" data-reason="Killed by flaming chickens in corwood." role="button" tabindex="0"><span class="name-text">Decimus</span></div>
-          <div class="memorial-name" style="animation-delay:1280ms" data-name="Raoh" data-reason="Killed by a wolf kratos in the heartwood. Body recovered." role="button" tabindex="0"><span class="name-text">Raoh</span></div>
-          <div class="memorial-name" style="animation-delay:1320ms" data-name="Li Shui" data-reason="Killed by a Shinzoran monster in heartwood. Body recovered." role="button" tabindex="0"><span class="name-text">Li Shui</span></div>
-          <div class="memorial-name" style="animation-delay:1360ms" data-name="Chaia" data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span class="name-text">Chaia</span></div>
-          <div class="memorial-name" style="animation-delay:1400ms" data-name="Psyda" data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span class="name-text">Psyda</span></div>
-          <div class="memorial-name" style="animation-delay:1440ms" data-name="Manami" data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span class="name-text">Manami</span></div>
-          <div class="memorial-name" style="animation-delay:1480ms" data-name="Kou" data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span class="name-text">Kou</span></div>
-          <div class="memorial-name" style="animation-delay:1520ms" data-name="Veyrion" data-reason="Killed by an Exousiai in Serenity Valley." role="button" tabindex="0"><span class="name-text">Veyrion</span></div>
-          <div class="memorial-name" style="animation-delay:1560ms" data-name="Vespera" data-reason="Killed by a fiend from Shinzora." role="button" tabindex="0"><span class="name-text">Vespera</span></div>
-          <div class="memorial-name" style="animation-delay:1600ms" data-name="Mime-chan" data-reason="Forever trapped in Canvas." role="button" tabindex="0"><span class="name-text">Mime-chan</span></div>
-          <div class="memorial-name" style="animation-delay:1640ms" data-name="Fox" data-reason="Forever trapped in Canvas." role="button" tabindex="0"><span class="name-text">Fox</span></div>
-          <div class="memorial-name" style="animation-delay:1680ms" data-name="Sicle Claw" data-reason="Died blowing up an Exousiai." role="button" tabindex="0"><span class="name-text">Sicle Claw</span></div>
-          <div class="memorial-name" style="animation-delay:1720ms" data-name="Gein" data-reason="Killed by a fiend in Serenity Valley." role="button" tabindex="0"><span class="name-text">Gein</span></div>
+          <div class="memorial-name" style="animation-delay:0ms" data-name="Voltaire"
+            data-reason="Fell to a large group of zombies under command of Kathelyne during an expedition. Body eventually recovered after a battle against Kathelyne."
+            role="button" tabindex="0"><span class="name-text">Voltaire</span></div>
+          <div class="memorial-name" style="animation-delay:40ms" data-name="Teraval"
+            data-reason="Executed by Maelis during the main camp assault against the DCA. Body returned by Kathelyne."
+            role="button" tabindex="0"><span class="name-text">Teraval</span></div>
+          <div class="memorial-name" style="animation-delay:80ms" data-name="Wizard of Poop"
+            data-reason="Eaten by a swarm of rat fiends during an expedition. Body not recovered." role="button"
+            tabindex="0"><span class="name-text">Wizard of Poop</span></div>
+          <div class="memorial-name" style="animation-delay:120ms" data-name="Rai"
+            data-reason="Killed by Helvetica during an escort mission to enable teleportation to the outpost. Body not recovered."
+            role="button" tabindex="0"><span class="name-text">Rai</span></div>
+          <div class="memorial-name" style="animation-delay:160ms" data-name="Jay"
+            data-reason="Killed by the Heira Rangers during an expedition. Or did he?" role="button" tabindex="0"><span
+              class="name-text">Jay</span></div>
+          <div class="memorial-name" style="animation-delay:200ms" data-name="Zolong"
+            data-reason="Partially eaten by piranha's during an expedition. Body recovered." role="button" tabindex="0">
+            <span class="name-text">Zolong</span>
+          </div>
+          <div class="memorial-name" style="animation-delay:240ms" data-name="Bobo"
+            data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered."
+            role="button" tabindex="0"><span class="name-text">Bobo</span></div>
+          <div class="memorial-name" style="animation-delay:280ms" data-name="Dogbert"
+            data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered."
+            role="button" tabindex="0"><span class="name-text">Dogbert</span></div>
+          <div class="memorial-name" style="animation-delay:320ms" data-name="Drogan"
+            data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered."
+            role="button" tabindex="0"><span class="name-text">Drogan</span></div>
+          <div class="memorial-name" style="animation-delay:360ms" data-name="Evenfall"
+            data-reason="Killed by the Exousiai in the swamp zone after an heroic effort. Body not recovered."
+            role="button" tabindex="0"><span class="name-text">Evenfall</span></div>
+          <div class="memorial-name" style="animation-delay:400ms" data-name="Deryn Ennastis"
+            data-reason="Killed by mantises in the corwood." role="button" tabindex="0"><span class="name-text">Deryn
+              Ennastis</span></div>
+          <div class="memorial-name" style="animation-delay:440ms" data-name="Draig"
+            data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric."
+            role="button" tabindex="0"><span class="name-text">Draig</span></div>
+          <div class="memorial-name" style="animation-delay:480ms" data-name="Icarus"
+            data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric."
+            role="button" tabindex="0"><span class="name-text">Icarus</span></div>
+          <div class="memorial-name" style="animation-delay:520ms" data-name="Amaya"
+            data-reason="Killed by Satan near Malignance Rift. Body recovered afterwards by Rain, Gein and Alaric."
+            role="button" tabindex="0"><span class="name-text">Amaya</span></div>
+          <div class="memorial-name" style="animation-delay:560ms" data-name="Atriga"
+            data-reason="Killed by a Horseman Kratos in Corwood. Body recovered." role="button" tabindex="0"><span
+              class="name-text">Atriga</span></div>
+          <div class="memorial-name" style="animation-delay:600ms" data-name="V-I7"
+            data-reason="Sucked to death by a vampire in attempt to become a vampire in the corwood." role="button"
+            tabindex="0"><span class="name-text">V-I7</span></div>
+          <div class="memorial-name" style="animation-delay:640ms" data-name="Teo"
+            data-reason="Killed by bandits in the Corwood." role="button" tabindex="0"><span
+              class="name-text">Teo</span></div>
+          <div class="memorial-name" style="animation-delay:680ms" data-name="Mira"
+            data-reason="Killed by fiends in the Death's Pass." role="button" tabindex="0"><span
+              class="name-text">Mira</span></div>
+          <div class="memorial-name" style="animation-delay:720ms" data-name="Ahlten"
+            data-reason="Killed by fiends in the Death's Pass." role="button" tabindex="0"><span
+              class="name-text">Ahlten</span></div>
+          <div class="memorial-name" style="animation-delay:760ms" data-name="Kuro"
+            data-reason="Killed by the Hei clan in the swamp. Body recovered... by Kathelyne." role="button"
+            tabindex="0"><span class="name-text">Kuro</span></div>
+          <div class="memorial-name" style="animation-delay:800ms" data-name="Roy"
+            data-reason="Executed by Kathelyne after losing the bonezone." role="button" tabindex="0"><span
+              class="name-text">Roy</span></div>
+          <div class="memorial-name" style="animation-delay:840ms" data-name="Elvara"
+            data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span
+              class="name-text">Elvara</span></div>
+          <div class="memorial-name" style="animation-delay:880ms" data-name="Mirai"
+            data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span
+              class="name-text">Mirai</span></div>
+          <div class="memorial-name" style="animation-delay:920ms" data-name="Vesper"
+            data-reason="Enslaved by Kathelyne after losing the bonezone." role="button" tabindex="0"><span
+              class="name-text">Vesper</span></div>
+          <div class="memorial-name" style="animation-delay:960ms" data-name="Elise"
+            data-reason="Killed by Helvetica in the cult fort assault." role="button" tabindex="0"><span
+              class="name-text">Elise</span></div>
+          <div class="memorial-name" style="animation-delay:1000ms" data-name="Ayanami"
+            data-reason="Killed by Helvetica in the cult fort assault." role="button" tabindex="0"><span
+              class="name-text">Ayanami</span></div>
+          <div class="memorial-name" style="animation-delay:1040ms" data-name="Cendarion"
+            data-reason="Killed by wasps in Sarjes Pass. Body eventually recovered by expeditioners." role="button"
+            tabindex="0"><span class="name-text">Cendarion</span></div>
+          <div class="memorial-name" style="animation-delay:1080ms" data-name="Del"
+            data-reason="Killed by an Isekai person in Corwood. Body situation.. it's complicated." role="button"
+            tabindex="0"><span class="name-text">Del</span></div>
+          <div class="memorial-name" style="animation-delay:1120ms" data-name="Vynora"
+            data-reason="Killed by clowns in the swamp. Body recovered." role="button" tabindex="0"><span
+              class="name-text">Vynora</span></div>
+          <div class="memorial-name" style="animation-delay:1160ms" data-name="Decimus"
+            data-reason="Killed by robots in corwood." role="button" tabindex="0"><span class="name-text">Decimus</span>
+          </div>
+          <div class="memorial-name" style="animation-delay:1200ms" data-name="Axel"
+            data-reason="Killed by flaming chickens in corwood." role="button" tabindex="0"><span
+              class="name-text">Axel</span></div>
+          <div class="memorial-name" style="animation-delay:1240ms" data-name="Decimus"
+            data-reason="Killed by flaming chickens in corwood." role="button" tabindex="0"><span
+              class="name-text">Decimus</span></div>
+          <div class="memorial-name" style="animation-delay:1280ms" data-name="Raoh"
+            data-reason="Killed by a wolf kratos in the heartwood. Body recovered." role="button" tabindex="0"><span
+              class="name-text">Raoh</span></div>
+          <div class="memorial-name" style="animation-delay:1320ms" data-name="Li Shui"
+            data-reason="Killed by a Shinzoran monster in heartwood. Body recovered." role="button" tabindex="0"><span
+              class="name-text">Li Shui</span></div>
+          <div class="memorial-name" style="animation-delay:1360ms" data-name="Chaia"
+            data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span
+              class="name-text">Chaia</span></div>
+          <div class="memorial-name" style="animation-delay:1400ms" data-name="Psyda"
+            data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span
+              class="name-text">Psyda</span></div>
+          <div class="memorial-name" style="animation-delay:1440ms" data-name="Manami"
+            data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span
+              class="name-text">Manami</span></div>
+          <div class="memorial-name" style="animation-delay:1480ms" data-name="Kou"
+            data-reason="Killed by an Exousiai in the ruins." role="button" tabindex="0"><span
+              class="name-text">Kou</span></div>
+          <div class="memorial-name" style="animation-delay:1520ms" data-name="Veyrion"
+            data-reason="Killed by an Exousiai in Serenity Valley." role="button" tabindex="0"><span
+              class="name-text">Veyrion</span></div>
+          <div class="memorial-name" style="animation-delay:1560ms" data-name="Vespera"
+            data-reason="Killed by a fiend from Shinzora." role="button" tabindex="0"><span
+              class="name-text">Vespera</span></div>
+          <div class="memorial-name" style="animation-delay:1600ms" data-name="Mime-chan"
+            data-reason="Forever trapped in Canvas." role="button" tabindex="0"><span class="name-text">Mime-chan</span>
+          </div>
+          <div class="memorial-name" style="animation-delay:1640ms" data-name="Fox"
+            data-reason="Forever trapped in Canvas." role="button" tabindex="0"><span class="name-text">Fox</span></div>
+          <div class="memorial-name" style="animation-delay:1680ms" data-name="Sicle Claw"
+            data-reason="Died blowing up an Exousiai." role="button" tabindex="0"><span class="name-text">Sicle
+              Claw</span></div>
+          <div class="memorial-name" style="animation-delay:1720ms" data-name="Gein"
+            data-reason="Killed by a fiend in Serenity Valley." role="button" tabindex="0"><span
+              class="name-text">Gein</span></div>
         </div>
 
         <div class="slab-footer">
@@ -1505,7 +1712,8 @@
       <span class="bgm-btn-icon" id="bgm-btn-icon">🔊</span>
     </button>
     <div class="bgm-slider-wrapper">
-      <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider" title="Volume">
+      <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider"
+        title="Volume">
     </div>
   </div>
 
@@ -1532,11 +1740,16 @@
           <span class="card-vase-empty" id="card-vase-empty">Empty</span>
         </div>
         <div class="flower-picker" id="flower-picker">
-          <button class="flower-btn" data-flower="rose" title="Rose">🌹<span class="flower-btn-label">Rose</span></button>
-          <button class="flower-btn" data-flower="lily" title="Lily">🌼<span class="flower-btn-label">Lily</span></button>
-          <button class="flower-btn" data-flower="chrysanthemum" title="Chrysanthemum">🌻<span class="flower-btn-label">Mum</span></button>
-          <button class="flower-btn" data-flower="carnation" title="Carnation">🌺<span class="flower-btn-label">Carnation</span></button>
-          <button class="flower-btn" data-flower="tulip" title="Tulip">🌷<span class="flower-btn-label">Tulip</span></button>
+          <button class="flower-btn" data-flower="rose" title="Rose">🌹<span
+              class="flower-btn-label">Rose</span></button>
+          <button class="flower-btn" data-flower="lily" title="Lily">🌼<span
+              class="flower-btn-label">Lily</span></button>
+          <button class="flower-btn" data-flower="chrysanthemum" title="Chrysanthemum">🌻<span
+              class="flower-btn-label">Mum</span></button>
+          <button class="flower-btn" data-flower="carnation" title="Carnation">🌺<span
+              class="flower-btn-label">Carnation</span></button>
+          <button class="flower-btn" data-flower="tulip" title="Tulip">🌷<span
+              class="flower-btn-label">Tulip</span></button>
         </div>
         <button class="flower-remove" id="flower-remove">Remove flower</button>
       </div>
@@ -1549,7 +1762,8 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <a href="../index.html"><img src="../img/logo/Lyrian-logo-vectorLongWhite_33pct.webp" alt="The Lyrian Chronicles" style="height:36px;width:auto;opacity:0.9;"></a>
+        <a href="../index.html"><img src="../img/logo/Lyrian-logo-vectorLongWhite_33pct.webp"
+            alt="The Lyrian Chronicles" style="height:36px;width:auto;opacity:0.9;"></a>
         <p class="footer-tagline">Memorial of Mirane</p>
       </div>
       <a href="../mirane/index.html" class="footer-back-link">← Return to Mirane</a>
@@ -1567,11 +1781,11 @@
   <script>
     /* ─── Flower Data ──────────────────────────────────────────────────── */
     const FLOWERS = {
-      rose:          { emoji: '🌹', name: 'Rose' },
-      lily:          { emoji: '🌼', name: 'Lily' },
+      rose: { emoji: '🌹', name: 'Rose' },
+      lily: { emoji: '🌼', name: 'Lily' },
       chrysanthemum: { emoji: '🌻', name: 'Chrysanthemum' },
-      carnation:     { emoji: '🌺', name: 'Carnation' },
-      tulip:         { emoji: '🌷', name: 'Tulip' }
+      carnation: { emoji: '🌺', name: 'Carnation' },
+      tulip: { emoji: '🌷', name: 'Tulip' }
     };
 
     function getFlowerOfferings() {
@@ -2076,4 +2290,5 @@
   </script>
 
 </body>
+
 </html>

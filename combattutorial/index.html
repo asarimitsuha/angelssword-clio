@@ -1,16 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y55CCTEL2S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y55CCTEL2S');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Queri's Combat School</title>
   <!-- Google Fonts for Retro/Pixel Art Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="assets/queri_normal.png">
 </head>
+
 <body>
   <div class="app-container">
     <!-- LEFT SIDEBAR: Table of Contents -->
@@ -111,7 +127,8 @@
 
           <!-- Start Screen Overlay -->
           <div id="start-screen" class="start-screen">
-            <video id="start-bg-video" autoplay loop muted playsinline src="anime/Queri-Start.mp4" class="start-video"></video>
+            <video id="start-bg-video" autoplay loop muted playsinline src="anime/Queri-Start.mp4"
+              class="start-video"></video>
           </div>
 
           <!-- Visual Novel Stage Area -->
@@ -188,4 +205,5 @@
   <script src="slides.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

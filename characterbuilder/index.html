@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y55CCTEL2S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y55CCTEL2S');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Builder — The Chronicles of Lyr</title>
-  <meta name="description" content="Create your adventurer for Angel's Sword RPG. Guided character creation wizard with Aniela from the Mirane Expedition Alliance.">
+  <meta name="description"
+    content="Create your adventurer for Angel's Sword RPG. Guided character creation wizard with Aniela from the Mirane Expedition Alliance.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/base.css">
@@ -17,6 +34,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
 </head>
+
 <body>
 
   <canvas id="particle-canvas"></canvas>
@@ -27,8 +45,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="../index.html" class="nav-logo">
-        <span class="logo-icon">⚔</span>
-        <span class="logo-text">Angel's Sword</span>
+        <img src="../img/logo/PaintedLogoLyrianLongColor_33pct.webp" alt="The Lyrian Chronicles" class="nav-logo-img">
       </a>
       <ul class="nav-links" id="nav-links">
         <li><a href="../index.html">Home</a></li>
@@ -54,11 +71,13 @@
     <!-- ─── Step Progress Bar ──────────────────────────── -->
     <div class="step-progress" id="step-progress">
       <div class="step-track">
-        <div class="step-pip active" data-step="1"><span class="pip-num">1</span><span class="pip-label">Race</span></div>
+        <div class="step-pip active" data-step="1"><span class="pip-num">1</span><span class="pip-label">Race</span>
+        </div>
         <div class="step-connector"></div>
         <div class="step-pip" data-step="2"><span class="pip-num">2</span><span class="pip-label">Stats</span></div>
         <div class="step-connector"></div>
-        <div class="step-pip" data-step="3"><span class="pip-num">3</span><span class="pip-label">Breakthroughs</span></div>
+        <div class="step-pip" data-step="3"><span class="pip-num">3</span><span class="pip-label">Breakthroughs</span>
+        </div>
         <div class="step-connector"></div>
         <div class="step-pip" data-step="4"><span class="pip-num">4</span><span class="pip-label">Classes</span></div>
         <div class="step-connector"></div>
@@ -128,7 +147,8 @@
       <div class="builder-phase hidden" id="phase-human-bonus">
         <div class="phase-ui" id="ui-human-bonus" style="display: none;">
           <h2 class="phase-title">Human Versatility</h2>
-          <p class="phase-subtitle">Choose one main stat and one sub stat to receive <span class="bonus-highlight">+1</span></p>
+          <p class="phase-subtitle">Choose one main stat and one sub stat to receive <span
+              class="bonus-highlight">+1</span></p>
 
           <h3 class="bonus-group-label">Main Stat (+1)</h3>
           <div class="stat-slots bonus-pick-slots" id="human-main-pick">
@@ -530,12 +550,15 @@
                   <button class="cs-portrait-btn" id="cs-zoom-in" title="Zoom In">+</button>
                   <button class="cs-portrait-btn" id="cs-zoom-out" title="Zoom Out">−</button>
                   <button class="cs-portrait-btn" id="cs-portrait-reset" title="Reset">↺</button>
-                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-change" title="Change Image">📷</button>
-                  <button class="cs-portrait-btn cs-portrait-btn-commit" id="cs-portrait-commit" title="Lock Portrait">✓</button>
+                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-change"
+                    title="Change Image">📷</button>
+                  <button class="cs-portrait-btn cs-portrait-btn-commit" id="cs-portrait-commit"
+                    title="Lock Portrait">✓</button>
                 </div>
                 <div class="cs-portrait-controls cs-portrait-locked" id="cs-portrait-locked" style="display:none;">
                   <span class="cs-portrait-locked-label">Portrait Locked</span>
-                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-edit" title="Edit Portrait">✎</button>
+                  <button class="cs-portrait-btn cs-portrait-btn-change" id="cs-portrait-edit"
+                    title="Edit Portrait">✎</button>
                 </div>
               </div>
 
@@ -543,7 +566,8 @@
               <div class="cs-identity-stats">
                 <!-- Name + Race -->
                 <div class="cs-identity">
-                  <input type="text" class="cs-name-input" id="cs-char-name" placeholder="Character Name" spellcheck="false">
+                  <input type="text" class="cs-name-input" id="cs-char-name" placeholder="Character Name"
+                    spellcheck="false">
                   <div class="cs-identity-row">
                     <div class="cs-race-line" id="cs-race-line"></div>
                     <div class="cs-gender-select">
@@ -762,4 +786,5 @@
   </div>
 
 </body>
+
 </html>

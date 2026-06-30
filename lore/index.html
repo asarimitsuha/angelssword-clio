@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y55CCTEL2S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y55CCTEL2S');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adventure — The Chronicles of Lyr</title>
-  <meta name="description" content="Begin your adventure in the world of The Chronicles of Lyr. Explore the Riannon Institute of Alchemy, browse its grand library, and discover the rich lore of Lyr.">
+  <meta name="description"
+    content="Begin your adventure in the world of The Chronicles of Lyr. Explore the Riannon Institute of Alchemy, browse its grand library, and discover the rich lore of Lyr.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/base.css">
@@ -17,6 +34,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="../combattutorial/assets/queri_normal.png">
 </head>
+
 <body>
 
   <!-- ═══════════════════════════════════════════════════
@@ -53,7 +71,8 @@
       <h1 class="welcome-title">Welcome to the World of Lyr</h1>
       <div class="welcome-divider"></div>
       <p class="welcome-genre">High Action Anime Fantasy</p>
-      <p class="welcome-subtitle">A vast world of expeditioners, alchemists, airship pilots, fiends and ancient relics — countless adventures await across the lands of Lyr.</p>
+      <p class="welcome-subtitle">A vast world of expeditioners, alchemists, airship pilots, fiends and ancient relics —
+        countless adventures await across the lands of Lyr.</p>
       <button class="welcome-btn" id="welcome-begin-btn">Begin</button>
     </div>
   </div>
@@ -78,7 +97,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" id="bgm-volume-gates" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" id="bgm-volume-gates" min="0" max="1" step="0.05" value="0.15"
+                class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -144,7 +164,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider"
+                title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -202,7 +223,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider"
+                title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -242,7 +264,8 @@
           <span class="scene-btn-icon">🍺</span>
           No Pain No Mirane Tavern
         </button>
-        <a href="../memorial/index.html" target="_blank" class="scene-btn scene-btn-navigate" onclick="if(typeof muteBGMForMemorial!=='undefined'){muteBGMForMemorial();}">
+        <a href="../memorial/index.html" target="_blank" class="scene-btn scene-btn-navigate"
+          onclick="if(typeof muteBGMForMemorial!=='undefined'){muteBGMForMemorial();}">
           <span class="scene-btn-icon">🪦</span>
           View Memorial
         </a>
@@ -272,7 +295,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider"
+                title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -308,7 +332,8 @@
           <span class="scene-btn-icon">💬</span>
           Talk to Queri
         </button>
-        <a href="../combattutorial/index.html" target="_blank" class="scene-btn scene-btn-signup" id="btn-signup-combat" onclick="if(typeof bgm!=='undefined'&&bgm){bgmIsMuted=true;bgm.volume=0;syncBGMControls();}">
+        <a href="../combattutorial/index.html" target="_blank" class="scene-btn scene-btn-signup" id="btn-signup-combat"
+          onclick="if(typeof bgm!=='undefined'&&bgm){bgmIsMuted=true;bgm.volume=0;syncBGMControls();}">
           <span class="scene-btn-icon">📝</span>
           Sign Up For Combat School
         </a>
@@ -342,7 +367,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider"
+                title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -421,7 +447,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider"
+                title="Volume">
             </div>
           </div>
           <div class="room-breadcrumb">
@@ -433,7 +460,8 @@
     </header>
     <div class="scene-content">
       <div class="scene-sprite-container" id="tavern-sprite-container">
-        <img src="../img/chara/yanyan/Yanyan Itia Neutral.png" alt="Tavern Patron" class="scene-sprite" id="tavern-sprite">
+        <img src="../img/chara/yanyan/Yanyan Itia Neutral.png" alt="Tavern Patron" class="scene-sprite"
+          id="tavern-sprite">
       </div>
       <div class="scene-dialogue-box" id="tavern-dialogue-box">
         <div class="scene-speaker-plate">
@@ -516,7 +544,8 @@
               <span class="bgm-btn-icon">🔊</span>
             </button>
             <div class="bgm-slider-wrapper">
-              <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15" class="bgm-volume-slider bgm-slider" title="Volume">
+              <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.15"
+                class="bgm-volume-slider bgm-slider" title="Volume">
             </div>
           </div>
 
@@ -767,7 +796,8 @@
       <div class="relics-container">
         <div class="relics-header">
           <h2 class="relics-title">⚗️ Fiend Relics</h2>
-          <p class="relics-subtitle">Fiend artifacts sealed in artifice jars with protective locks — handle with extreme caution</p>
+          <p class="relics-subtitle">Fiend artifacts sealed in artifice jars with protective locks — handle with extreme
+            caution</p>
         </div>
         <div class="relics-shelf" id="relics-shelf">
           <!-- Relic jars rendered by JS -->
@@ -871,4 +901,5 @@
   <script src="dialogue-engine.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
