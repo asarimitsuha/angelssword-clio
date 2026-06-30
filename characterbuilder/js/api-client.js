@@ -7,8 +7,8 @@ const ApiClient = (() => {
   "use strict";
 
   const PROXY_BASE = window.location.hostname === "clio.angelssword.com"
-    ? "https://clio-proxy.angelssword.com"
-    : "http://localhost:4005";
+    ? "https://clio-proxy.angelssword.com/api/ttrpg"
+    : "http://localhost:4005/api/ttrpg";
   const _cache = {};
   let _version = null;
 
