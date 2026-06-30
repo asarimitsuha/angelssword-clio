@@ -2742,3 +2742,183 @@
   color: #64b4ff;
   margin-top: 1px;
 }
+
+/* ── Locked / Owned states for browser cards ─────────────────────── */
+.browser-card.locked {
+  opacity: 0.45;
+  border-color: rgba(200, 60, 60, 0.25);
+  pointer-events: auto;
+}
+.browser-card.locked:hover {
+  opacity: 0.65;
+}
+.browser-card-lock-reason {
+  font-size: 0.62rem;
+  color: #e88;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.browser-card-owned-badge {
+  font-size: 0.65rem;
+  color: #6ec87a;
+  font-weight: 600;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Max Level and Filter buttons ────────────────────────────────── */
+.browser-action-btn.maxlevel {
+  background: linear-gradient(135deg, rgba(255, 180, 0, 0.18), rgba(255, 120, 0, 0.12));
+  border: 1px solid rgba(255, 160, 0, 0.35);
+  color: #ffb040;
+  font-size: 0.6rem;
+  padding: 4px 10px;
+}
+.browser-action-btn.maxlevel:hover {
+  background: linear-gradient(135deg, rgba(255, 180, 0, 0.3), rgba(255, 120, 0, 0.22));
+  border-color: rgba(255, 160, 0, 0.5);
+}
+.browser-filter-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(91, 155, 213, 0.3);
+  background: rgba(20, 22, 35, 0.6);
+  color: #8ab4e0;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.browser-filter-btn:hover {
+  background: rgba(40, 60, 100, 0.4);
+  border-color: rgba(91, 155, 213, 0.5);
+}
+.browser-filter-btn.active-orange {
+  background: rgba(255, 140, 0, 0.15);
+  border-color: rgba(255, 140, 0, 0.5);
+  color: #ffa040;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROFICIENCIES TAB
+   ══════════════════════════════════════════════════════════════════ */
+.prof-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.prof-section {
+  background: rgba(14, 18, 28, 0.85);
+  border: 1px solid rgba(91, 155, 213, 0.15);
+  border-radius: 14px;
+  padding: 18px 20px;
+  backdrop-filter: blur(10px);
+}
+.prof-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(91, 155, 213, 0.12);
+}
+.prof-section-icon {
+  font-size: 1.3rem;
+}
+.prof-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #cde0f5;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.prof-section-count {
+  font-size: 0.72rem;
+  color: rgba(145, 180, 220, 0.5);
+  background: rgba(91, 155, 213, 0.1);
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+.prof-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 30px;
+}
+.prof-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(91, 155, 213, 0.08);
+  border: 1px solid rgba(91, 155, 213, 0.18);
+  border-radius: 8px;
+  padding: 5px 10px 5px 12px;
+  transition: all 0.2s;
+}
+.prof-item:hover {
+  background: rgba(91, 155, 213, 0.15);
+  border-color: rgba(91, 155, 213, 0.3);
+}
+.prof-item-text {
+  font-size: 0.78rem;
+  color: #b8d4f0;
+}
+.prof-item-remove {
+  background: none;
+  border: none;
+  color: rgba(200, 80, 80, 0.5);
+  cursor: pointer;
+  font-size: 0.65rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.prof-item-remove:hover {
+  color: #e66;
+  background: rgba(200, 60, 60, 0.15);
+}
+.prof-empty {
+  font-size: 0.75rem;
+  color: rgba(145, 180, 220, 0.35);
+  font-style: italic;
+  padding: 6px 0;
+}
+.prof-add-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.prof-add-input {
+  flex: 1;
+  padding: 7px 12px;
+  border: 1px solid rgba(91, 155, 213, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--clr-text, #cde0f5);
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.prof-add-input:focus {
+  border-color: rgba(91, 155, 213, 0.45);
+}
+.prof-add-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(91, 155, 213, 0.3);
+  background: rgba(91, 155, 213, 0.08);
+  color: #8ab4e0;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.prof-add-btn:hover {
+  background: rgba(91, 155, 213, 0.18);
+  border-color: rgba(91, 155, 213, 0.5);
+}

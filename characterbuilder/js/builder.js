@@ -19,6 +19,31 @@
 
   const RACES_WITH_SUBRACES = ["Chimera", "Fae", "Youkai"];
 
+  /* ─── Special Hybrid Race Definitions ──────────────────────────────── */
+  const HYBRID_TYPES = [
+    {
+      id: "faerie-chimera",
+      name: "Faerie-Chimera Hybrid",
+      breakthroughId: "faerie-chimera-hybrid--race-",
+      btCost: 200,
+      description: "An extremely rare condition in which a Chimera parent and a Faerie parent produces a child with Chimera traits. The odds are said to be less than 1%.",
+      primaryOptions: [
+        { primaryRaceId: "fae", primaryRaceName: "Fae", subracePool: "Chimera", displayPrefix: "Half-Fae" },
+        { primaryRaceId: "chimera", primaryRaceName: "Chimera", subracePool: "Fae", displayPrefix: "Half-Chimera" },
+      ],
+    },
+    {
+      id: "human-chimera",
+      name: "Human-Chimera Hybrid",
+      breakthroughId: "human-chimera-hybrid--race-",
+      btCost: 200,
+      description: "While most unions of Human and Chimera parents result in the offspring being fully Human or fully Chimera, there are rare instances in which the Chimera traits are still present in a human offspring. You keep Human base traits including Divine Providence, but do not get extra EXP or human adaptability.",
+      primaryOptions: [
+        { primaryRaceId: "human", primaryRaceName: "Human", subracePool: "Chimera", displayPrefix: "Half" },
+      ],
+    },
+  ];
+
   /* ─── Demon Houses (names hardcoded, abilities fetched from API) ───── */
   const DEMON_HOUSES = [
     { id: "wi",   name: "Wi",   abilityId: "presence-concealment" },
@@ -418,6 +443,8 @@
       allRaces = await ApiClient.getPrimaryRaces();
       allAncestries = await ApiClient.getAncestries();
       renderRaceCards(grid, allRaces);
+      // Inject the Special hybrid race card
+      injectSpecialRaceCard(grid);
     } catch (err) {
       console.error("Failed to load races:", err);
       Aniela.say(LINES.loadError);
@@ -454,6 +481,171 @@
     });
   }
 
+  function injectSpecialRaceCard(container) {
+    const card = document.createElement("div");
+    card.className = "race-card race-card-special";
+    card.dataset.raceId = "special";
+    card.innerHTML = `
+      <div class="race-card-img-wrap">
+        <img src="img/race-special.jpg" alt="Special" class="race-card-img" loading="lazy">
+      </div>
+      <div class="race-card-body">
+        <h3 class="race-card-name">Special</h3>
+        <p class="race-card-attrs">Hybrid Races</p>
+        <p class="race-card-desc">Rare hybrid races born of mixed heritage. Not for the faint of heart — these come at a cost.</p>
+        <span class="race-card-subrace-badge">2 hybrid types</span>
+      </div>
+    `;
+    card.addEventListener("click", (e) => { e.stopPropagation(); openHybridSelection(); });
+    container.appendChild(card);
+  }
+
+  function openHybridSelection() {
+    // Deselect any normal race card
+    document.querySelectorAll(".race-card").forEach(c => c.classList.remove("selected"));
+    document.querySelector('.race-card[data-race-id="special"]')?.classList.add("selected");
+
+    Aniela.playSequence([
+      { text: "A hybrid?! Those are incredibly rare. Less than 1% of mixed unions produce true hybrids.", sprite: "3" },
+      { text: "Just so you know — choosing a hybrid race costs 200 of your starting Breakthrough Points. That's a big investment.", sprite: "4" },
+      { text: "But if you're set on it, the results can be truly extraordinary. Choose your hybrid type below!", sprite: "1" },
+    ], () => {});
+
+    // Show hybrid selection in a modal overlay
+    document.getElementById("hybrid-select-overlay")?.remove();
+    const overlay = document.createElement("div");
+    overlay.id = "hybrid-select-overlay";
+    overlay.className = "hybrid-select-overlay";
+    overlay.innerHTML = `
+      <div class="hybrid-select-modal">
+        <div class="hybrid-select-title">Choose Hybrid Type</div>
+        <div class="hybrid-select-subtitle">⚠ Costs 200 Breakthrough Points</div>
+        <div class="hybrid-select-grid" id="hybrid-type-grid"></div>
+        <button class="hybrid-select-cancel" id="hybrid-cancel-btn">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const grid = document.getElementById("hybrid-type-grid");
+    HYBRID_TYPES.forEach(ht => {
+      const card = document.createElement("div");
+      card.className = "hybrid-type-card";
+      card.innerHTML = `
+        <div class="hybrid-type-name">${ht.name}</div>
+        <div class="hybrid-type-desc">${ht.description}</div>
+        <div class="hybrid-type-cost">200 EXP from Breakthroughs</div>
+      `;
+      card.addEventListener("click", () => {
+        overlay.remove();
+        if (ht.primaryOptions.length === 1) {
+          // Human-Chimera: only one option
+          selectHybridRace(ht, ht.primaryOptions[0]);
+        } else {
+          // Faerie-Chimera: ask which is primary
+          openHybridPrimaryPicker(ht);
+        }
+      });
+      grid.appendChild(card);
+    });
+
+    document.getElementById("hybrid-cancel-btn").addEventListener("click", () => {
+      overlay.remove();
+      document.querySelector('.race-card[data-race-id="special"]')?.classList.remove("selected");
+    });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        overlay.remove();
+        document.querySelector('.race-card[data-race-id="special"]')?.classList.remove("selected");
+      }
+    });
+  }
+
+  function openHybridPrimaryPicker(hybridType) {
+    document.getElementById("hybrid-primary-overlay")?.remove();
+    const overlay = document.createElement("div");
+    overlay.id = "hybrid-primary-overlay";
+    overlay.className = "hybrid-select-overlay";
+    overlay.innerHTML = `
+      <div class="hybrid-select-modal">
+        <div class="hybrid-select-title">Choose Your Primary Race</div>
+        <div class="hybrid-select-subtitle">Your primary race determines your base traits. You'll pick a subrace from the other race.</div>
+        <div class="hybrid-select-grid" id="hybrid-primary-grid"></div>
+        <button class="hybrid-select-cancel" id="hybrid-primary-cancel">Back</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const grid = document.getElementById("hybrid-primary-grid");
+    hybridType.primaryOptions.forEach(opt => {
+      const card = document.createElement("div");
+      card.className = "hybrid-type-card";
+      card.innerHTML = `
+        <div class="hybrid-type-name">${opt.primaryRaceName} (Primary)</div>
+        <div class="hybrid-type-desc">
+          Keep <strong>${opt.primaryRaceName}</strong> base traits.<br>
+          Pick a <strong>${opt.subracePool}</strong> subrace.
+          <br><small>Display: ${opt.displayPrefix} {Subrace Name}</small>
+        </div>
+      `;
+      card.addEventListener("click", () => {
+        overlay.remove();
+        selectHybridRace(hybridType, opt);
+      });
+      grid.appendChild(card);
+    });
+
+    document.getElementById("hybrid-primary-cancel").addEventListener("click", () => {
+      overlay.remove();
+      openHybridSelection(); // go back to type selection
+    });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+  }
+
+  function selectHybridRace(hybridType, primaryOption) {
+    // Find the real primary race data from API to get attributes/proficiencies
+    const realRace = allRaces.find(r => r.primaryRaceId === primaryOption.primaryRaceId);
+    
+    // Set primary race data
+    character.race.primaryRaceId = primaryOption.primaryRaceId;
+    character.race.primaryRaceName = primaryOption.primaryRaceName;
+    character.race.attributes = realRace?.attributes || "";
+    character.race.proficiencies = realRace?.proficiencies || "";
+    character.race.imageUrl = realRace?.imageSmUrl || "img/race-special.jpg";
+    character.race.ancestryId = null;
+    character.race.ancestryName = null;
+    character.race.ancestryDescription = null;
+    character.race.ancestryTrait = null;
+    character.race.ancestryImageUrl = null;
+
+    // Hybrid-specific metadata
+    character.race.isHybrid = true;
+    character.race.hybridType = hybridType.id;
+    character.race.hybridBreakthroughId = hybridType.breakthroughId;
+    character.race.hybridBtCost = hybridType.btCost;
+    character.race.hybridSubracePool = primaryOption.subracePool;
+    character.race.hybridDisplayPrefix = primaryOption.displayPrefix;
+    character.race.hybridName = hybridType.name;
+
+    // For Human-Chimera: mark no extra EXP bonus
+    if (hybridType.id === "human-chimera") {
+      character.race.noHumanBonus = true;
+    }
+
+    // Apply race bonuses from the primary race
+    Character.applyRaceBonuses(character, primaryOption.primaryRaceId);
+
+    // Update UI
+    document.querySelectorAll(".race-card").forEach(c => {
+      c.classList.toggle("selected", c.dataset.raceId === "special");
+    });
+
+    Aniela.say({ text: `${hybridType.name} — ${primaryOption.primaryRaceName} primary! You'll pick a ${primaryOption.subracePool} subrace next. Remember, this costs 200 Breakthrough Points.`, sprite: "1", dismissable: true });
+    nextBtn.style.display = "inline-flex";
+    nextBtn.innerHTML = 'Next <span class="builder-btn-icon">→</span>';
+  }
+
   function selectRace(race) {
     document.querySelectorAll(".race-card").forEach((c) =>
       c.classList.toggle("selected", c.dataset.raceId === race.primaryRaceId)
@@ -470,6 +662,16 @@
     character.race.ancestryDescription = null;
     character.race.ancestryTrait = null;
     character.race.ancestryImageUrl = null;
+
+    // Clear any hybrid flags from a previous selection
+    character.race.isHybrid = false;
+    character.race.hybridType = null;
+    character.race.hybridBreakthroughId = null;
+    character.race.hybridBtCost = null;
+    character.race.hybridSubracePool = null;
+    character.race.hybridDisplayPrefix = null;
+    character.race.hybridName = null;
+    character.race.noHumanBonus = false;
 
     // Apply fixed race bonuses (Human left empty for now)
     Character.applyRaceBonuses(character, race.primaryRaceId);
@@ -488,16 +690,24 @@
   function loadSubraces() {
     const grid = document.getElementById("subrace-grid");
     const titleEl = document.getElementById("subrace-title");
-    const raceName = character.race.primaryRaceName;
-    titleEl.textContent = `${raceName} Ancestries`;
-
-    // Also set fixed phase header
     const phaseHeaderEl = document.getElementById("phase-header");
     const phaseHeaderTitle = document.getElementById("phase-header-title");
-    phaseHeaderTitle.textContent = `${raceName} Ancestries`;
-    phaseHeaderEl.style.display = "block";
 
-    const subraces = allAncestries.filter((a) => a.primaryRace === character.race.primaryRaceName);
+    let subraces;
+    if (character.race.isHybrid) {
+      // Hybrid: show subraces from the OTHER race pool
+      const pool = character.race.hybridSubracePool;
+      titleEl.textContent = `${pool} Ancestries (Hybrid)`;
+      phaseHeaderTitle.textContent = `Choose Your ${pool} Ancestry`;
+      subraces = allAncestries.filter((a) => a.primaryRace === pool);
+    } else {
+      const raceName = character.race.primaryRaceName;
+      titleEl.textContent = `${raceName} Ancestries`;
+      phaseHeaderTitle.textContent = `${raceName} Ancestries`;
+      subraces = allAncestries.filter((a) => a.primaryRace === character.race.primaryRaceName);
+    }
+
+    phaseHeaderEl.style.display = "block";
     renderSubraceCards(grid, subraces);
   }
 
@@ -966,6 +1176,7 @@
    const BT_BUDGET = 300;
   let allBreakthroughs = [];
   let btSelected = new Set(); // set of breakthroughIds (suffixed for elemental: "elemental-affinity::fire")
+  let btLockedIds = new Set(); // breakthrough IDs locked from race (hybrid) — cannot be removed
   let btDetailBt = null;      // currently viewed breakthrough in modal
   let btOverrideMode = false;  // bypass EXP budget when true
   const ELEMENTAL_AFFINITY_ID = "elemental-affinity";
@@ -992,6 +1203,16 @@
     // Restore previous selections
     if (character.breakthroughs && character.breakthroughs.length) {
       btSelected = new Set(character.breakthroughs.map((b) => b.breakthroughId));
+    }
+
+    // Auto-grant hybrid race breakthrough (locked)
+    if (character.race?.isHybrid && character.race.hybridBreakthroughId) {
+      const hybridBtId = character.race.hybridBreakthroughId;
+      btLockedIds.add(hybridBtId);
+      if (!btSelected.has(hybridBtId)) {
+        btSelected.add(hybridBtId);
+        syncBreakthroughsToCharacter();
+      }
     }
 
     renderBreakthroughCards(allBreakthroughs);
@@ -1066,10 +1287,12 @@
       card.className = "bt-card";
       card.dataset.btId = bt.breakthroughId;
       if (btSelected.has(bt.breakthroughId) || [...btSelected].some((id) => id.startsWith(bt.breakthroughId + "::"))) card.classList.add("selected");
+      const isLocked = btLockedIds.has(bt.breakthroughId);
+      if (isLocked) card.classList.add("bt-locked-race");
 
       const cost = parseInt(bt.cost) || 0;
       const costClass = cost === 0 ? "bt-card-cost free" : "bt-card-cost";
-      const costLabel = cost === 0 ? "FREE" : `${cost} EXP`;
+      const costLabel = isLocked ? "🔒 RACE" : (cost === 0 ? "FREE" : `${cost} EXP`);
       const desc = stripHtml(bt.description);
       const req = bt.requirements && bt.requirements !== "-" ? bt.requirements : "";
 
@@ -1103,6 +1326,12 @@
   function toggleBreakthrough(bt) {
     const btId = bt.breakthroughId;
     const cost = parseInt(bt.cost) || 0;
+
+    // Prevent toggling locked (hybrid race) breakthroughs
+    if (btLockedIds.has(btId)) {
+      Aniela.say({ text: "This breakthrough is locked — it comes from your hybrid race choice. To change it, go back and pick a different race.", sprite: "4", dismissable: true });
+      return;
+    }
 
     // ─── Elemental Affinity: special handling ──────────────────────
     if (btId === ELEMENTAL_AFFINITY_ID) {
@@ -1295,12 +1524,13 @@
 
       const item = document.createElement("div");
       item.className = "bt-cart-item";
+      const isLocked = btLockedIds.has(id);
       item.innerHTML = `
         <span class="bt-cart-item-name" title="${displayName}">${displayName}</span>
-        <span class="bt-cart-item-cost">${cost === 0 ? "FREE" : cost}</span>
-        <button class="bt-cart-item-remove" title="Remove">✕</button>
+        <span class="bt-cart-item-cost">${isLocked ? '🔒 RACE' : (cost === 0 ? "FREE" : cost)}</span>
+        ${!isLocked ? '<button class="bt-cart-item-remove" title="Remove">✕</button>' : '<span class="bt-cart-locked-badge">Locked</span>'}
       `;
-      item.querySelector(".bt-cart-item-remove").addEventListener("click", (e) => {
+      if (!isLocked) item.querySelector(".bt-cart-item-remove")?.addEventListener("click", (e) => {
         e.stopPropagation();
         // Remove this specific suffixed entry
         btSelected.delete(id);
@@ -1413,7 +1643,8 @@
   function getClsBudget() {
     const isHuman = character.race?.primaryRaceId === "human" ||
                     character.race?.primaryRaceName?.toLowerCase() === "human";
-    return CLS_BUDGET_BASE + (isHuman ? CLS_HUMAN_BONUS : 0);
+    const noBonus = character.race?.noHumanBonus === true; // Human-Chimera hybrid
+    return CLS_BUDGET_BASE + (isHuman && !noBonus ? CLS_HUMAN_BONUS : 0);
   }
   const CLS_IP_MAX = 3;
   let allClassesData = [];
@@ -1423,6 +1654,59 @@
   let clsMiraneMode = true;
   let clsAvailableOnly = false;
   const clsMiraneBanList = ["angelblooded", "shinigami-eyes", "vampire", "vampire-lord", "true-shinigami-eyes"];
+
+  /* ─── Free Class Grants (race/house/ancestry → class) ────────────── */
+  // Hardcoded until the API encodes these. Each entry:
+  //   match: { race?, demonHouseId?, ancestryId? } — all specified fields must match
+  //   classId: the class to grant free
+  //   level: the starting level (1 unless specified otherwise)
+  //   source: display label for where the grant comes from
+  const FREE_CLASS_GRANTS = [
+    // Demon Houses
+    { match: { race: "demon", demonHouseId: "wi"  }, classId: "saboteur",                  level: 1, source: "House Wi" },
+    { match: { race: "demon", demonHouseId: "un"  }, classId: "maid",                      level: 1, source: "House Un" },
+    { match: { race: "demon", demonHouseId: "vi"  }, classId: "medic",                     level: 1, source: "House Vi" },
+    // Fae Ancestries
+    { match: { race: "fae",   ancestryId: "gnome"  }, classId: "miner",                    level: 1, source: "Gnome" },
+    { match: { race: "fae",   ancestryId: "selkie" }, classId: "hydromancer",               level: 2, source: "Selkie" },
+    // Youkai Ancestries
+    { match: { race: "youkai", ancestryId: "raijin" }, classId: "flash-star-blade-style-",  level: 1, source: "Raijin" },
+  ];
+  let clsFreeClasses = new Set(); // classIds that were granted free
+
+  /** Check which free class grants apply to this character and auto-add them */
+  function applyFreeClassGrants() {
+    const race = (character.race?.primaryRaceName || "").toLowerCase();
+    const houseId = (character.race?.demonHouseId || "").toLowerCase();
+    const ancestryId = (character.race?.ancestryId || "").toLowerCase();
+
+    for (const grant of FREE_CLASS_GRANTS) {
+      const m = grant.match;
+      if (m.race && m.race !== race) continue;
+      if (m.demonHouseId && m.demonHouseId !== houseId) continue;
+      if (m.ancestryId && m.ancestryId !== ancestryId) continue;
+
+      // This grant applies
+      const clsData = allClassesData.find(c => c.classId === grant.classId);
+      if (!clsData) {
+        console.warn(`[freeClass] grant for ${grant.classId} (${grant.source}): class not found in data`);
+        continue;
+      }
+      clsFreeClasses.add(grant.classId);
+      if (!clsSelected.has(grant.classId)) {
+        clsSelected.set(grant.classId, { levels: grant.level, data: clsData });
+        console.log(`[freeClass] auto-granted ${clsData.name} Lv.${grant.level} from ${grant.source}`);
+      }
+    }
+  }
+
+  /* ─── Interlude Actions (unused IP spending) ─────────────────────── */
+  const INTERLUDE_ACTIONS = [
+    { id: "job",   label: "Job",   desc: "+300 CLIM",  clim: 300, exp: 0   },
+    { id: "train", label: "Train", desc: "+25 EXP",    clim: 0,   exp: 25  },
+    { id: "other", label: "Other", desc: "Manual",      clim: 0,   exp: 0   },
+  ];
+  let clsInterludeActions = []; // array of action ids, each costs 1 IP
 
   /* ─── Progression level definitions ──────────────────────────────── */
   const CLS_LEVELS = [
@@ -1470,6 +1754,9 @@
         if (data) clsSelected.set(c.classId, { levels: c.levels, data });
       });
     }
+
+    // Apply free class grants from race/house/ancestry
+    applyFreeClassGrants();
 
     renderClassCards(allClassesData);
     updateClsBudget();
@@ -1625,10 +1912,12 @@
       card.dataset.clsId = cls.classId;
 
       const sel = clsSelected.get(cls.classId);
+      const isFreeClass = clsFreeClasses.has(cls.classId);
       if (sel) {
         card.classList.add("selected");
         if (sel.levels >= 8) card.classList.add("mastered");
       }
+      if (isFreeClass) card.classList.add("cls-free-granted");
 
       const isBanned = clsMiraneMode && clsMiraneBanList.includes(cls.classId);
       if (isBanned) card.classList.add("mirane-banned");
@@ -1654,6 +1943,7 @@
         <div class="cls-card-img-wrap">
           <img class="cls-card-img" src="${cls.imageSmUrl}" alt="${cls.name}" loading="lazy">
           ${levelBadge}
+          ${isFreeClass ? '<span class="cls-free-badge">FREE</span>' : ''}
         </div>
         <div class="cls-card-body">
           <div class="cls-card-header">
@@ -1686,7 +1976,8 @@
   /* ─── Budget & IP ────────────────────────────────────────────────── */
   function getClsSpentExp() {
     let total = 0;
-    clsSelected.forEach(({ levels, data }) => {
+    clsSelected.forEach(({ levels, data }, classId) => {
+      if (clsFreeClasses.has(classId)) return; // free classes don't cost EXP
       total += data.tier * 100; // unlock cost
       total += (levels - 1) * 100; // ability levels
     });
@@ -1694,7 +1985,12 @@
   }
 
   function getClsUsedIP() {
-    return clsSelected.size;
+    // Free classes don't consume IP
+    let paidClasses = 0;
+    clsSelected.forEach((_, classId) => {
+      if (!clsFreeClasses.has(classId)) paidClasses++;
+    });
+    return paidClasses + clsInterludeActions.length;
   }
 
   function updateClsBudget() {
@@ -1716,6 +2012,53 @@
     // Also update cart IP
     const cartIpEl = document.getElementById("cls-cart-ip-used");
     if (cartIpEl) cartIpEl.textContent = `${ip} / ${CLS_IP_MAX}`;
+
+    // Show/hide interlude actions section
+    renderInterludeActions();
+  }
+
+  /* ─── Interlude Actions UI ───────────────────────────────────────── */
+  function renderInterludeActions() {
+    const cart = document.getElementById("cls-cart");
+    if (!cart) return;
+
+    // Remove any existing interlude section
+    const existing = cart.querySelector(".cls-interlude-section");
+    if (existing) existing.remove();
+
+    const ip = getClsUsedIP();
+    const unusedIP = CLS_IP_MAX - ip;
+
+    // Only show when not in override mode and there's spare IP
+    if (clsOverrideMode || unusedIP <= 0) return;
+
+    const section = document.createElement("div");
+    section.className = "cls-interlude-section";
+    section.innerHTML = `
+      <div class="cls-interlude-header">
+        <span>Interlude Actions</span>
+        <small>${unusedIP} IP remaining</small>
+      </div>
+    `;
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "cls-interlude-btns";
+
+    for (const action of INTERLUDE_ACTIONS) {
+      const btn = document.createElement("button");
+      btn.className = "cls-interlude-btn";
+      btn.innerHTML = `<strong>${action.label}</strong><br><small>${action.desc}</small>`;
+      btn.addEventListener("click", () => {
+        if (getClsUsedIP() >= CLS_IP_MAX) return;
+        clsInterludeActions.push(action.id);
+        updateClsBudget();
+        updateClsCart();
+      });
+      btnRow.appendChild(btn);
+    }
+
+    section.appendChild(btnRow);
+    cart.appendChild(section);
   }
 
   /* ─── Cart ───────────────────────────────────────────────────────── */
@@ -1729,29 +2072,35 @@
     countEl.textContent = count;
     totalEl.textContent = `${getClsSpentExp()} EXP`;
 
-    if (count === 0) {
+    if (count === 0 && clsInterludeActions.length === 0) {
       itemsEl.innerHTML = '<div class="bt-cart-empty">No classes selected</div>';
       return;
     }
 
     itemsEl.innerHTML = "";
     clsSelected.forEach(({ levels, data }, classId) => {
-      const cost = data.tier * 100 + (levels - 1) * 100;
+      const isFree = clsFreeClasses.has(classId);
+      const cost = isFree ? 0 : data.tier * 100 + (levels - 1) * 100;
       const isMastered = levels >= 8;
+      const freeGrant = FREE_CLASS_GRANTS.find(g => g.classId === classId);
+      const freeLabel = isFree && freeGrant ? `<small class="cls-cart-free-badge">FREE (${freeGrant.source})</small>` : '';
       const item = document.createElement("div");
-      item.className = "bt-cart-item cls-cart-item";
+      item.className = `bt-cart-item cls-cart-item${isFree ? ' cls-cart-free' : ''}`;
       item.innerHTML = `
         <span class="bt-cart-item-name" title="${data.name}">
           ${data.name}
           <small class="cls-cart-level">${isMastered ? "★ Mastered" : `Lv. ${levels}`}</small>
+          ${freeLabel}
         </span>
-        <span class="bt-cart-item-cost">${cost}</span>
-        <button class="bt-cart-item-remove" title="Remove">✕</button>
+        <span class="bt-cart-item-cost">${isFree ? 'FREE' : cost}</span>
+        ${!isFree ? '<button class="bt-cart-item-remove" title="Remove">✕</button>' : ''}
       `;
-      item.querySelector(".bt-cart-item-remove").addEventListener("click", (e) => {
-        e.stopPropagation();
-        removeClass(data);
-      });
+      if (!isFree) {
+        item.querySelector(".bt-cart-item-remove").addEventListener("click", (e) => {
+          e.stopPropagation();
+          removeClass(data);
+        });
+      }
       // Click to open detail
       item.querySelector(".bt-cart-item-name").addEventListener("click", (e) => {
         e.stopPropagation();
@@ -1759,6 +2108,36 @@
       });
       itemsEl.appendChild(item);
     });
+
+    // Show interlude actions in cart
+    if (clsInterludeActions.length > 0) {
+      const ilHeader = document.createElement("div");
+      ilHeader.className = "bt-cart-item cls-cart-il-header";
+      ilHeader.innerHTML = `<span class="bt-cart-item-name" style="font-style:italic;">Interlude Actions</span>`;
+      itemsEl.appendChild(ilHeader);
+
+      clsInterludeActions.forEach((actionId, idx) => {
+        const def = INTERLUDE_ACTIONS.find((a) => a.id === actionId);
+        if (!def) return;
+        const ilItem = document.createElement("div");
+        ilItem.className = "bt-cart-item cls-cart-item";
+        ilItem.innerHTML = `
+          <span class="bt-cart-item-name">
+            ${def.label}
+            <small class="cls-cart-level">${def.desc}</small>
+          </span>
+          <span class="bt-cart-item-cost">1 IP</span>
+          <button class="bt-cart-item-remove" title="Remove">✕</button>
+        `;
+        ilItem.querySelector(".bt-cart-item-remove").addEventListener("click", (e) => {
+          e.stopPropagation();
+          clsInterludeActions.splice(idx, 1);
+          updateClsBudget();
+          updateClsCart();
+        });
+        itemsEl.appendChild(ilItem);
+      });
+    }
   }
 
   function syncClassesToCharacter() {
@@ -1797,7 +2176,7 @@
 
     if (!clsOverrideMode) {
       if (ip >= CLS_IP_MAX) {
-        Aniela.say({ text: "You've used all 3 Interlude Points!  You can't unlock more classes unless you enable Override.", sprite: "4", dismissable: true });
+        Aniela.say({ text: "You've used all 3 Interlude Points!  Remove an interlude action or enable Override to unlock more classes.", sprite: "4", dismissable: true });
         dismissAndFlash();
         return;
       }
@@ -1948,6 +2327,12 @@
   }
 
   function removeClass(cls) {
+    // Prevent removal of free-granted classes
+    if (clsFreeClasses.has(cls.classId)) {
+      const grant = FREE_CLASS_GRANTS.find(g => g.classId === cls.classId);
+      Aniela.say({ text: `${cls.name} was granted free from ${grant?.source || 'your race'}. It cannot be removed.`, sprite: "4", dismissable: true });
+      return;
+    }
     const sel = clsSelected.get(cls.classId);
 
     // Undo heart/soul stat boosts from this class
@@ -2041,7 +2426,8 @@
       if (rc.pattern.test(req)) {
         const playerRace = (character.race?.primaryRaceId || "").toLowerCase();
         const playerAncestry = (character.race?.ancestryId || "").toLowerCase();
-        const isRace = playerRace === rc.raceId || playerAncestry === rc.raceId;
+        const hybridPool = (character.race?.hybridSubracePool || "").toLowerCase(); // hybrids count as both races
+        const isRace = playerRace === rc.raceId || playerAncestry === rc.raceId || hybridPool === rc.raceId;
 
         // Check if the race word is directly part of an "or" alternative
         // by testing proximity: race word must be within 30 chars of an "or"
@@ -2415,16 +2801,21 @@
       character.completedStep = 1;
       Character.save(character);
 
-      const hasSubraces = RACES_WITH_SUBRACES.includes(character.race.primaryRaceName);
-      const isHuman = character.race.primaryRaceId === "human";
-
-      if (hasSubraces) {
+      if (character.race.isHybrid) {
+        // All hybrids go to subrace selection (cross-race pool)
         transitionToPhase("subrace");
-      } else if (isHuman) {
-        transitionToPhase("human-bonus");
       } else {
-        // Demon — go to house selection
-        transitionToPhase("demon-house");
+        const hasSubraces = RACES_WITH_SUBRACES.includes(character.race.primaryRaceName);
+        const isHuman = character.race.primaryRaceId === "human";
+
+        if (hasSubraces) {
+          transitionToPhase("subrace");
+        } else if (isHuman) {
+          transitionToPhase("human-bonus");
+        } else {
+          // Demon — go to house selection
+          transitionToPhase("demon-house");
+        }
       }
     } else if (currentPhase === "subrace") {
       character.completedStep = 2;
@@ -2500,6 +2891,27 @@
         return;
       }
       character._clsConfirmed = false; // reset for next time
+
+      // Apply interlude action bonuses
+      if (clsInterludeActions.length > 0) {
+        let bonusClim = 0;
+        let bonusExp = 0;
+        for (const actionId of clsInterludeActions) {
+          const def = INTERLUDE_ACTIONS.find((a) => a.id === actionId);
+          if (def) {
+            bonusClim += def.clim;
+            bonusExp += def.exp;
+          }
+        }
+        if (bonusClim > 0) {
+          character.resources.clim = (character.resources.clim || 3000) + bonusClim;
+        }
+        if (bonusExp > 0) {
+          character.resources.classExp = (character.resources.classExp || 1000) + bonusExp;
+        }
+        character.interludeActions = [...clsInterludeActions];
+      }
+
       character.completedStep = 7;
       Character.save(character);
       transitionToPhase("skills");
@@ -2534,11 +2946,15 @@
 
     // main-stats → depends on what race step was
     if (currentPhase === "main-stats") {
-      const hasSubraces = RACES_WITH_SUBRACES.includes(character.race.primaryRaceName);
-      const isHuman = character.race.primaryRaceId === "human";
-      if (hasSubraces) prevPhase = "subrace";
-      else if (isHuman) prevPhase = "human-bonus";
-      else prevPhase = "demon-house";
+      if (character.race.isHybrid) {
+        prevPhase = "subrace";
+      } else {
+        const hasSubraces = RACES_WITH_SUBRACES.includes(character.race.primaryRaceName);
+        const isHuman = character.race.primaryRaceId === "human";
+        if (hasSubraces) prevPhase = "subrace";
+        else if (isHuman) prevPhase = "human-bonus";
+        else prevPhase = "demon-house";
+      }
     }
 
     if (!prevPhase) return; // already at start
@@ -2762,9 +3178,37 @@
   /* ─── Load Skills Phase ───────────────────────────────────────────── */
   function loadSkills() {
     try {
-      skillSources = buildSkillSources();
-      currentSourceIdx = 0;
-      initSkillAllocations();
+      const newSources = buildSkillSources();
+
+      // Bug 1 fix: Preserve existing allocations if sources haven't changed
+      // (e.g. when navigating back from Equipment → Skills).
+      const hasExistingAllocations = Object.keys(skillAllocations).length > 0 &&
+        Object.values(skillAllocations).some((a) => a.total > 0);
+      const sourcesMatch = hasExistingAllocations &&
+        skillSources.length === newSources.length &&
+        newSources.every((ns, i) =>
+          skillSources[i] &&
+          skillSources[i].name === ns.name &&
+          skillSources[i].points === ns.points
+        );
+
+      skillSources = newSources;
+
+      if (!sourcesMatch) {
+        // Sources changed or no prior data — full reinit
+        currentSourceIdx = 0;
+        initSkillAllocations();
+      } else {
+        // Sources match — rebuild remaining counts from allocations
+        for (let i = 0; i < skillSources.length; i++) {
+          let spent = 0;
+          for (const alloc of Object.values(skillAllocations)) {
+            spent += (alloc.perSource[i] || 0);
+          }
+          skillSources[i].remaining = skillSources[i].points - spent;
+        }
+      }
+
       renderSkillGrid();
       renderCurrentSource();
       updateSkillSummary();
@@ -3694,12 +4138,19 @@
   /* ─── Identity ──────────────────────────────────────────────────── */
   function populateIdentity() {
     const raceEl = document.getElementById("cs-race-line");
-    const parts = [];
-    if (character.race.primaryRaceName) parts.push(character.race.primaryRaceName);
-    if (character.race.ancestryName) parts.push(character.race.ancestryName);
-    if (character.race.demonHouseName) parts.push(`House ${character.race.demonHouseName}`);
-    if (character.race.elementalMastery) parts.push(`${character.race.elementalMastery} Element`);
-    raceEl.textContent = parts.join("  ·  ");
+    if (character.race.isHybrid) {
+      // Format: "Half-Fae Catfolk" or "Half-Chimera Willo Wisp" or "Half Catfolk"
+      const prefix = character.race.hybridDisplayPrefix || "Hybrid";
+      const subrace = character.race.ancestryName || "";
+      raceEl.textContent = `${prefix} ${subrace}`.trim();
+    } else {
+      const parts = [];
+      if (character.race.primaryRaceName) parts.push(character.race.primaryRaceName);
+      if (character.race.ancestryName) parts.push(character.race.ancestryName);
+      if (character.race.demonHouseName) parts.push(`House ${character.race.demonHouseName}`);
+      if (character.race.elementalMastery) parts.push(`${character.race.elementalMastery} Element`);
+      raceEl.textContent = parts.join("  ·  ");
+    }
   }
 
   /* ─── Main Stats ────────────────────────────────────────────────── */

@@ -347,6 +347,8 @@ body::before {
     inset 0 1px 0 rgba(91, 155, 213, 0.15);
   overflow: hidden;
   margin-bottom: 20px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Flash animation — draws attention to Aniela's message */
@@ -6713,4 +6715,271 @@ body::before {
 @keyframes statPopIn {
   from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Interlude Actions (unused IP spending) ────────────────────────── */
+.cls-interlude-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(91, 155, 213, 0.12);
+}
+.cls-interlude-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  color: #a0c0e4;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cls-interlude-header small {
+  font-weight: 400;
+  color: rgba(145, 180, 220, 0.5);
+  text-transform: none;
+  font-size: 0.68rem;
+}
+.cls-interlude-btns {
+  display: flex;
+  gap: 8px;
+}
+.cls-interlude-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(91, 155, 213, 0.2);
+  background: rgba(91, 155, 213, 0.06);
+  color: #8ab4e0;
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.cls-interlude-btn:hover {
+  background: rgba(91, 155, 213, 0.15);
+  border-color: rgba(91, 155, 213, 0.4);
+}
+.cls-interlude-btn strong {
+  display: block;
+  font-size: 0.78rem;
+  margin-bottom: 2px;
+}
+.cls-interlude-btn small {
+  color: rgba(145, 180, 220, 0.6);
+  font-size: 0.62rem;
+}
+.cls-cart-il-header {
+  border-top: 1px solid rgba(91, 155, 213, 0.1);
+  margin-top: 6px;
+  padding-top: 6px;
+  color: rgba(145, 180, 220, 0.6);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ── Free Class Grants ─────────────────────────────────────────────── */
+.cls-free-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.85), rgba(39, 174, 96, 0.85));
+  color: #fff;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(46, 204, 113, 0.3);
+  z-index: 2;
+}
+.cls-free-granted {
+  border-color: rgba(46, 204, 113, 0.3) !important;
+}
+.cls-free-granted.selected {
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.cls-cart-free {
+  border-left: 2px solid rgba(46, 204, 113, 0.5);
+}
+.cls-cart-free .bt-cart-item-cost {
+  color: #2ecc71;
+  font-weight: 700;
+}
+.cls-cart-free-badge {
+  display: inline-block;
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+  font-size: 0.58rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+.cls-free-badge-inline {
+  display: inline-block;
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  color: #2ecc71;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HYBRID / SPECIAL RACE UI
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Special Race Card ───────────────────────────────────────────── */
+.race-card-special {
+  border: 2px solid rgba(190, 120, 255, 0.35) !important;
+  background: linear-gradient(135deg, rgba(30, 20, 50, 0.95), rgba(50, 25, 70, 0.85)) !important;
+  box-shadow: 0 0 20px rgba(190, 120, 255, 0.12), inset 0 1px 0 rgba(190, 120, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.race-card-special::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(190, 120, 255, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.race-card-special:hover {
+  border-color: rgba(190, 120, 255, 0.55) !important;
+  box-shadow: 0 0 28px rgba(190, 120, 255, 0.2), 0 8px 24px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+.race-card-special .race-card-name {
+  color: #c88eff;
+}
+.race-card-special .race-card-attrs {
+  color: rgba(190, 140, 255, 0.7);
+}
+
+/* ── Hybrid Selection Overlay ────────────────────────────────────── */
+.hybrid-select-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+.hybrid-select-modal {
+  background: linear-gradient(160deg, rgba(30, 22, 50, 0.98), rgba(20, 15, 35, 0.98));
+  border: 1px solid rgba(190, 120, 255, 0.25);
+  border-radius: 16px;
+  padding: 28px 32px;
+  max-width: 600px;
+  width: 92%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(190, 120, 255, 0.08);
+}
+.hybrid-select-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c88eff;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.hybrid-select-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 180, 100, 0.8);
+  text-align: center;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+.hybrid-select-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* ── Hybrid Type Card ────────────────────────────────────────────── */
+.hybrid-type-card {
+  background: rgba(190, 120, 255, 0.06);
+  border: 1px solid rgba(190, 120, 255, 0.15);
+  border-radius: 10px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hybrid-type-card:hover {
+  background: rgba(190, 120, 255, 0.12);
+  border-color: rgba(190, 120, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.hybrid-type-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #dab6ff;
+  margin-bottom: 6px;
+}
+.hybrid-type-desc {
+  font-size: 0.72rem;
+  color: rgba(200, 200, 220, 0.75);
+  line-height: 1.5;
+}
+.hybrid-type-desc strong {
+  color: rgba(220, 190, 255, 0.9);
+}
+.hybrid-type-cost {
+  font-size: 0.65rem;
+  color: rgba(255, 180, 100, 0.7);
+  margin-top: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.hybrid-select-cancel {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(200, 200, 220, 0.6);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hybrid-select-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(200, 200, 220, 0.9);
+}
+
+/* ── Locked Breakthrough (from race) ─────────────────────────────── */
+.bt-card.bt-locked-race {
+  border-color: rgba(190, 120, 255, 0.3) !important;
+  background: linear-gradient(135deg, rgba(40, 25, 60, 0.6), rgba(30, 18, 45, 0.6)) !important;
+  cursor: default;
+}
+.bt-card.bt-locked-race.selected {
+  box-shadow: 0 0 0 2px rgba(190, 120, 255, 0.35), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.bt-card.bt-locked-race .bt-card-cost {
+  color: #c88eff !important;
+  font-weight: 700;
+}
+.bt-cart-locked-badge {
+  font-size: 0.6rem;
+  color: rgba(190, 120, 255, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  background: rgba(190, 120, 255, 0.08);
+  border-radius: 4px;
 }

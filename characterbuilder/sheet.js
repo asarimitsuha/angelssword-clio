@@ -15,7 +15,7 @@
   let portraitZoom = 1, portraitPanX = 0, portraitPanY = 0;
   let portraitDragging = false, portraitLastX = 0, portraitLastY = 0;
 
-  const TAB_ORDER = ["stats", "abilities", "inventory"];
+  const TAB_ORDER = ["stats", "abilities", "inventory", "proficiencies"];
 
   const ABILITY_LEVEL_MAP = [
     { level: 1, idKey: "keyAbilityId", nameKey: "keyAbilityName", label: "Key Ability", isKey: true },
@@ -79,6 +79,7 @@
   renderAbilitiesPage(char);
   renderInventoryPage(char, saveToVault);
   updateEquippedSection(char, saveToVault);
+  renderProficienciesPage(char, saveToVault);
 
   /* ═══════════════════════════════════════════════════════════════════
      RENDER SHEET
@@ -114,11 +115,18 @@
     const derived = Character.getDerived({ mainStats, subStats, raceBonuses: { mainStat: null, subStat: null } });
 
     // ── Race line ──
-    const raceParts = [];
-    if (char.race?.primaryRaceName) raceParts.push(char.race.primaryRaceName);
-    if (char.race?.ancestryName) raceParts.push(char.race.ancestryName);
-    if (char.race?.demonHouseName) raceParts.push(`House ${char.race.demonHouseName}`);
-    if (char.race?.elementalMastery) raceParts.push(`${char.race.elementalMastery} Element`);
+    let raceParts;
+    if (char.race?.isHybrid) {
+      const prefix = char.race.hybridDisplayPrefix || "Hybrid";
+      const subrace = char.race.ancestryName || "";
+      raceParts = [`${prefix} ${subrace}`.trim()];
+    } else {
+      raceParts = [];
+      if (char.race?.primaryRaceName) raceParts.push(char.race.primaryRaceName);
+      if (char.race?.ancestryName) raceParts.push(char.race.ancestryName);
+      if (char.race?.demonHouseName) raceParts.push(`House ${char.race.demonHouseName}`);
+      if (char.race?.elementalMastery) raceParts.push(`${char.race.elementalMastery} Element`);
+    }
 
     // ── Stat blocks ──
     function renderStatBlocks(stats, keys, nameMap, type) {
@@ -2078,6 +2086,85 @@
     }, () => refreshSheetAfterExpChange(char, save));
   }
 
+  /* ── Breakthrough requirement checker ─────────────────────────── */
+  let btOverrideMode = false;
+
+  function checkBtRequirement(bt, char) {
+    const req = (bt.requirements || "").replace(/<[^>]+>/g, "").trim();
+    if (!req || req === "-" || req.toLowerCase() === "none") return { met: true, reason: "" };
+
+    const lower = req.toLowerCase();
+    const reasons = [];
+
+    // "character creation" check — always fails on the sheet (post-creation)
+    if (lower.includes("character creation") || lower.includes("taken at character creation")) {
+      if (!char.breakthroughs?.some(b => b.breakthroughId === bt.breakthroughId)) {
+        reasons.push("Can only be taken at character creation");
+      }
+    }
+
+    // Race checks: "Must be a [race]"
+    const raceMatch = lower.match(/must be (?:a |an )?(\w[\w\s'-]*?)(?:\.|,| and | or |$)/i);
+    if (raceMatch) {
+      const reqRace = raceMatch[1].trim();
+      const charRaces = [
+        char.race?.primaryRaceName,
+        char.race?.ancestryName,
+        char.race?.demonHouseName,
+      ].filter(Boolean).map(r => r.toLowerCase());
+      
+      // Multi-race check: "Must be a Nio, Bullfolk or Bearfolk"
+      const raceOptions = reqRace.split(/,\s*|\s+or\s+/i).map(r => r.trim().toLowerCase());
+      const raceMatched = raceOptions.some(opt => charRaces.some(cr => cr.includes(opt) || opt.includes(cr)));
+      if (!raceMatched && !lower.includes("gm approval")) {
+        reasons.push(`Requires race: ${reqRace}`);
+      }
+    }
+
+    // Breakthrough prereq: "Must have [breakthrough name]" or "Must have the [name] breakthrough"
+    const btPrereqPatterns = [
+      /must have (?:the )?["']?([^"'.]+?)["']?\s*(?:breakthrough|$)/gi,
+      /must have (?:purchased |the )?([^.]+?)(?:\.|$)/gi,
+    ];
+    for (const pattern of btPrereqPatterns) {
+      let m;
+      while ((m = pattern.exec(lower)) !== null) {
+        const prereqName = m[1].trim();
+        // Skip non-breakthrough prereqs
+        if (prereqName.includes("proficien") || prereqName.includes("armor") || prereqName.includes("skill") || prereqName.includes("flight") || prereqName.includes("used") || prereqName.includes("visited") || prereqName.includes("believer")) continue;
+        const hasIt = char.breakthroughs?.some(b => b.name.toLowerCase().includes(prereqName));
+        if (!hasIt) {
+          reasons.push(`Requires: ${prereqName}`);
+        }
+      }
+    }
+
+    // Class mastery: "[class] mastered"
+    const classMatch = lower.match(/(\w[\w\s'-]*?)\s+mastered/i);
+    if (classMatch) {
+      const reqClass = classMatch[1].trim();
+      const hasMastered = char.classes?.some(c => c.name.toLowerCase().includes(reqClass) && c.mastered);
+      if (!hasMastered) {
+        reasons.push(`Requires ${reqClass} mastered`);
+      }
+    }
+
+    // GM Approval
+    if (lower.includes("gm approval") || lower.includes("requires gm")) {
+      reasons.push("Requires GM Approval");
+    }
+
+    // Proficiency checks
+    if (lower.includes("proficient with") || lower.includes("proficiency in")) {
+      // Can't reliably check; allow with warning
+    }
+
+    if (reasons.length === 0) return { met: true, reason: "" };
+    // Deduplicate
+    const unique = [...new Set(reasons)];
+    return { met: false, reason: unique.join("; ") };
+  }
+
   function renderBtBrowser(body, close, allBts, char, save) {
     const unspent = getUnspentExp(char);
     const owned = new Set((char.breakthroughs || []).map(b => b.breakthroughId));
@@ -2087,29 +2174,43 @@
         <span class="browser-budget-label">Unspent EXP</span>
         <span class="browser-budget-value ${unspent < 0 ? 'over-budget' : ''}" id="bt-browser-budget">${unspent}</span>
       </div>
-      <input class="browser-search" id="bt-browser-search" type="text" placeholder="Search breakthroughs...">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <input class="browser-search" id="bt-browser-search" type="text" placeholder="Search breakthroughs..." style="flex:1;">
+        <button class="browser-filter-btn ${btOverrideMode ? 'active-orange' : ''}" id="bt-override-btn" title="Override: bypass requirement checks">⚡ Override</button>
+      </div>
       <div class="browser-grid" id="bt-browser-grid">
     `;
 
     for (const bt of allBts) {
       const cost = parseInt(bt.cost) || 0;
       const isOwned = owned.has(bt.breakthroughId);
+      const reqCheck = checkBtRequirement(bt, char);
+      const isLocked = !reqCheck.met && !btOverrideMode && !isOwned;
       const desc = (bt.description || "").replace(/<[^>]+>/g, "").substring(0, 120);
+
       html += `
-        <div class="browser-card ${isOwned ? 'owned' : ''}" data-bt-id="${bt.breakthroughId}" data-name="${(bt.name||'').toLowerCase()}">
+        <div class="browser-card ${isOwned ? 'owned' : ''} ${isLocked ? 'locked' : ''}" data-bt-id="${bt.breakthroughId}" data-name="${(bt.name||'').toLowerCase()}">
           <div class="browser-card-name">${bt.name}</div>
           <div class="browser-card-meta">${bt.requirements || "No requirements"}</div>
+          ${isLocked ? `<div class="browser-card-lock-reason">\u26A0 ${reqCheck.reason}</div>` : ''}
           <div class="browser-card-desc">${desc}${desc.length >= 120 ? '...' : ''}</div>
           <div class="browser-card-cost">${cost} EXP</div>
-          ${!isOwned ? `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-bt-id="${bt.breakthroughId}">Purchase</button></div>` : ''}
+          ${!isOwned && !isLocked ? `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-bt-id="${bt.breakthroughId}">Purchase</button></div>` : ''}
+          ${isOwned ? '<div class="browser-card-owned-badge">\u2714 Owned</div>' : ''}
         </div>
       `;
     }
     html += `</div>`;
     body.innerHTML = html;
 
+    // Override toggle
+    document.getElementById("bt-override-btn")?.addEventListener("click", () => {
+      btOverrideMode = !btOverrideMode;
+      renderBtBrowser(body, close, allBts, char, save);
+    });
+
     // Search
-    document.getElementById("bt-browser-search").addEventListener("input", (e) => {
+    document.getElementById("bt-browser-search")?.addEventListener("input", (e) => {
       const q = e.target.value.toLowerCase();
       body.querySelectorAll(".browser-card").forEach(card => {
         card.style.display = card.dataset.name.includes(q) ? "" : "none";
@@ -2196,7 +2297,8 @@
       if (rc.pattern.test(req)) {
         const playerRace = (char.race?.primaryRaceId || "").toLowerCase();
         const playerAncestry = (char.race?.ancestryId || "").toLowerCase();
-        const isRace = playerRace === rc.raceId || playerAncestry === rc.raceId;
+        const hybridPool = (char.race?.hybridSubracePool || "").toLowerCase(); // hybrids count as both races
+        const isRace = playerRace === rc.raceId || playerAncestry === rc.raceId || hybridPool === rc.raceId;
 
         const raceMatch = rc.pattern.exec(reqLower);
         const racePos = raceMatch ? raceMatch.index : -1;
@@ -2352,9 +2454,35 @@
     "angelblooded", "shinigami-eyes", "vampire", "vampire-lord", "true-shinigami-eyes",
   ]);
 
+  /* ─── Free Class Grants (mirror of builder.js) ────────────────────── */
+  const SHEET_FREE_CLASS_GRANTS = [
+    { match: { race: "demon", demonHouseId: "wi"  }, classId: "saboteur",                  level: 1, source: "House Wi" },
+    { match: { race: "demon", demonHouseId: "un"  }, classId: "maid",                      level: 1, source: "House Un" },
+    { match: { race: "demon", demonHouseId: "vi"  }, classId: "medic",                     level: 1, source: "House Vi" },
+    { match: { race: "fae",   ancestryId: "gnome"  }, classId: "miner",                    level: 1, source: "Gnome" },
+    { match: { race: "fae",   ancestryId: "selkie" }, classId: "hydromancer",               level: 2, source: "Selkie" },
+    { match: { race: "youkai", ancestryId: "raijin" }, classId: "flash-star-blade-style-",  level: 1, source: "Raijin" },
+  ];
+
+  function getCharFreeClassIds(char) {
+    const freeIds = new Set();
+    const race = (char.race?.primaryRaceName || "").toLowerCase();
+    const houseId = (char.race?.demonHouseId || "").toLowerCase();
+    const ancestryId = (char.race?.ancestryId || "").toLowerCase();
+    for (const grant of SHEET_FREE_CLASS_GRANTS) {
+      const m = grant.match;
+      if (m.race && m.race !== race) continue;
+      if (m.demonHouseId && m.demonHouseId !== houseId) continue;
+      if (m.ancestryId && m.ancestryId !== ancestryId) continue;
+      freeIds.add(grant.classId);
+    }
+    return freeIds;
+  }
+
   function renderClsBrowser(body, close, allClasses, char, save) {
     const ownedMap = {};
     (char.classes || []).forEach(c => { ownedMap[c.classId] = c; });
+    const freeClassIds = getCharFreeClassIds(char);
     let currentTier = "all";
     let miraneOn = true;
     let availableOn = false;
@@ -2412,6 +2540,8 @@
 
         // Actions — override makes locked classes unlockable
         const canUnlock = reqCheck.met || overrideOn;
+        const isFreeClass = freeClassIds.has(cls.classId);
+        const freeGrant = isFreeClass ? SHEET_FREE_CLASS_GRANTS.find(g => g.classId === cls.classId) : null;
         let actions = '';
         if (!owned && canUnlock) {
           actions = `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-class-id="${cls.classId}">Unlock (${unlockCost} EXP)</button></div>`;
@@ -2420,11 +2550,12 @@
         } else if (owned && lvl < 8) {
           actions = `<div class="browser-card-actions">
             <button class="browser-action-btn levelup" data-class-id="${cls.classId}">Level Up (100 EXP)</button>
-            <button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>
+            <button class="browser-action-btn maxlevel" data-class-id="${cls.classId}" title="Level to max or next milestone">⚡ Max</button>
+            ${!isFreeClass ? `<button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>` : `<span class="cls-free-badge-inline">FREE (${freeGrant?.source || 'Race'})</span>`}
           </div>`;
         } else if (owned && isMastered) {
           actions = `<div class="browser-card-actions">
-            <button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>
+            ${!isFreeClass ? `<button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>` : `<span class="cls-free-badge-inline">FREE (${freeGrant?.source || 'Race'})</span>`}
           </div>`;
         }
 
@@ -2541,15 +2672,28 @@
           if (newLevel === 5) {
             const text = cls.heart;
             const choices = parseStatChoicesSheet(text, "sub");
-            if (choices.length > 0) {
+            if (choices.length > 1) {
               showStatPickerModal(cls.name, true, text, choices, (picked) => {
                 owned.levels = newLevel;
                 owned.mastered = newLevel >= 8;
                 owned.levelBonuses = owned.levelBonuses || [];
                 owned.levelBonuses.push({ level: 5, type: "sub", statKey: picked });
-                // Apply to effective sub stats
                 if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
                 char.effectiveSubStats[picked] = (char.effectiveSubStats[picked] || 0) + 1;
+                refreshSheetAfterExpChange(char, save);
+                render(currentTier);
+              });
+              return;
+            } else if (choices.length === 1) {
+              // Single choice in "or" list, auto-pick
+              const autoKey = choices[0].key;
+              showUseConfirmSimple("Level Up — Heart", `Level <strong>${cls.name}</strong> to 5 and gain <strong>+1 ${Character.SUB_STAT_NAMES[autoKey]}</strong>?`, () => {
+                owned.levels = newLevel;
+                owned.mastered = newLevel >= 8;
+                owned.levelBonuses = owned.levelBonuses || [];
+                owned.levelBonuses.push({ level: 5, type: "sub", statKey: autoKey });
+                if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
+                char.effectiveSubStats[autoKey] = (char.effectiveSubStats[autoKey] || 0) + 1;
                 refreshSheetAfterExpChange(char, save);
                 render(currentTier);
               });
@@ -2584,7 +2728,7 @@
           if (newLevel === 7) {
             const text = cls.soul;
             const choices = parseStatChoicesSheet(text, "main");
-            if (choices.length > 0) {
+            if (choices.length > 1) {
               showStatPickerModal(cls.name, false, text, choices, (picked) => {
                 owned.levels = newLevel;
                 owned.mastered = newLevel >= 8;
@@ -2592,6 +2736,19 @@
                 owned.levelBonuses.push({ level: 7, type: "main", statKey: picked });
                 if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
                 char.effectiveMainStats[picked] = (char.effectiveMainStats[picked] || 0) + 1;
+                refreshSheetAfterExpChange(char, save);
+                render(currentTier);
+              });
+              return;
+            } else if (choices.length === 1) {
+              const autoKey = choices[0].key;
+              showUseConfirmSimple("Level Up — Soul", `Level <strong>${cls.name}</strong> to 7 and gain <strong>+1 ${Character.MAIN_STAT_NAMES[autoKey]}</strong>?`, () => {
+                owned.levels = newLevel;
+                owned.mastered = newLevel >= 8;
+                owned.levelBonuses = owned.levelBonuses || [];
+                owned.levelBonuses.push({ level: 7, type: "main", statKey: autoKey });
+                if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
+                char.effectiveMainStats[autoKey] = (char.effectiveMainStats[autoKey] || 0) + 1;
                 refreshSheetAfterExpChange(char, save);
                 render(currentTier);
               });
@@ -2632,6 +2789,120 @@
       });
 
       // Remove class
+      // Max level
+      body.querySelectorAll(".browser-action-btn.maxlevel").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const classId = btn.dataset.classId;
+          const cls = allClasses.find(c => c.classId === classId);
+          const owned = ownedMap[classId];
+          if (!cls || !owned || owned.levels >= 8) return;
+
+          // Find the next milestone that needs a pick, or go to 8
+          const milestones = [3, 5, 7]; // levels that need player picks
+          let targetLevel = 8;
+          for (const ml of milestones) {
+            if (owned.levels < ml) {
+              // Check if this milestone already has a bonus picked
+              const hasBonus = (owned.levelBonuses || []).some(lb => lb.level === ml);
+              if (!hasBonus) {
+                targetLevel = ml;
+                break;
+              }
+            }
+          }
+
+          const levelsToGain = targetLevel - owned.levels;
+          const totalCost = levelsToGain * 100;
+          const unspent = getUnspentExp(char);
+          if (totalCost > unspent) {
+            showUseConfirmSimple("Not Enough EXP", `Leveling to ${targetLevel} costs ${totalCost} EXP but you only have ${unspent}.`, null);
+            return;
+          }
+
+          showUseConfirmSimple("Max Level", `Spend <strong>${totalCost} EXP</strong> to level <strong>${cls.name}</strong> from ${owned.levels} → ${targetLevel}?${targetLevel < 8 ? '<br><br><em>Stopping at level ' + targetLevel + ' for milestone pick.</em>' : ''}`, () => {
+            owned.levels = targetLevel;
+            owned.mastered = targetLevel >= 8;
+            refreshSheetAfterExpChange(char, save);
+            render(currentTier);
+
+            // If we stopped at a milestone, trigger the pick
+            if (targetLevel === 3) {
+              showClassSkillPicker(cls, char, owned, save, () => {
+                refreshSheetAfterExpChange(char, save);
+                render(currentTier);
+              });
+            } else if (targetLevel === 5) {
+              // Trigger heart pick
+              const text = cls.heart;
+              const choices = parseStatChoicesSheet(text, "sub");
+              if (choices.length > 1) {
+                showStatPickerModal(cls.name, true, text, choices, (picked) => {
+                  owned.levelBonuses = owned.levelBonuses || [];
+                  owned.levelBonuses.push({ level: 5, type: "sub", statKey: picked });
+                  if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
+                  char.effectiveSubStats[picked] = (char.effectiveSubStats[picked] || 0) + 1;
+                  refreshSheetAfterExpChange(char, save);
+                  render(currentTier);
+                });
+              } else {
+                // Auto-pick single stat
+                const allNames = Object.values(Character.SUB_STAT_NAMES);
+                const allKeys = Character.SUB_STAT_KEYS;
+                const nameToKey = {};
+                allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
+                let autoKey = choices.length === 1 ? choices[0].key : null;
+                if (!autoKey && text) {
+                  for (const name of allNames) {
+                    if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
+                  }
+                }
+                if (autoKey) {
+                  owned.levelBonuses = owned.levelBonuses || [];
+                  owned.levelBonuses.push({ level: 5, type: "sub", statKey: autoKey });
+                  if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
+                  char.effectiveSubStats[autoKey] = (char.effectiveSubStats[autoKey] || 0) + 1;
+                  refreshSheetAfterExpChange(char, save);
+                  render(currentTier);
+                }
+              }
+            } else if (targetLevel === 7) {
+              const text = cls.soul;
+              const choices = parseStatChoicesSheet(text, "main");
+              if (choices.length > 1) {
+                showStatPickerModal(cls.name, false, text, choices, (picked) => {
+                  owned.levelBonuses = owned.levelBonuses || [];
+                  owned.levelBonuses.push({ level: 7, type: "main", statKey: picked });
+                  if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
+                  char.effectiveMainStats[picked] = (char.effectiveMainStats[picked] || 0) + 1;
+                  refreshSheetAfterExpChange(char, save);
+                  render(currentTier);
+                });
+              } else {
+                const allNames = Object.values(Character.MAIN_STAT_NAMES);
+                const allKeys = Character.MAIN_STAT_KEYS;
+                const nameToKey = {};
+                allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
+                let autoKey = choices.length === 1 ? choices[0].key : null;
+                if (!autoKey && text) {
+                  for (const name of allNames) {
+                    if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
+                  }
+                }
+                if (autoKey) {
+                  owned.levelBonuses = owned.levelBonuses || [];
+                  owned.levelBonuses.push({ level: 7, type: "main", statKey: autoKey });
+                  if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
+                  char.effectiveMainStats[autoKey] = (char.effectiveMainStats[autoKey] || 0) + 1;
+                  refreshSheetAfterExpChange(char, save);
+                  render(currentTier);
+                }
+              }
+            }
+          });
+        });
+      });
+
       body.querySelectorAll(".browser-action-btn.remove").forEach(btn => {
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -3253,6 +3524,126 @@
       document.getElementById("simple-confirm-ok").addEventListener("click", () => overlay.remove());
     }
     overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PROFICIENCIES TAB
+     ═══════════════════════════════════════════════════════════════════ */
+  function renderProficienciesPage(char, save) {
+    const container = document.getElementById("proficiencies-root");
+    if (!container) return;
+
+    // Initialize proficiency data
+    if (!char.proficiencies) {
+      char.proficiencies = {
+        weapons: [],
+        armor: [],
+        languages: [],
+      };
+      // Seed from race data
+      const raceName = char.race?.primaryRaceName?.toLowerCase() || "";
+      if (raceName === "demon") {
+        char.proficiencies.languages.push("Common", "Sorthen");
+      } else if (raceName === "fae") {
+        char.proficiencies.languages.push("Sylvan", "Common");
+      } else if (raceName === "human") {
+        char.proficiencies.languages.push("Common");
+      } else if (raceName === "youkai") {
+        char.proficiencies.languages.push("Kiraran", "Common");
+      } else if (raceName === "chimera") {
+        char.proficiencies.languages.push("Common");
+      } else {
+        char.proficiencies.languages.push("Common");
+      }
+    }
+
+    const CATEGORIES = [
+      { key: "weapons", label: "Weapon Proficiencies", icon: "\u2694", placeholder: "e.g. Light Swords, Channeling Weapons..." },
+      { key: "armor",   label: "Armor Proficiencies",  icon: "\u{1F6E1}",  placeholder: "e.g. Light Armor, Shields..." },
+      { key: "languages", label: "Languages",          icon: "\u{1F4AC}", placeholder: "e.g. Sorthen, Sylvan..." },
+    ];
+
+    function render() {
+      let html = `<div class="prof-page">`;
+
+      for (const cat of CATEGORIES) {
+        const items = char.proficiencies[cat.key] || [];
+        html += `
+          <div class="prof-section">
+            <div class="prof-section-header">
+              <span class="prof-section-icon">${cat.icon}</span>
+              <span class="prof-section-title">${cat.label}</span>
+              <span class="prof-section-count">${items.length}</span>
+            </div>
+            <div class="prof-list" id="prof-list-${cat.key}">
+        `;
+        for (let i = 0; i < items.length; i++) {
+          html += `
+            <div class="prof-item">
+              <span class="prof-item-text">${items[i]}</span>
+              <button class="prof-item-remove" data-cat="${cat.key}" data-idx="${i}" title="Remove">\u2715</button>
+            </div>
+          `;
+        }
+        if (items.length === 0) {
+          html += `<div class="prof-empty">None</div>`;
+        }
+        html += `
+            </div>
+            <div class="prof-add-row">
+              <input type="text" class="prof-add-input" id="prof-input-${cat.key}" placeholder="${cat.placeholder}" maxlength="80">
+              <button class="prof-add-btn" data-cat="${cat.key}">+ Add</button>
+            </div>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      // Bind remove buttons
+      container.querySelectorAll(".prof-item-remove").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.dataset.cat;
+          const idx = parseInt(btn.dataset.idx);
+          char.proficiencies[cat].splice(idx, 1);
+          save();
+          render();
+        });
+      });
+
+      // Bind add buttons
+      container.querySelectorAll(".prof-add-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.dataset.cat;
+          const input = document.getElementById(`prof-input-${cat}`);
+          const val = input.value.trim();
+          if (!val) return;
+          char.proficiencies[cat] = char.proficiencies[cat] || [];
+          char.proficiencies[cat].push(val);
+          save();
+          render();
+        });
+      });
+
+      // Bind enter key on inputs
+      container.querySelectorAll(".prof-add-input").forEach(input => {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const cat = input.id.replace("prof-input-", "");
+            const val = input.value.trim();
+            if (!val) return;
+            char.proficiencies[cat] = char.proficiencies[cat] || [];
+            char.proficiencies[cat].push(val);
+            save();
+            render();
+          }
+        });
+      });
+    }
+
+    render();
   }
 
 })();
