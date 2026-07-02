@@ -103,8 +103,16 @@ const Character = (() => {
     const agility   = getEffectiveMainStat(char, "agility");
     const toughness = getEffectiveMainStat(char, "toughness");
 
+    // Accumulate key-ability HP bonuses from classes (e.g. Fighter's Journey +5 HP)
+    let keyAbilityHp = 0;
+    if (char.classes) {
+      for (const cls of char.classes) {
+        if (cls.keyAbilityHpBonus) keyAbilityHp += cls.keyAbilityHpBonus;
+      }
+    }
+
     return {
-      hp: 20 + toughness * 10,
+      hp: 20 + toughness * 10 + keyAbilityHp,
       mana: 6 + power,
       rp: 2 + agility,
       evasion: 7 + agility,

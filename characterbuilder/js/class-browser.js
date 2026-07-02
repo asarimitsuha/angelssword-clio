@@ -59,6 +59,8 @@ window.ClassBrowser = (function () {
     "windbringer", "zephyr-warder", "venomancer",
   ]);
 
+  var keyAbilityHpMap = {}; // classId -> HP bonus from key ability
+
 
   /* ═══════════════════════════════════════════════════════════════════════
      Factory: create(config) → controller
@@ -843,12 +845,14 @@ window.ClassBrowser = (function () {
     function syncClassesToCharacter() {
       character.classes = [];
       clsSelected.forEach(function (entry, classId) {
+        var hpBonus = keyAbilityHpMap[entry.data.classId] || 0;
         character.classes.push({
           classId: entry.data.classId,
           name:    entry.data.name,
           tier:    entry.data.tier,
           levels:  entry.levels,
           mastered: entry.levels >= 8,
+          keyAbilityHpBonus: hpBonus || undefined,
         });
       });
       // Persist interlude actions
@@ -1845,6 +1849,33 @@ window.ClassBrowser = (function () {
               return (a.tier || 0) - (b.tier || 0) || (a.name || "").localeCompare(b.name || "");
             });
             console.log("[ClassBrowser.init] loaded", allClassesData.length, "classes");
+
+            // Preload key ability HP bonuses
+            try {
+              var keyAbilities = await cfg.apiClient.getKeyAbilities();
+              for (var ci = 0; ci < allClassesData.length; ci++) {
+                var cls = allClassesData[ci];
+                keyAbilityHpMap[cls.classId] = 0;
+                if (cls.keyAbilityId) {
+                  var ka = keyAbilities.find(function (a) { return a.indexId === cls.keyAbilityId; });
+                  if (ka) {
+                    var benefits = ["benefit1", "benefit2", "benefit3", "benefit4"];
+                    for (var bi = 0; bi < benefits.length; bi++) {
+                      var txt = ka[benefits[bi]];
+                      if (txt) {
+                        var m = txt.match(/\+(\d+)\s*HP/i);
+                        if (m) {
+                          keyAbilityHpMap[cls.classId] += parseInt(m[1]);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              console.log("[ClassBrowser.init] keyAbilityHpMap:", keyAbilityHpMap);
+            } catch (e) {
+              console.warn("[ClassBrowser.init] Could not preload key ability HP bonuses:", e);
+            }
           } catch (err) {
             grid.innerHTML = '<div class="bt-empty-state">Failed to load classes: ' + err.message + '</div>';
             console.error("Class load error:", err);

@@ -106,10 +106,40 @@
     const openSheetBtn = document.getElementById("vault-open-sheet-btn");
     if (openSheetBtn) openSheetBtn.href = `sheet.html?id=${encodeURIComponent(char.vaultId)}`;
 
-    // Build identical cs-sheet structure
-    const mainStats = char.effectiveMainStats || char.mainStats || {};
-    const subStats = char.effectiveSubStats || char.subStats || {};
-    const derived = char.derivedStats || {};
+    // Compute effective stats including class bonuses (identical to sheet.js)
+    const baseMainStats = char.effectiveMainStats || char.mainStats || {};
+    const baseSubStats = char.effectiveSubStats || char.subStats || {};
+
+    // Aggregate class level bonuses
+    const classMainBonuses = {};
+    const classSubBonuses = {};
+    for (const cls of (char.classes || [])) {
+      for (const lb of (cls.levelBonuses || [])) {
+        if (lb.type === "main" && lb.statKey) {
+          classMainBonuses[lb.statKey] = (classMainBonuses[lb.statKey] || 0) + 1;
+        } else if (lb.type === "sub" && lb.statKey) {
+          classSubBonuses[lb.statKey] = (classSubBonuses[lb.statKey] || 0) + 1;
+        }
+      }
+    }
+
+    const mainStats = {};
+    Character.MAIN_STAT_KEYS.forEach(k => { mainStats[k] = (baseMainStats[k] || 0) + (classMainBonuses[k] || 0); });
+    const subStats = {};
+    Character.SUB_STAT_KEYS.forEach(k => { subStats[k] = (baseSubStats[k] || 0) + (classSubBonuses[k] || 0); });
+
+    const derived = Character.getDerived({ mainStats, subStats, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+
+    // Apply derived overrides (custom sources from override mode)
+    if (char.derivedOverrides) {
+      for (const dk in char.derivedOverrides) {
+        if (derived[dk] !== undefined) {
+          const ct = char.derivedOverrides[dk].reduce((s, cs) => s + cs.amount, 0);
+          derived[dk] += ct;
+        }
+      }
+    }
+
     const statSources = char.statSources || {};
 
     // ── Portrait ──

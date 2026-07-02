@@ -1071,6 +1071,44 @@
     }
   }
 
+  /* ─── Debug: "\" key auto-fills stats ────────────────────────────── */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "\\") return;
+    if (currentPhase !== "main-stats" && currentPhase !== "sub-stats") return;
+
+    const group = currentPhase === "main-stats" ? "main" : "sub";
+    const stats = group === "main" ? character.mainStats : character.subStats;
+    const tokenState = group === "main" ? mainTokenState : subTokenState;
+    const tokenEls = group === "main" ? mainTokenEls : subTokenEls;
+    const slotEls = group === "main" ? mainSlotEls : subSlotEls;
+
+    // Assign each token to the corresponding slot in order
+    slotEls.forEach((slotEl, idx) => {
+      if (idx >= tokenState.length) return;
+      if (slotEl.classList.contains("assigned")) return;
+
+      const statKey = slotEl.dataset.stat;
+      const value = tokenState[idx].value;
+
+      stats[statKey] = value;
+      tokenState[idx].used = true;
+      tokenState[idx].assignedTo = statKey;
+      tokenEls[idx].classList.add("used");
+      tokenEls[idx].classList.remove("selected");
+
+      const valueEl = slotEl.querySelector(".slot-value");
+      valueEl.textContent = value;
+      slotEl.classList.add("assigned");
+      slotEl.dataset.tokenIndex = idx;
+    });
+
+    selectedToken = null;
+    clearSlotHighlights();
+    checkPhaseCompletion(group);
+    Character.save(character);
+    console.log("[DEBUG] Auto-filled " + group + " stats via \\ key");
+  });
+
   /* ═══════════════════════════════════════════════════════════════════
      DERIVED STATS + STAT SUMMARY
      ═══════════════════════════════════════════════════════════════════ */
@@ -1171,471 +1209,51 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     BREAKTHROUGHS
+     BREAKTHROUGHS  (delegated to shared BreakthroughBrowser module)
      ═══════════════════════════════════════════════════════════════════ */
-   const BT_BUDGET = 300;
-  let allBreakthroughs = [];
-  let btSelected = new Set(); // set of breakthroughIds (suffixed for elemental: "elemental-affinity::fire")
-  let btLockedIds = new Set(); // breakthrough IDs locked from race (hybrid) — cannot be removed
-  let btDetailBt = null;      // currently viewed breakthrough in modal
-  let btOverrideMode = false;  // bypass EXP budget when true
-  const ELEMENTAL_AFFINITY_ID = "elemental-affinity";
-  const ELEMENTAL_CHOICES = ["Fire", "Water", "Wind", "Earth", "Lightning", "Ice", "Dark", "Holy"];
+  let btBrowserInstance = null;
 
   async function loadBreakthroughs() {
-    const grid = document.getElementById("bt-grid");
+    const container = document.getElementById("bt-browser-container");
 
-    // Inject budget + search into fixed header extras
-    setupBtHeaderExtras();
-
-    if (allBreakthroughs.length === 0) {
-      grid.innerHTML = '<div class="bt-empty-state">Loading breakthroughs...</div>';
-      try {
-        allBreakthroughs = await ApiClient.getBreakthroughs();
-        allBreakthroughs.sort((a, b) => parseInt(a.cost) - parseInt(b.cost) || a.name.localeCompare(b.name));
-      } catch (err) {
-        grid.innerHTML = '<div class="bt-empty-state">Failed to load breakthroughs.</div>';
-        console.error("BT load error:", err);
-        return;
-      }
+    // Destroy previous instance if any
+    if (btBrowserInstance) {
+      btBrowserInstance.destroy();
+      btBrowserInstance = null;
     }
 
-    // Restore previous selections
-    if (character.breakthroughs && character.breakthroughs.length) {
-      btSelected = new Set(character.breakthroughs.map((b) => b.breakthroughId));
-    }
-
-    // Auto-grant hybrid race breakthrough (locked)
-    if (character.race?.isHybrid && character.race.hybridBreakthroughId) {
-      const hybridBtId = character.race.hybridBreakthroughId;
-      btLockedIds.add(hybridBtId);
-      if (!btSelected.has(hybridBtId)) {
-        btSelected.add(hybridBtId);
-        syncBreakthroughsToCharacter();
-      }
-    }
-
-    renderBreakthroughCards(allBreakthroughs);
-    updateBtBudget();
-    updateBtCart();
-    bindBtDetailModal();
-  }
-
-  function setupBtHeaderExtras() {
-    const extras = document.getElementById("phase-header-extras");
-    extras.innerHTML = `
-      <div class="bt-budget-bar">
-        <span class="bt-budget-label">EXP Budget</span>
-        <div class="bt-budget-meter">
-          <div class="bt-budget-fill" id="bt-budget-fill"></div>
-        </div>
-        <span class="bt-budget-value" id="bt-budget-value">300 / 300</span>
-        <button class="bt-override-btn" id="bt-override-btn">
-          <span class="bt-override-indicator"></span>
-          <span class="bt-override-label">Override</span>
-        </button>
-      </div>
-      <div class="bt-search-wrap">
-        <span class="bt-search-icon">🔍</span>
-        <input type="text" id="bt-search" class="bt-search-input" placeholder="Search breakthroughs by name, description, or requirement..." autocomplete="off">
-      </div>
-    `;
-
-    // Bind override toggle
-    const overrideBtn = document.getElementById("bt-override-btn");
-    if (btOverrideMode) overrideBtn.classList.add("active");
-    overrideBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      btOverrideMode = !btOverrideMode;
-      overrideBtn.classList.toggle("active", btOverrideMode);
-      updateBtBudget();
+    btBrowserInstance = BreakthroughBrowser.create({
+      containerEl: container,
+      character: character,
+      mode: "creation",
+      budget: 300,
+      idPrefix: "bt",
+      showCart: true,
+      hybridBreakthroughId: character.race?.isHybrid ? character.race.hybridBreakthroughId : null,
+      apiClient: ApiClient,
+      stripHtml: function (s) { return Utils.stripHtml(s); },
+      characterModule: Character,
+      onSync: function () {
+        // Module already syncs character.breakthroughs internally
+        nextBtn.style.display = "inline-flex";
+      },
+      onMessage: function (text) {
+        if (text) Aniela.say({ text: text, sprite: "4", dismissable: true });
+      },
     });
 
-    // Bind search
-    const searchInput = document.getElementById("bt-search");
-    searchInput.oninput = () => {
-      const q = searchInput.value.toLowerCase().trim();
-      if (!q) {
-        renderBreakthroughCards(allBreakthroughs);
-      } else {
-        const filtered = allBreakthroughs.filter((bt) =>
-          bt.name.toLowerCase().includes(q) ||
-          stripHtml(bt.description).toLowerCase().includes(q) ||
-          (bt.requirements && bt.requirements.toLowerCase().includes(q))
-        );
-        renderBreakthroughCards(filtered);
-      }
-    };
+    // Init loads BT data and renders
+    await btBrowserInstance.init();
   }
 
   function clearBtHeaderExtras() {
-    const extras = document.getElementById("phase-header-extras");
-    if (extras) extras.innerHTML = "";
-  }
-
-  function renderBreakthroughCards(list) {
-    const grid = document.getElementById("bt-grid");
-    grid.innerHTML = "";
-
-    if (list.length === 0) {
-      grid.innerHTML = '<div class="bt-empty-state">No breakthroughs match your search.</div>';
-      return;
+    if (btBrowserInstance) {
+      btBrowserInstance.destroy();
+      btBrowserInstance = null;
     }
-
-    list.forEach((bt) => {
-      const card = document.createElement("div");
-      card.className = "bt-card";
-      card.dataset.btId = bt.breakthroughId;
-      if (btSelected.has(bt.breakthroughId) || [...btSelected].some((id) => id.startsWith(bt.breakthroughId + "::"))) card.classList.add("selected");
-      const isLocked = btLockedIds.has(bt.breakthroughId);
-      if (isLocked) card.classList.add("bt-locked-race");
-
-      const cost = parseInt(bt.cost) || 0;
-      const costClass = cost === 0 ? "bt-card-cost free" : "bt-card-cost";
-      const costLabel = isLocked ? "🔒 RACE" : (cost === 0 ? "FREE" : `${cost} EXP`);
-      const desc = stripHtml(bt.description);
-      const req = bt.requirements && bt.requirements !== "-" ? bt.requirements : "";
-
-      card.innerHTML = `
-        <div class="bt-card-header">
-          <span class="bt-card-name">${bt.name}</span>
-          <span class="${costClass}">${costLabel}</span>
-        </div>
-        ${req ? `<div class="bt-card-req">⚠ ${req}</div>` : ""}
-        <div class="bt-card-desc">${desc}</div>
-        <button class="bt-card-expand" data-bt-id="${bt.breakthroughId}">View Details</button>
-      `;
-
-      // Click card body → toggle selection
-      card.addEventListener("click", (e) => {
-        if (e.target.closest(".bt-card-expand")) return; // let expand handle itself
-        e.stopPropagation();
-        toggleBreakthrough(bt);
-      });
-
-      // Expand button → open detail modal
-      card.querySelector(".bt-card-expand").addEventListener("click", (e) => {
-        e.stopPropagation();
-        openBtDetail(bt);
-      });
-
-      grid.appendChild(card);
-    });
   }
 
-  function toggleBreakthrough(bt) {
-    const btId = bt.breakthroughId;
-    const cost = parseInt(bt.cost) || 0;
-
-    // Prevent toggling locked (hybrid race) breakthroughs
-    if (btLockedIds.has(btId)) {
-      Aniela.say({ text: "This breakthrough is locked — it comes from your hybrid race choice. To change it, go back and pick a different race.", sprite: "4", dismissable: true });
-      return;
-    }
-
-    // ─── Elemental Affinity: special handling ──────────────────────
-    if (btId === ELEMENTAL_AFFINITY_ID) {
-      // Always show the picker — it handles adding new elements and shows already-picked ones
-      openElementalAffinityPicker(bt);
-      return;
-    } else if (btSelected.has(btId)) {
-      btSelected.delete(btId);
-    } else {
-      const currentSpent = getSpentExp();
-      if (!btOverrideMode && currentSpent + cost > BT_BUDGET) {
-        const budgetVal = document.getElementById("bt-budget-value");
-        budgetVal.classList.add("over-budget");
-        setTimeout(() => budgetVal.classList.remove("over-budget"), 800);
-        Aniela.say({ text: `That would put you over budget!  You only have ${BT_BUDGET - currentSpent} EXP left.`, sprite: "4" });
-        return;
-      }
-      btSelected.add(btId);
-    }
-
-    // Update card visual
-    const card = document.querySelector(`.bt-card[data-bt-id="${btId}"]`);
-    if (card) card.classList.toggle("selected", btSelected.has(btId) || [...btSelected].some((id) => id.startsWith(btId + "::")));
-
-    updateBtBudget();
-    updateBtCart();
-    syncBreakthroughsToCharacter();
-    nextBtn.style.display = "inline-flex";
-  }
-
-  /* ─── Elemental Affinity Picker ───────────────────────────────── */
-  function openElementalAffinityPicker(bt) {
-    // Remove any existing picker
-    const existing = document.getElementById("elemental-picker-overlay");
-    if (existing) existing.remove();
-
-    // Find which elements are already chosen
-    const chosenElements = [...btSelected]
-      .filter((id) => id.startsWith(ELEMENTAL_AFFINITY_ID + "::"))
-      .map((id) => id.split("::")[1]);
-
-    const overlay = document.createElement("div");
-    overlay.id = "elemental-picker-overlay";
-    overlay.className = "elemental-picker-overlay";
-
-    const modal = document.createElement("div");
-    modal.className = "elemental-picker-modal";
-
-    modal.innerHTML = `
-      <div class="elemental-picker-header">
-        <h3>Choose an Element</h3>
-        <button class="elemental-picker-close">✕</button>
-      </div>
-      <p class="elemental-picker-desc">Select an element to gain Elemental Mastery in.</p>
-      <div class="elemental-picker-grid">
-        ${ELEMENTAL_CHOICES.map((el) => {
-          const elLower = el.toLowerCase();
-          const alreadyPicked = chosenElements.includes(elLower);
-          return `<button class="elemental-picker-btn ${alreadyPicked ? "picked" : ""}" data-element="${elLower}">
-            <span class="elemental-picker-icon">${getElementIcon(elLower)}</span>
-            <span class="elemental-picker-label">${el}</span>
-            ${alreadyPicked ? '<span class="elemental-picker-check">✓</span>' : ""}
-          </button>`;
-        }).join("")}
-      </div>
-      ${chosenElements.length > 0 ? `<div class="elemental-picker-current">Currently mastered: ${chosenElements.map((e) => e.charAt(0).toUpperCase() + e.slice(1)).join(", ")}</div>` : ""}
-    `;
-
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    // Animate in
-    requestAnimationFrame(() => overlay.classList.add("open"));
-
-    // Close handlers
-    const close = () => { overlay.classList.remove("open"); setTimeout(() => overlay.remove(), 200); };
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
-    modal.querySelector(".elemental-picker-close").addEventListener("click", close);
-
-    // Element button handlers — click unpicked to add, click picked to remove
-    modal.querySelectorAll(".elemental-picker-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const element = btn.dataset.element;
-        const suffixedId = `${ELEMENTAL_AFFINITY_ID}::${element}`;
-
-        if (btSelected.has(suffixedId)) {
-          // Remove this element
-          btSelected.delete(suffixedId);
-          const hasAny = [...btSelected].some((sid) => sid.startsWith(ELEMENTAL_AFFINITY_ID + "::"));
-          const card = document.querySelector(`.bt-card[data-bt-id="${ELEMENTAL_AFFINITY_ID}"]`);
-          if (card && !hasAny) card.classList.remove("selected");
-          updateBtBudget();
-          updateBtCart();
-          syncBreakthroughsToCharacter();
-        } else {
-          addElementalAffinity(bt, element);
-        }
-        close();
-      });
-    });
-  }
-
-  function getElementIcon(element) {
-    const icons = { fire: "🔥", water: "💧", wind: "🌪️", earth: "🪨", lightning: "⚡", ice: "❄️", dark: "🌑", holy: "✨" };
-    return icons[element] || "🔮";
-  }
-
-  function addElementalAffinity(bt, element) {
-    const cost = parseInt(bt.cost) || 0;
-    const suffixedId = `${ELEMENTAL_AFFINITY_ID}::${element}`;
-
-    // Budget check
-    const currentSpent = getSpentExp();
-    if (!btOverrideMode && currentSpent + cost > BT_BUDGET) {
-      const budgetVal = document.getElementById("bt-budget-value");
-      budgetVal.classList.add("over-budget");
-      setTimeout(() => budgetVal.classList.remove("over-budget"), 800);
-      Aniela.say({ text: `That would put you over budget!  You only have ${BT_BUDGET - currentSpent} EXP left.`, sprite: "4" });
-      return;
-    }
-
-    btSelected.add(suffixedId);
-
-    // Mark the card as selected
-    const card = document.querySelector(`.bt-card[data-bt-id="${ELEMENTAL_AFFINITY_ID}"]`);
-    if (card) card.classList.add("selected");
-
-    updateBtBudget();
-    updateBtCart();
-    syncBreakthroughsToCharacter();
-    nextBtn.style.display = "inline-flex";
-  }
-
-  // Resolve suffixed IDs (e.g. "elemental-affinity::fire" → "elemental-affinity")
-  function resolveBtBase(id) {
-    const baseId = id.includes("::") ? id.split("::")[0] : id;
-    return allBreakthroughs.find((b) => b.breakthroughId === baseId);
-  }
-
-  function getSpentExp() {
-    let total = 0;
-    btSelected.forEach((id) => {
-      const bt = resolveBtBase(id);
-      if (bt) total += parseInt(bt.cost) || 0;
-    });
-    return total;
-  }
-
-  function updateBtBudget() {
-    const spent = getSpentExp();
-    const remaining = BT_BUDGET - spent;
-    const pct = Math.max(0, Math.min(100, (remaining / BT_BUDGET) * 100));
-
-    const fillEl = document.getElementById("bt-budget-fill");
-    const valEl = document.getElementById("bt-budget-value");
-    if (!fillEl || !valEl) return;
-
-    fillEl.style.width = btOverrideMode ? "100%" : pct + "%";
-    valEl.textContent = btOverrideMode ? "∞" : `${remaining} / ${BT_BUDGET}`;
-    valEl.classList.toggle("over-budget", !btOverrideMode && remaining < 0);
-  }
-
-  function updateBtCart() {
-    const itemsEl = document.getElementById("bt-cart-items");
-    const countEl = document.getElementById("bt-cart-count");
-    const totalEl = document.getElementById("bt-cart-total-cost");
-    if (!itemsEl) return;
-
-    const count = btSelected.size;
-    countEl.textContent = count;
-    totalEl.textContent = `${getSpentExp()} EXP`;
-
-    if (count === 0) {
-      itemsEl.innerHTML = '<div class="bt-cart-empty">No breakthroughs selected</div>';
-      return;
-    }
-
-    itemsEl.innerHTML = "";
-    btSelected.forEach((id) => {
-      const bt = resolveBtBase(id);
-      if (!bt) return;
-      const cost = parseInt(bt.cost) || 0;
-
-      // Display name: "Elemental Affinity: Fire" for suffixed IDs
-      let displayName = bt.name;
-      if (id.includes("::")) {
-        const element = id.split("::")[1];
-        displayName = `${bt.name}: ${element.charAt(0).toUpperCase() + element.slice(1)}`;
-      }
-
-      const item = document.createElement("div");
-      item.className = "bt-cart-item";
-      const isLocked = btLockedIds.has(id);
-      item.innerHTML = `
-        <span class="bt-cart-item-name" title="${displayName}">${displayName}</span>
-        <span class="bt-cart-item-cost">${isLocked ? '🔒 RACE' : (cost === 0 ? "FREE" : cost)}</span>
-        ${!isLocked ? '<button class="bt-cart-item-remove" title="Remove">✕</button>' : '<span class="bt-cart-locked-badge">Locked</span>'}
-      `;
-      if (!isLocked) item.querySelector(".bt-cart-item-remove")?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        // Remove this specific suffixed entry
-        btSelected.delete(id);
-        // If no more elemental affinities, un-select the card
-        const hasAny = [...btSelected].some((sid) => sid.startsWith(ELEMENTAL_AFFINITY_ID + "::"));
-        const card = document.querySelector(`.bt-card[data-bt-id="${ELEMENTAL_AFFINITY_ID}"]`);
-        if (card && !hasAny) card.classList.remove("selected");
-        updateBtBudget();
-        updateBtCart();
-        syncBreakthroughsToCharacter();
-      });
-      itemsEl.appendChild(item);
-    });
-  }
-
-  function syncBreakthroughsToCharacter() {
-    character.breakthroughs = [];
-    btSelected.forEach((id) => {
-      const bt = resolveBtBase(id);
-      if (bt) {
-        // For suffixed IDs, store the element in the name
-        let name = bt.name;
-        if (id.includes("::")) {
-          const element = id.split("::")[1];
-          name = `${bt.name}: ${element.charAt(0).toUpperCase() + element.slice(1)}`;
-        }
-        character.breakthroughs.push({
-          breakthroughId: id, // keep suffixed ID for uniqueness
-          name: name,
-          cost: parseInt(bt.cost) || 0,
-          requirements: bt.requirements || "",
-          description: stripHtml(bt.description),
-          abilityId: bt.ability || null,
-          fromCreation: true, // free — doesn't count toward SC
-        });
-      }
-    });
-    Character.save(character);
-  }
-
-  /* ─── Detail Modal ──────────────────────────────────────────────── */
-  function bindBtDetailModal() {
-    const overlay = document.getElementById("bt-detail-overlay");
-    const closeBtn = document.getElementById("bt-detail-close");
-    const toggleBtn = document.getElementById("bt-detail-toggle-btn");
-
-    // Close on overlay click (outside modal)
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeBtDetail();
-    });
-
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      closeBtDetail();
-    });
-
-    toggleBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (btDetailBt) {
-        toggleBreakthrough(btDetailBt);
-        updateBtDetailBtn();
-      }
-    });
-
-    // Close on Escape
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeBtDetail();
-    });
-  }
-
-  function openBtDetail(bt) {
-    btDetailBt = bt;
-    const overlay = document.getElementById("bt-detail-overlay");
-    const cost = parseInt(bt.cost) || 0;
-    const req = bt.requirements && bt.requirements !== "-" ? bt.requirements : "";
-
-    document.getElementById("bt-detail-name").textContent = bt.name;
-
-    const costEl = document.getElementById("bt-detail-cost");
-    costEl.textContent = cost === 0 ? "FREE" : `${cost} EXP`;
-    costEl.className = cost === 0 ? "bt-detail-cost free" : "bt-detail-cost";
-
-    document.getElementById("bt-detail-req").textContent = req ? `⚠ ${req}` : "";
-    document.getElementById("bt-detail-desc").innerHTML = bt.description; // keep HTML for rich formatting
-
-    updateBtDetailBtn();
-    overlay.classList.add("open");
-  }
-
-  function closeBtDetail() {
-    btDetailBt = null;
-    document.getElementById("bt-detail-overlay").classList.remove("open");
-  }
-
-   function updateBtDetailBtn() {
-    if (!btDetailBt) return;
-    const btn = document.getElementById("bt-detail-toggle-btn");
-    const btId = btDetailBt.breakthroughId;
-    const isSelected = btSelected.has(btId) || [...btSelected].some((id) => id.startsWith(btId + "::"));
-    btn.textContent = isSelected ? "Remove" : "Select";
-    btn.classList.toggle("is-selected", isSelected);
-  }
-
-
-  /* ═══════════════════════════════════════════════════════════════════
+    /* ═══════════════════════════════════════════════════════════════════
      CLASSES
      ═══════════════════════════════════════════════════════════════════ */
   const CLS_BUDGET_BASE = 1000;
@@ -1644,10 +1262,18 @@
     const isHuman = character.race?.primaryRaceId === "human" ||
                     character.race?.primaryRaceName?.toLowerCase() === "human";
     const noBonus = character.race?.noHumanBonus === true; // Human-Chimera hybrid
-    return CLS_BUDGET_BASE + (isHuman && !noBonus ? CLS_HUMAN_BONUS : 0);
+    let interludeExp = 0;
+    if (clsInterludeActions) {
+      for (const actionId of clsInterludeActions) {
+        const def = INTERLUDE_ACTIONS.find(a => a.id === actionId);
+        if (def && def.exp) interludeExp += def.exp;
+      }
+    }
+    return CLS_BUDGET_BASE + (isHuman && !noBonus ? CLS_HUMAN_BONUS : 0) + interludeExp;
   }
   const CLS_IP_MAX = 3;
   let allClassesData = [];
+  const keyAbilityHpMap = {}; // classId -> HP bonus from key ability
   let clsSelected = new Map(); // classId → { levels: 1-8, data: classObj }
   let clsDetailCls = null;
   let clsOverrideMode = false;
@@ -1740,6 +1366,31 @@
         }
         allClassesData.sort((a, b) => (a.tier || 0) - (b.tier || 0) || (a.name || "").localeCompare(b.name || ""));
         console.log("[loadClasses] loaded", allClassesData.length, "classes");
+
+        // Preload key ability HP bonuses
+        try {
+          const keyAbilities = await ApiClient.getKeyAbilities();
+          for (const cls of allClassesData) {
+            keyAbilityHpMap[cls.classId] = 0;
+            if (cls.keyAbilityId) {
+              const ka = keyAbilities.find(a => a.indexId === cls.keyAbilityId);
+              if (ka) {
+                for (const key of ["benefit1", "benefit2", "benefit3", "benefit4"]) {
+                  const txt = ka[key];
+                  if (txt) {
+                    const m = txt.match(/\+(\d+)\s*HP/i);
+                    if (m) {
+                      keyAbilityHpMap[cls.classId] += parseInt(m[1]);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          console.log("[loadClasses] keyAbilityHpMap:", keyAbilityHpMap);
+        } catch (e) {
+          console.warn("[loadClasses] Could not preload key ability HP bonuses:", e);
+        }
       } catch (err) {
         grid.innerHTML = `<div class="bt-empty-state">Failed to load classes: ${err.message}</div>`;
         console.error("Class load error:", err);
@@ -1753,6 +1404,10 @@
         const data = allClassesData.find((d) => d.classId === c.classId);
         if (data) clsSelected.set(c.classId, { levels: c.levels, data });
       });
+    }
+
+    if (character.interludeActions && character.interludeActions.length && clsInterludeActions.length === 0) {
+      clsInterludeActions = [...character.interludeActions];
     }
 
     // Apply free class grants from race/house/ancestry
@@ -2145,12 +1800,14 @@
   function syncClassesToCharacter() {
     character.classes = [];
     clsSelected.forEach(({ levels, data }, classId) => {
+      const hpBonus = keyAbilityHpMap[data.classId] || 0;
       character.classes.push({
         classId: data.classId,
         name: data.name,
         tier: data.tier,
         levels,
         mastered: levels >= 8,
+        keyAbilityHpBonus: hpBonus || undefined,
       });
     });
     Character.save(character);
@@ -2918,24 +2575,17 @@
       character._clsConfirmed = false; // reset for next time
 
       // Apply interlude action bonuses
-      if (clsInterludeActions.length > 0) {
-        let bonusClim = 0;
-        let bonusExp = 0;
-        for (const actionId of clsInterludeActions) {
-          const def = INTERLUDE_ACTIONS.find((a) => a.id === actionId);
-          if (def) {
-            bonusClim += def.clim;
-            bonusExp += def.exp;
-          }
+      let bonusClim = 0;
+      for (const actionId of clsInterludeActions) {
+        const def = INTERLUDE_ACTIONS.find((a) => a.id === actionId);
+        if (def && def.clim) {
+          bonusClim += def.clim;
         }
-        if (bonusClim > 0) {
-          character.resources.clim = (character.resources.clim || 3000) + bonusClim;
-        }
-        if (bonusExp > 0) {
-          character.resources.classExp = (character.resources.classExp || 1000) + bonusExp;
-        }
-        character.interludeActions = [...clsInterludeActions];
       }
+      character.resources = character.resources || {};
+      character.resources.clim = 3000 + bonusClim;
+      character.resources.classExp = getClsBudget();
+      character.interludeActions = [...clsInterludeActions];
 
       character.completedStep = 7;
       Character.save(character);
@@ -3584,6 +3234,16 @@
      ═══════════════════════════════════════════════════════════════════ */
 
   const STARTING_CLIM = 3000;
+  function getStartingClim() {
+    let bonus = 0;
+    if (character.interludeActions) {
+      for (const actionId of character.interludeActions) {
+        const def = INTERLUDE_ACTIONS.find(a => a.id === actionId);
+        if (def && def.clim) bonus += def.clim;
+      }
+    }
+    return STARTING_CLIM + bonus;
+  }
   let allItems = [];
   let itemModsData = {}; // loaded from items-mods.json: { itemId: [{n,t,p,s,pt?,pc?}] }
   let itemCart = []; // { uid, item, mods: [], displayName, totalCost }
@@ -3995,7 +3655,7 @@
 
   function updateItemBudget() {
     const spent = itemCart.reduce((sum, c) => sum + c.totalCost, 0);
-    const remaining = STARTING_CLIM - spent;
+    const remaining = getStartingClim() - spent;
     const budgetEl = document.getElementById("item-budget-amount");
     if (budgetEl) {
       budgetEl.textContent = remaining;
@@ -4014,7 +3674,7 @@
     }));
     const spent = itemCart.reduce((sum, c) => sum + c.totalCost, 0);
     character.resources = character.resources || {};
-    character.resources.clim = STARTING_CLIM - spent;
+    character.resources.clim = getStartingClim() - spent;
     Character.save(character);
   }
 
@@ -4034,11 +3694,9 @@
   let reviewBound = false;
 
   function loadReview() {
-    // Snapshot stats if not already done
-    if (!character.effectiveMainStats) {
-      Character.snapshotStats(character);
-      Character.save(character);
-    }
+    // Always snapshot stats to ensure classes and equipment bonuses are captured
+    Character.snapshotStats(character);
+    Character.save(character);
 
     populateIdentity();
     populateMainStats();
@@ -4763,6 +4421,8 @@
       character.totalExp = Character.calculateStartingExp(character);
     }
 
+    // Recalculate snapshot to ensure final stats are locked in
+    Character.snapshotStats(character);
     Character.save(character);
 
     // Save to vault

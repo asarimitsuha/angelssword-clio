@@ -279,22 +279,27 @@ window.RequirementChecker = (function () {
    *
    * @param {Object} bt        — breakthrough data object (must have .requirements)
    * @param {Object} character — character state (race, breakthroughs, classes, …)
+   * @param {boolean} [isCreation] — if true, "character creation" requirements auto-pass
    * @returns {{ met: boolean, reason: string }}
    */
-  function checkBreakthrough(bt, character) {
+  function checkBreakthrough(bt, character, isCreation) {
     var req = (bt.requirements || "").replace(/<[^>]+>/g, "").trim();
     if (!req || req === "-" || req.toLowerCase() === "none") return { met: true, reason: "" };
 
     var lower = req.toLowerCase();
     var reasons = [];
 
-    // "character creation" check — always fails on the sheet (post-creation)
+    // "character creation" check — auto-pass during creation, auto-fail on sheet (unless already owned)
     if (lower.includes("character creation") || lower.includes("taken at character creation")) {
-      var alreadyOwned = character.breakthroughs?.some(function (b) {
-        return b.breakthroughId === bt.breakthroughId;
-      });
-      if (!alreadyOwned) {
-        reasons.push("Can only be taken at character creation");
+      if (isCreation) {
+        // During creation, this requirement is automatically satisfied
+      } else {
+        var alreadyOwned = character.breakthroughs?.some(function (b) {
+          return b.breakthroughId === bt.breakthroughId;
+        });
+        if (!alreadyOwned) {
+          reasons.push("Can only be taken at character creation");
+        }
       }
     }
 

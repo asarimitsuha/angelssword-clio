@@ -113,7 +113,17 @@
     Character.MAIN_STAT_KEYS.forEach(k => { mainStats[k] = (baseMainStats[k] || 0) + (classMainBonuses[k] || 0); });
     const subStats = {};
     Character.SUB_STAT_KEYS.forEach(k => { subStats[k] = (baseSubStats[k] || 0) + (classSubBonuses[k] || 0); });
-    const derived = Character.getDerived({ mainStats, subStats, raceBonuses: { mainStat: null, subStat: null } });
+    const derived = Character.getDerived({ mainStats, subStats, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+
+    // Apply derived overrides (custom sources from override mode)
+    if (char.derivedOverrides) {
+      for (const dk in char.derivedOverrides) {
+        if (derived[dk] !== undefined) {
+          const ct = char.derivedOverrides[dk].reduce((s, cs) => s + cs.amount, 0);
+          derived[dk] += ct;
+        }
+      }
+    }
 
     // ── Race line ──
     let raceParts;
@@ -145,9 +155,9 @@
 
     // ── Derived stats ──
     const derivedRows = [
-      [{ icon: "❤️", l: "HP", v: derived.hp }, { icon: "💧", l: "Mana", v: derived.mana }, { icon: "⚡", l: "RP", v: derived.rp }, { icon: "✦", l: "AP", v: derived.ap }],
-      [{ icon: "🛡️", l: "Evasion", v: derived.evasion }, { icon: "🔰", l: "Guard", v: derived.guard }, { icon: "🛡️", l: "Save", v: derived.savebonus }, { icon: "⚔️", l: "Initiative", v: derived.initiative }],
-      [{ icon: "🎯", l: "Potency", v: derived.potency }, { icon: "👟", l: "Speed", v: derived.speed }],
+      [{ icon: "❤️", l: "HP", k: "hp", v: derived.hp }, { icon: "💧", l: "Mana", k: "mana", v: derived.mana }, { icon: "⚡", l: "RP", k: "rp", v: derived.rp }, { icon: "✦", l: "AP", k: "ap", v: derived.ap }],
+      [{ icon: "🛡️", l: "Evasion", k: "evasion", v: derived.evasion }, { icon: "🔰", l: "Guard", k: "guard", v: derived.guard }, { icon: "🛡️", l: "Save", k: "savebonus", v: derived.savebonus }, { icon: "⚔️", l: "Initiative", k: "initiative", v: derived.initiative }],
+      [{ icon: "🎯", l: "Potency", k: "potency", v: derived.potency }, { icon: "👟", l: "Speed", k: "speed", v: derived.speed }],
     ];
 
     // ── Classes ──
@@ -261,7 +271,7 @@
       <!-- Derived Stats Bar -->
       <div class="cs-derived-bar">
         ${derivedRows.map(row => `<div class="cs-derived-row">${row.map(e =>
-          `<div class="cs-derived-stat">
+          `<div class="cs-derived-stat" data-derived-key="${e.k}" style="cursor:pointer;">
             <span class="cs-derived-icon">${e.icon}</span>
             <span class="cs-derived-value">${e.v ?? "—"}</span>
             <span class="cs-derived-label">${e.l}</span>
@@ -319,6 +329,7 @@
 
     // Bind stat hover tooltips
     bindStatHovers(char, container);
+    bindDerivedStatHovers(char, container);
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -933,6 +944,82 @@
     if (statSourcePopup) { statSourcePopup.remove(); statSourcePopup = null; }
   }
 
+  /* ── Derived stat formula descriptions ──────────────────────────── */
+  const DERIVED_FORMULAS = {
+    hp:         { label: "HP",         formula: (m, s) => `20 base + Toughness(${m.toughness || 0}) × 10`, stat: "toughness", type: "main", base: 20, mult: 10 },
+    mana:       { label: "Mana",       formula: (m, s) => `6 base + Power(${m.power || 0})`, stat: "power", type: "main", base: 6, mult: 1 },
+    rp:         { label: "RP",         formula: (m, s) => `2 base + Agility(${m.agility || 0})`, stat: "agility", type: "main", base: 2, mult: 1 },
+    evasion:    { label: "Evasion",    formula: (m, s) => `7 base + Agility(${m.agility || 0})`, stat: "agility", type: "main", base: 7, mult: 1 },
+    potency:    { label: "Potency",    formula: (m, s) => `11 base + Focus(${m.focus || 0})`, stat: "focus", type: "main", base: 11, mult: 1 },
+    guard:      { label: "Guard",      formula: (m, s) => `Toughness(${m.toughness || 0})`, stat: "toughness", type: "main", base: 0, mult: 1 },
+    initiative: { label: "Initiative", formula: (m, s) => `Agility(${m.agility || 0})`, stat: "agility", type: "main", base: 0, mult: 1 },
+    savebonus:  { label: "Save",       formula: (m, s) => `Toughness(${m.toughness || 0})`, stat: "toughness", type: "main", base: 0, mult: 1 },
+    ap:         { label: "AP",         formula: () => `4 (fixed)`, stat: null, base: 4, mult: 0 },
+    speed:      { label: "Speed",      formula: () => `20 (fixed)`, stat: null, base: 20, mult: 0 },
+  };
+
+  function bindDerivedStatHovers(char, container) {
+    container.querySelectorAll("[data-derived-key]").forEach(el => {
+      el.addEventListener("mouseenter", (e) => showDerivedSourceHover(e, char, el.dataset.derivedKey));
+      el.addEventListener("mouseleave", hideStatSourceHover);
+    });
+  }
+
+  function showDerivedSourceHover(e, char, key) {
+    hideStatSourceHover();
+    const info = DERIVED_FORMULAS[key];
+    if (!info) return;
+
+    const baseMainStats = char.effectiveMainStats || char.mainStats || {};
+    const baseSubStats = char.effectiveSubStats || char.subStats || {};
+    const classMainBonuses = {};
+    for (const cls of (char.classes || [])) {
+      for (const lb of (cls.levelBonuses || [])) {
+        if (lb.type === "main" && lb.statKey) classMainBonuses[lb.statKey] = (classMainBonuses[lb.statKey] || 0) + 1;
+      }
+    }
+    const mainStats = {};
+    Character.MAIN_STAT_KEYS.forEach(k => { mainStats[k] = (baseMainStats[k] || 0) + (classMainBonuses[k] || 0); });
+    const subStats = {};
+    Character.SUB_STAT_KEYS.forEach(k => { subStats[k] = (baseSubStats[k] || 0); });
+
+    const baseDerived = Character.getDerived({ mainStats, subStats, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+    const baseVal = baseDerived[key] || 0;
+
+    const lines = [`${info.label}`];
+    lines.push(`  Formula: ${info.formula(mainStats, subStats)}`);
+
+    // Key ability HP bonus
+    if (key === "hp") {
+      let keyAbilityHp = 0;
+      for (const cls of (char.classes || [])) {
+        if (cls.keyAbilityHpBonus) {
+          keyAbilityHp += cls.keyAbilityHpBonus;
+          lines.push(`  ${cls.name}: Key Ability +${cls.keyAbilityHpBonus}`);
+        }
+      }
+    }
+
+    // Custom overrides
+    const overrides = char.derivedOverrides?.[key] || [];
+    for (const ov of overrides) {
+      lines.push(`  ${ov.source}: ${ov.label} ${ov.amount >= 0 ? "+" : ""}${ov.amount}`);
+    }
+
+    const overrideTotal = overrides.reduce((s, o) => s + o.amount, 0);
+    const total = baseVal + overrideTotal;
+    lines.push(`  Total: ${total}`);
+
+    statSourcePopup = document.createElement("div");
+    statSourcePopup.className = "cs-stat-source-popup";
+    statSourcePopup.innerHTML = lines.map(l => `<div class="cs-stat-source-line">${l}</div>`).join("");
+    document.body.appendChild(statSourcePopup);
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    statSourcePopup.style.left = (rect.left + rect.width / 2) + "px";
+    statSourcePopup.style.top = (rect.bottom + 6) + "px";
+  }
+
   /* ═══════════════════════════════════════════════════════════════════
      TOOLTIP EVENTS — clicking classes, breakthroughs, items, skills
      ═══════════════════════════════════════════════════════════════════ */
@@ -1071,6 +1158,126 @@
               }
               saveToVault();
               statBlock.click();
+            };
+            addBtn.addEventListener("click", doAdd);
+            nameIn.addEventListener("keydown", (ev) => { if (ev.key === "Enter") doAdd(); });
+            valIn.addEventListener("keydown", (ev) => { if (ev.key === "Enter") doAdd(); });
+            nameIn.focus();
+          }
+        }
+
+        overlay.classList.add("open");
+        return;
+      }
+
+      // Derived stat click → show formula + override editing
+      const derivedEl = e.target.closest("[data-derived-key]");
+      if (derivedEl) {
+        const dk = derivedEl.dataset.derivedKey;
+        const info = DERIVED_FORMULAS[dk];
+        if (!info) return;
+
+        // Compute current stats for the formula display
+        const bMain = char.effectiveMainStats || char.mainStats || {};
+        const bSub = char.effectiveSubStats || char.subStats || {};
+        const cMainB = {};
+        for (const cls of (char.classes || [])) {
+          for (const lb of (cls.levelBonuses || [])) {
+            if (lb.type === "main" && lb.statKey) cMainB[lb.statKey] = (cMainB[lb.statKey] || 0) + 1;
+          }
+        }
+        const ms = {};
+        Character.MAIN_STAT_KEYS.forEach(k => { ms[k] = (bMain[k] || 0) + (cMainB[k] || 0); });
+        const ss = {};
+        Character.SUB_STAT_KEYS.forEach(k => { ss[k] = (bSub[k] || 0); });
+
+        const baseDerived = Character.getDerived({ mainStats: ms, subStats: ss, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+        const baseVal = baseDerived[dk] || 0;
+
+        titleEl.textContent = info.label;
+
+        let html = '<div class="cs-tip-row" style="margin-bottom:8px;"><strong>Sources:</strong></div>';
+        html += `<div class="cs-tip-row cs-tip-indent">• Formula: <strong>${info.formula(ms, ss)}</strong></div>`;
+
+        // Key ability HP bonus
+        if (dk === "hp") {
+          for (const cls of (char.classes || [])) {
+            if (cls.keyAbilityHpBonus) {
+              html += `<div class="cs-tip-row cs-tip-indent">• ${cls.name} (Key Ability): <strong>+${cls.keyAbilityHpBonus}</strong></div>`;
+            }
+          }
+        }
+
+        html += `<div class="cs-tip-row cs-tip-indent">• Base Value: <strong>${baseVal}</strong></div>`;
+
+        // Custom overrides
+        const customOverrides = char.derivedOverrides?.[dk] || [];
+        if (customOverrides.length > 0) {
+          for (let ci = 0; ci < customOverrides.length; ci++) {
+            const cs = customOverrides[ci];
+            html += `<div class="cs-tip-row cs-tip-indent cs-tip-custom-source">• Custom (${cs.label}): <strong>${cs.amount >= 0 ? "+" : ""}${cs.amount}</strong>`;
+            if (overrideActive) {
+              html += ` <button class="cs-override-del-source-btn" data-derived-src-idx="${ci}" title="Remove source">\u00d7</button>`;
+            }
+            html += `</div>`;
+          }
+        }
+
+        const overrideTotal = customOverrides.reduce((s, o) => s + o.amount, 0);
+        const grandTotal = baseVal + overrideTotal;
+        html += `<div class="cs-tip-row" style="margin-top:8px;border-top:1px solid var(--clr-border);padding-top:8px;"><strong>Total: ${grandTotal}</strong></div>`;
+
+        if (overrideActive) {
+          html += '<div class="cs-override-add-source-form" style="margin-top:10px;border-top:1px solid var(--clr-border);padding-top:10px;">';
+          html += '<div style="margin-bottom:6px;font-size:0.75rem;color:#e6a032;font-weight:600;">Add Custom Source</div>';
+          html += '<div class="cs-override-input-row">';
+          html += '<input type="text" class="cs-override-text-input" id="cs-override-derived-name" placeholder="Source name..." maxlength="40">';
+          html += '<input type="number" class="cs-override-num-input" id="cs-override-derived-val" placeholder="+/-" value="1">';
+          html += '<button class="cs-override-confirm-btn" id="cs-override-derived-add">\u2713</button>';
+          html += '</div></div>';
+        }
+
+        bodyEl.innerHTML = html;
+
+        // Bind derived override interactions
+        if (overrideActive) {
+          bodyEl.querySelectorAll("[data-derived-src-idx]").forEach(btn => {
+            btn.addEventListener("click", (ev) => {
+              ev.stopPropagation();
+              const idx = parseInt(btn.dataset.derivedSrcIdx);
+              const customs = char.derivedOverrides?.[dk] || [];
+              if (customs[idx]) {
+                customs.splice(idx, 1);
+                if (customs.length === 0) delete char.derivedOverrides[dk];
+                // Re-compute and update display
+                const newDerived = Character.getDerived({ mainStats: ms, subStats: ss, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+                const newOverrideTotal = (char.derivedOverrides?.[dk] || []).reduce((s, o) => s + o.amount, 0);
+                const valEl = derivedEl.querySelector(".cs-derived-value");
+                if (valEl) valEl.textContent = newDerived[dk] + newOverrideTotal;
+                saveToVault();
+                derivedEl.click();
+              }
+            });
+          });
+
+          const addBtn = document.getElementById("cs-override-derived-add");
+          const nameIn = document.getElementById("cs-override-derived-name");
+          const valIn = document.getElementById("cs-override-derived-val");
+          if (addBtn && nameIn && valIn) {
+            const doAdd = () => {
+              const label = nameIn.value.trim();
+              const amount = parseInt(valIn.value) || 0;
+              if (!label || amount === 0) return;
+              if (!char.derivedOverrides) char.derivedOverrides = {};
+              if (!char.derivedOverrides[dk]) char.derivedOverrides[dk] = [];
+              char.derivedOverrides[dk].push({ source: "Custom", label: label, amount: amount });
+              // Update display
+              const newDerived = Character.getDerived({ mainStats: ms, subStats: ss, raceBonuses: { mainStat: null, subStat: null }, classes: char.classes });
+              const newOverrideTotal = char.derivedOverrides[dk].reduce((s, o) => s + o.amount, 0);
+              const valEl = derivedEl.querySelector(".cs-derived-value");
+              if (valEl) valEl.textContent = newDerived[dk] + newOverrideTotal;
+              saveToVault();
+              derivedEl.click();
             };
             addBtn.addEventListener("click", doAdd);
             nameIn.addEventListener("keydown", (ev) => { if (ev.key === "Enter") doAdd(); });

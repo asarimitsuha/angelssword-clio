@@ -1684,7 +1684,7 @@
 .use-confirm-overlay {
   position: fixed;
   inset: 0;
-  z-index: 4000;
+  z-index: 5000;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -2320,13 +2320,17 @@
   inset: 0;
   z-index: 4000;
   background: rgba(0, 0, 0, 0.65);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.bt-detail-overlay.active {
+.bt-detail-overlay.active,
+.bt-detail-overlay.open {
+  display: flex;
+  pointer-events: auto;
   opacity: 1;
 }
 .bt-detail-box {
@@ -2343,7 +2347,8 @@
   transform: translateY(12px);
   transition: transform 0.2s ease;
 }
-.bt-detail-overlay.active .bt-detail-box {
+.bt-detail-overlay.active .bt-detail-box,
+.bt-detail-overlay.open .bt-detail-modal {
   transform: translateY(0);
 }
 .bt-detail-close {
