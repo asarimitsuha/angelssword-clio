@@ -74,6 +74,7 @@
   bindGenderEvents(char);
   bindTooltipEvents(char, root);
   bindExpControls(char);
+  bindOverrideMode(char);
   bindRenameEvents(char, saveToVault);
   bindTabNavigation();
   renderAbilitiesPage(char);
@@ -201,9 +202,13 @@
 
     // ── Gender buttons ──
     const genderOptions = ["Male", "Female", "N/A"];
+    const genderCollapsed = !!char.gender;
     const genderBtns = genderOptions.map(g =>
-      `<button class="cs-gender-btn${char.gender === g ? " active" : ""}" data-gender="${g}">${g}</button>`
+      `<button class="cs-gender-btn${char.gender === g ? " active" : ""}" data-gender="${g}"${genderCollapsed && char.gender !== g ? ' style="display:none;"' : ''}>${g}</button>`
     ).join("");
+    const genderDisplay = genderCollapsed
+      ? `<span class="cs-gender-chosen" id="cs-gender-chosen" title="Click to change">${char.gender}</span>`
+      : "";
 
     // ── Assemble ──
     container.innerHTML = `
@@ -235,9 +240,10 @@
             <div class="cs-name-display" id="cs-char-name" contenteditable="true" spellcheck="false" title="Click to rename">${char.name || "Unnamed"}</div>
             <div class="cs-identity-row">
               <div class="cs-race-line">${raceParts.join("  ·  ")}</div>
-              <div class="cs-gender-select">
+              <div class="cs-gender-select" id="cs-gender-select">
                 <label class="cs-gender-label">Gender</label>
-                <div class="cs-gender-options" id="cs-gender-options">${genderBtns}</div>
+                ${genderDisplay}
+                <div class="cs-gender-options${genderCollapsed ? ' collapsed' : ''}" id="cs-gender-options">${genderBtns}</div>
               </div>
             </div>
           </div>
@@ -282,6 +288,7 @@
           </span>
           <span class="cs-exp-divider">·</span>
           <button class="spend-exp-btn" id="cs-spend-exp" title="Spend EXP on Classes or Breakthroughs">✦ Spend EXP</button>
+          <button class="override-btn" id="cs-override-btn" title="Override Mode: Manually edit stats and skills">⚙ Override</button>
         </div>
       </div>
 
@@ -300,7 +307,7 @@
       <!-- Skills -->
       <div class="cs-section cs-section-full">
         <div class="cs-section-title">Skills</div>
-        <div class="cs-skills-grid">${skillsHtml}</div>
+        <div class="cs-skills-grid" id="cs-skills-grid">${skillsHtml}</div>
       </div>
 
       <!-- Equipped -->
@@ -489,15 +496,55 @@
      GENDER SELECTOR
      ═══════════════════════════════════════════════════════════════════ */
   function bindGenderEvents(char) {
-    const container = document.getElementById("cs-gender-options");
-    if (!container) return;
-    container.addEventListener("click", (e) => {
+    // Use document-level delegation so events survive renderSheet() DOM replacement
+    document.addEventListener("click", (e) => {
+      // Handle clicking a gender button
       const btn = e.target.closest(".cs-gender-btn");
-      if (!btn) return;
-      container.querySelectorAll(".cs-gender-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      char.gender = btn.dataset.gender;
-      saveToVault();
+      if (btn) {
+        const container = document.getElementById("cs-gender-options");
+        if (!container) return;
+        container.querySelectorAll(".cs-gender-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        char.gender = btn.dataset.gender;
+        saveToVault();
+
+        // Collapse: hide non-selected buttons, show chosen label
+        container.querySelectorAll(".cs-gender-btn").forEach(b => {
+          b.style.display = b.dataset.gender === char.gender ? "" : "none";
+        });
+        container.classList.add("collapsed");
+
+        // Update or create the chosen label
+        const selectEl = document.getElementById("cs-gender-select");
+        if (selectEl) {
+          let chosenEl = document.getElementById("cs-gender-chosen");
+          if (!chosenEl) {
+            chosenEl = document.createElement("span");
+            chosenEl.className = "cs-gender-chosen";
+            chosenEl.id = "cs-gender-chosen";
+            chosenEl.title = "Click to change";
+            const label = selectEl.querySelector(".cs-gender-label");
+            if (label) label.after(chosenEl);
+          }
+          chosenEl.textContent = char.gender;
+        }
+        return;
+      }
+
+      // Handle clicking the chosen gender label -> expand
+      const chosenEl = e.target.closest(".cs-gender-chosen");
+      if (chosenEl) {
+        const container = document.getElementById("cs-gender-options");
+        if (!container) return;
+        // Show all buttons
+        container.querySelectorAll(".cs-gender-btn").forEach(b => {
+          b.style.display = "";
+        });
+        container.classList.remove("collapsed");
+        // Remove the chosen label
+        chosenEl.remove();
+        return;
+      }
     });
   }
 
@@ -570,6 +617,273 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
+     OVERRIDE MODE — inline editing of stats and skills
+     ═══════════════════════════════════════════════════════════════════ */
+  var overrideActive = false;
+
+  function bindOverrideMode(char) {
+    const btn = document.getElementById("cs-override-btn");
+    if (!btn) return;
+    const root = document.getElementById("character-sheet");
+
+    btn.addEventListener("click", () => {
+      overrideActive = !overrideActive;
+      btn.classList.toggle("active", overrideActive);
+      if (root) root.classList.toggle("cs-override-active", overrideActive);
+
+      if (overrideActive) {
+        enableSkillEditing(char);
+      } else {
+        disableSkillEditing();
+      }
+    });
+  }
+
+  function enableStatEditing(char) {
+    document.querySelectorAll(".cs-stat-block").forEach(block => {
+      const valueEl = block.querySelector(".cs-stat-value");
+      if (!valueEl) return;
+      valueEl.contentEditable = "true";
+      valueEl.classList.add("cs-editable");
+
+      valueEl.addEventListener("focus", function () {
+        this._prevVal = parseInt(this.textContent) || 0;
+      });
+
+      valueEl.addEventListener("blur", function () {
+        const newVal = parseInt(this.textContent) || 0;
+        const oldVal = this._prevVal || 0;
+        const delta = newVal - oldVal;
+        if (delta === 0) return;
+
+        const key = block.dataset.statKey;
+        const type = block.dataset.statType;
+
+        if (type === "main") {
+          if (!char.mainStats) char.mainStats = {};
+          if (!char.effectiveMainStats) char.effectiveMainStats = {};
+          char.mainStats[key] = (char.mainStats[key] || 0) + delta;
+          char.effectiveMainStats[key] = (char.effectiveMainStats[key] || 0) + delta;
+        } else {
+          if (!char.subStats) char.subStats = {};
+          if (!char.effectiveSubStats) char.effectiveSubStats = {};
+          char.subStats[key] = (char.subStats[key] || 0) + delta;
+          char.effectiveSubStats[key] = (char.effectiveSubStats[key] || 0) + delta;
+        }
+
+        if (!char.statSources) char.statSources = {};
+        if (!char.statSources[key]) char.statSources[key] = [];
+        const existing = char.statSources[key].find(s => s.source === "Custom" && s.label === "Override");
+        if (existing) {
+          existing.amount += delta;
+          if (existing.amount === 0) {
+            char.statSources[key] = char.statSources[key].filter(s => s !== existing);
+          }
+        } else {
+          char.statSources[key].push({ source: "Custom", label: "Override", amount: delta });
+        }
+
+        if (!char.customOverrides) char.customOverrides = { stats: {} };
+        if (!char.customOverrides.stats) char.customOverrides.stats = {};
+        if (!char.customOverrides.stats[key]) {
+          char.customOverrides.stats[key] = { type, amount: delta };
+        } else {
+          char.customOverrides.stats[key].amount += delta;
+        }
+
+        saveToVault();
+      });
+
+      valueEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); valueEl.blur(); }
+      });
+    });
+  }
+
+  function disableStatEditing() {
+    document.querySelectorAll(".cs-stat-value.cs-editable").forEach(el => {
+      el.contentEditable = "false";
+      el.classList.remove("cs-editable");
+    });
+  }
+
+  function enableSkillEditing(char) {
+    const grid = document.getElementById("cs-skills-grid");
+    if (!grid) return;
+
+    grid.querySelectorAll(".cs-skill-cell").forEach(cell => {
+      const name = cell.dataset.id;
+      const valueEl = cell.querySelector(".cs-skill-value");
+      if (valueEl) {
+        valueEl.contentEditable = "true";
+        valueEl.classList.add("cs-editable");
+        valueEl.addEventListener("focus", function () { this._prev = parseInt(this.textContent) || 0; });
+        valueEl.addEventListener("blur", function () {
+          const newVal = Math.max(0, parseInt(this.textContent) || 0);
+          this.textContent = newVal;
+          if (!char.skills) char.skills = {};
+          if (!char.skills[name]) char.skills[name] = { points: 0, expertise: [] };
+          char.skills[name].points = newVal;
+          saveToVault();
+        });
+        valueEl.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); valueEl.blur(); } });
+      }
+
+      // Delete skill button
+      if (!cell.querySelector(".cs-override-del-skill-btn")) {
+        const delBtn = document.createElement("button");
+        delBtn.className = "cs-override-del-skill-btn";
+        delBtn.textContent = "\u00d7";
+        delBtn.title = "Remove skill";
+        delBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (char.skills && char.skills[name]) {
+            delete char.skills[name];
+            saveToVault();
+            overrideRefreshSkills(char);
+          }
+        });
+        const header = cell.querySelector(".cs-skill-header");
+        if (header) header.appendChild(delBtn);
+      }
+
+      // Delete expertise buttons
+      cell.querySelectorAll(".cs-expertise-tag").forEach((tag, idx) => {
+        if (!tag.querySelector(".cs-override-del-exp-btn")) {
+          const delExp = document.createElement("button");
+          delExp.className = "cs-override-del-exp-btn";
+          delExp.textContent = "\u00d7";
+          delExp.title = "Remove expertise";
+          delExp.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (char.skills && char.skills[name] && char.skills[name].expertise) {
+              char.skills[name].expertise.splice(idx, 1);
+              saveToVault();
+              overrideRefreshSkills(char);
+            }
+          });
+          tag.appendChild(delExp);
+        }
+      });
+
+      if (!cell.querySelector(".cs-override-add-exp-btn")) {
+        const addExpBtn = document.createElement("button");
+        addExpBtn.className = "cs-override-add-exp-btn";
+        addExpBtn.textContent = "+exp";
+        addExpBtn.title = "Add expertise";
+        addExpBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          showAddExpertiseInput(cell, name, char);
+        });
+        cell.appendChild(addExpBtn);
+      }
+    });
+
+    if (!grid.querySelector(".cs-override-add-skill-btn")) {
+      const addBtn = document.createElement("button");
+      addBtn.className = "cs-override-add-skill-btn";
+      addBtn.innerHTML = "+ Add Skill";
+      addBtn.addEventListener("click", () => showAddSkillInput(grid, char));
+      grid.appendChild(addBtn);
+    }
+  }
+
+  function disableSkillEditing() {
+    const grid = document.getElementById("cs-skills-grid");
+    if (!grid) return;
+    grid.querySelectorAll(".cs-skill-value.cs-editable").forEach(el => {
+      el.contentEditable = "false";
+      el.classList.remove("cs-editable");
+    });
+    grid.querySelectorAll(".cs-override-add-exp-btn, .cs-override-add-skill-btn, .cs-override-input-row, .cs-override-del-skill-btn, .cs-override-del-exp-btn").forEach(el => el.remove());
+  }
+
+  function showAddSkillInput(grid, char) {
+    grid.querySelectorAll(".cs-override-input-row").forEach(el => el.remove());
+    const row = document.createElement("div");
+    row.className = "cs-override-input-row";
+    row.innerHTML = '<input type="text" class="cs-override-text-input" placeholder="Skill name..." maxlength="40">' +
+      '<input type="number" class="cs-override-num-input" placeholder="Pts" min="0" max="99" value="1">' +
+      '<button class="cs-override-confirm-btn">\u2713</button>' +
+      '<button class="cs-override-cancel-btn">\u2715</button>';
+    grid.appendChild(row);
+    const nameInput = row.querySelector(".cs-override-text-input");
+    nameInput.focus();
+
+    row.querySelector(".cs-override-confirm-btn").addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      const pts = parseInt(row.querySelector(".cs-override-num-input").value) || 1;
+      if (!name) return;
+      if (!char.skills) char.skills = {};
+      if (!char.skills[name]) char.skills[name] = { points: 0, expertise: [] };
+      char.skills[name].points += pts;
+      saveToVault();
+      overrideRefreshSkills(char);
+    });
+    row.querySelector(".cs-override-cancel-btn").addEventListener("click", () => row.remove());
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") row.querySelector(".cs-override-confirm-btn").click();
+      if (e.key === "Escape") row.remove();
+    });
+  }
+
+  function showAddExpertiseInput(cell, skillName, char) {
+    cell.querySelectorAll(".cs-override-input-row").forEach(el => el.remove());
+    const row = document.createElement("div");
+    row.className = "cs-override-input-row";
+    row.innerHTML = '<input type="text" class="cs-override-text-input" placeholder="Expertise name..." maxlength="40">' +
+      '<input type="number" class="cs-override-num-input" placeholder="Pts" min="1" max="99" value="2">' +
+      '<button class="cs-override-confirm-btn">\u2713</button>' +
+      '<button class="cs-override-cancel-btn">\u2715</button>';
+    cell.appendChild(row);
+    const nameInput = row.querySelector(".cs-override-text-input");
+    nameInput.focus();
+
+    row.querySelector(".cs-override-confirm-btn").addEventListener("click", () => {
+      const expName = nameInput.value.trim();
+      const pts = parseInt(row.querySelector(".cs-override-num-input").value) || 2;
+      if (!expName) return;
+      if (!char.skills) char.skills = {};
+      if (!char.skills[skillName]) char.skills[skillName] = { points: 0, expertise: [] };
+      char.skills[skillName].expertise.push({ name: expName, points: pts });
+      saveToVault();
+      overrideRefreshSkills(char);
+    });
+    row.querySelector(".cs-override-cancel-btn").addEventListener("click", () => row.remove());
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") row.querySelector(".cs-override-confirm-btn").click();
+      if (e.key === "Escape") row.remove();
+    });
+  }
+
+  function overrideRefreshSkills(char) {
+    const grid = document.getElementById("cs-skills-grid");
+    if (!grid || !char.skills) return;
+    const entries = Object.entries(char.skills).filter(([_, v]) => v.points > 0 || v.expertise?.length > 0);
+    entries.sort((a, b) => a[0].localeCompare(b[0]));
+    if (entries.length > 0) {
+      grid.innerHTML = entries.map(([name, data]) => {
+        let expHtml = '';
+        if (data.expertise?.length) {
+          expHtml = '<div class="cs-skill-expertise">' +
+            data.expertise.map(e => `<span class="cs-expertise-tag">${e.name} ${e.points}</span>`).join('') +
+            '</div>';
+        }
+        return `<div class="cs-skill-cell" data-type="skill" data-id="${name}">
+          <div class="cs-skill-header">
+            <span class="cs-skill-name">${name}</span>
+            <span class="cs-skill-value">${data.points}</span>
+          </div>
+          ${expHtml}
+        </div>`;
+      }).join('');
+    } else {
+      grid.innerHTML = '<div class="cs-empty">No skills allocated</div>';
+    }
+    if (overrideActive) enableSkillEditing(char);
+  }
+
+    /* ═══════════════════════════════════════════════════════════════════
      STAT SOURCE HOVER
      ═══════════════════════════════════════════════════════════════════ */
   // statSourcePopup hoisted to top of IIFE
@@ -657,7 +971,7 @@
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") overlay.classList.remove("open"); });
 
     container.addEventListener("click", (e) => {
-      // Stat block click → show sources
+      // Stat block click → show sources (with override editing)
       const statBlock = e.target.closest(".cs-stat-block");
       if (statBlock) {
         const key = statBlock.dataset.statKey;
@@ -666,12 +980,105 @@
         const sources = getStatSources(char, key, type);
         const total = sources.reduce((s, src) => s + src.value, 0);
         titleEl.textContent = nameMap[key] || key;
+
         let html = '<div class="cs-tip-row" style="margin-bottom:8px;"><strong>Sources:</strong></div>';
         for (const src of sources) {
-          html += `<div class="cs-tip-row cs-tip-indent">• ${src.source}: <strong>+${src.value}</strong></div>`;
+          html += `<div class="cs-tip-row cs-tip-indent">• ${src.source}: <strong>${src.value >= 0 ? "+" : ""}${src.value}</strong></div>`;
         }
-        html += `<div class="cs-tip-row" style="margin-top:8px;border-top:1px solid var(--clr-border);padding-top:8px;"><strong>Total: ${total}</strong></div>`;
+
+        // Custom sources from statSources
+        const customSources = (char.statSources?.[key] || []).filter(s => s.source === "Custom");
+        if (customSources.length > 0) {
+          for (let ci = 0; ci < customSources.length; ci++) {
+            const cs = customSources[ci];
+            html += `<div class="cs-tip-row cs-tip-indent cs-tip-custom-source">• Custom (${cs.label}): <strong>${cs.amount >= 0 ? "+" : ""}${cs.amount}</strong>`;
+            if (overrideActive) {
+              html += ` <button class="cs-override-del-source-btn" data-source-idx="${ci}" title="Remove source">\u00d7</button>`;
+            }
+            html += `</div>`;
+          }
+        }
+
+        const grandTotal = total + customSources.reduce((s, cs) => s + cs.amount, 0);
+        html += `<div class="cs-tip-row" style="margin-top:8px;border-top:1px solid var(--clr-border);padding-top:8px;"><strong>Total: ${grandTotal}</strong></div>`;
+
+        if (overrideActive) {
+          html += '<div class="cs-override-add-source-form" style="margin-top:10px;border-top:1px solid var(--clr-border);padding-top:10px;">';
+          html += '<div style="margin-bottom:6px;font-size:0.75rem;color:#e6a032;font-weight:600;">Add Custom Source</div>';
+          html += '<div class="cs-override-input-row">';
+          html += '<input type="text" class="cs-override-text-input" id="cs-override-source-name" placeholder="Source name..." maxlength="40">';
+          html += '<input type="number" class="cs-override-num-input" id="cs-override-source-val" placeholder="+/-" value="1">';
+          html += '<button class="cs-override-confirm-btn" id="cs-override-source-add">\u2713</button>';
+          html += '</div></div>';
+        }
+
         bodyEl.innerHTML = html;
+
+        // Bind override source interactions
+        if (overrideActive) {
+          bodyEl.querySelectorAll(".cs-override-del-source-btn").forEach(btn => {
+            btn.addEventListener("click", (ev) => {
+              ev.stopPropagation();
+              const idx = parseInt(btn.dataset.sourceIdx);
+              const customs = (char.statSources?.[key] || []).filter(s => s.source === "Custom");
+              if (customs[idx]) {
+                const cs = customs[idx];
+                if (type === "main") {
+                  if (char.mainStats) char.mainStats[key] = (char.mainStats[key] || 0) - cs.amount;
+                  if (char.effectiveMainStats) char.effectiveMainStats[key] = (char.effectiveMainStats[key] || 0) - cs.amount;
+                } else {
+                  if (char.subStats) char.subStats[key] = (char.subStats[key] || 0) - cs.amount;
+                  if (char.effectiveSubStats) char.effectiveSubStats[key] = (char.effectiveSubStats[key] || 0) - cs.amount;
+                }
+                char.statSources[key] = char.statSources[key].filter(s => s !== cs);
+                const valEl = statBlock.querySelector(".cs-stat-value");
+                if (valEl) {
+                  const nv = type === "main" ? (char.effectiveMainStats?.[key] || char.mainStats?.[key] || 0) : (char.effectiveSubStats?.[key] || char.subStats?.[key] || 0);
+                  valEl.textContent = nv;
+                }
+                saveToVault();
+                statBlock.click();
+              }
+            });
+          });
+
+          const addBtn = document.getElementById("cs-override-source-add");
+          const nameIn = document.getElementById("cs-override-source-name");
+          const valIn = document.getElementById("cs-override-source-val");
+          if (addBtn && nameIn && valIn) {
+            const doAdd = () => {
+              const label = nameIn.value.trim();
+              const amount = parseInt(valIn.value) || 0;
+              if (!label || amount === 0) return;
+              if (!char.statSources) char.statSources = {};
+              if (!char.statSources[key]) char.statSources[key] = [];
+              char.statSources[key].push({ source: "Custom", label: label, amount: amount });
+              if (type === "main") {
+                if (!char.mainStats) char.mainStats = {};
+                if (!char.effectiveMainStats) char.effectiveMainStats = {};
+                char.mainStats[key] = (char.mainStats[key] || 0) + amount;
+                char.effectiveMainStats[key] = (char.effectiveMainStats[key] || 0) + amount;
+              } else {
+                if (!char.subStats) char.subStats = {};
+                if (!char.effectiveSubStats) char.effectiveSubStats = {};
+                char.subStats[key] = (char.subStats[key] || 0) + amount;
+                char.effectiveSubStats[key] = (char.effectiveSubStats[key] || 0) + amount;
+              }
+              const valEl = statBlock.querySelector(".cs-stat-value");
+              if (valEl) {
+                const nv = type === "main" ? (char.effectiveMainStats?.[key] || char.mainStats?.[key] || 0) : (char.effectiveSubStats?.[key] || char.subStats?.[key] || 0);
+                valEl.textContent = nv;
+              }
+              saveToVault();
+              statBlock.click();
+            };
+            addBtn.addEventListener("click", doAdd);
+            nameIn.addEventListener("keydown", (ev) => { if (ev.key === "Enter") doAdd(); });
+            valIn.addEventListener("keydown", (ev) => { if (ev.key === "Enter") doAdd(); });
+            nameIn.focus();
+          }
+        }
+
         overlay.classList.add("open");
         return;
       }
@@ -818,6 +1225,8 @@
       const idx = TAB_ORDER.indexOf(tabName);
       prevBtn.disabled = idx <= 0;
       nextBtn.disabled = idx >= TAB_ORDER.length - 1;
+      // Refresh data-driven tabs when switching to them
+      if (tabName === "abilities") renderAbilitiesPage(char);
     }
 
     tabBtns.forEach(btn => {
@@ -968,7 +1377,20 @@
             html += '</div>';
           }
           if (ka.associatedAbility) {
-            html += `<div class="ability-stat-row"><span class="ability-stat-label">Associated</span><span class="ability-stat-value">${ka.associatedAbility}</span></div>`;
+            const assocAbility = await ApiClient.getAbilityByIndexId(ka.associatedAbility);
+            if (assocAbility) {
+              html += '<div class="cls-ability-assoc">';
+              html += '<div class="cls-ability-assoc-name">' + assocAbility.name + '</div>';
+              if (assocAbility.apCost && assocAbility.apCost !== "-" && assocAbility.apCost !== "0" && assocAbility.apCost !== "") html += '<span class="cls-ability-tag">AP: ' + assocAbility.apCost + '</span>';
+              if (assocAbility.manaCost && assocAbility.manaCost !== "-" && assocAbility.manaCost !== "0" && assocAbility.manaCost !== "") html += '<span class="cls-ability-tag">Mana: ' + assocAbility.manaCost + '</span>';
+              if (assocAbility.rpCost && assocAbility.rpCost !== "-" && assocAbility.rpCost !== "0" && assocAbility.rpCost !== "") html += '<span class="cls-ability-tag">RP: ' + assocAbility.rpCost + '</span>';
+              if (assocAbility.range && assocAbility.range !== "-") html += '<span class="cls-ability-tag">Range: ' + assocAbility.range + '</span>';
+              if (assocAbility.keywords) html += '<span class="cls-ability-tag">' + assocAbility.keywords + '</span>';
+              if (assocAbility.description) html += '<div class="cls-ability-desc">' + assocAbility.description + '</div>';
+              html += '</div>';
+            } else {
+              html += `<div class="ability-stat-row"><span class="ability-stat-label">Associated Ability</span><span class="ability-stat-value">(Could not load details)</span></div>`;
+            }
           }
           bodyEl.innerHTML = html || '<div class="cs-tip-row">Key ability — no further details available.</div>';
         } else {
@@ -2026,68 +2448,185 @@
     // Rebuild skills grid if present
     const skillsGrid = document.getElementById("cs-skills-grid");
     if (skillsGrid && char.skills) {
-      const skillEntries = Object.entries(char.skills).filter(([_, v]) => v.points > 0);
+      const skillEntries = Object.entries(char.skills).filter(([_, v]) => v.points > 0 || v.expertise?.length > 0);
+      skillEntries.sort((a, b) => a[0].localeCompare(b[0]));
       if (skillEntries.length > 0) {
         skillsGrid.innerHTML = skillEntries.map(([name, data]) => {
-          const expCount = data.expertise?.length || 0;
+          let expHtml = '';
+          if (data.expertise?.length) {
+            expHtml = '<div class="cs-skill-expertise">' +
+              data.expertise.map(e => `<span class="cs-expertise-tag">${e.name} ${e.points}</span>`).join('') +
+              '</div>';
+          }
           return `<div class="cs-skill-cell" data-type="skill" data-id="${name}">
-            <span class="cs-skill-name">${name}</span>
-            <span class="cs-skill-pts">${data.points}${expCount > 0 ? ` <span class="cs-skill-exp-count">(${expCount} exp)</span>` : ''}</span>
+            <div class="cs-skill-header">
+              <span class="cs-skill-name">${name}</span>
+              <span class="cs-skill-value">${data.points}</span>
+            </div>
+            ${expHtml}
           </div>`;
         }).join('');
+      } else {
+        skillsGrid.innerHTML = '<div class="cs-empty">No skills allocated</div>';
       }
     }
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     SPEND EXP CHOOSER
+     SPEND EXP — TABBED MODAL (Breakthroughs + Classes)
+     Uses ClassBrowser.create() for the Classes tab (same system as builder)
      ═══════════════════════════════════════════════════════════════════ */
 
-  function openSpendExpChooser(char, save, refreshExpDisplay) {
-    openFullModal("\u2726 Spend EXP", (body) => {
-      body.innerHTML = `
-        <div class="browser-budget">
-          <span class="browser-budget-label">Unspent EXP</span>
-          <span class="browser-budget-value">${getUnspentExp(char)}</span>
-        </div>
-        <div class="chooser-grid">
-          <div class="chooser-card" id="chooser-breakthroughs">
-            <span class="chooser-card-icon">\u2726</span>
-            <div class="chooser-card-title">Breakthroughs</div>
-            <div class="chooser-card-desc">Unlock powerful breakthrough abilities that enhance your character's core capabilities.</div>
-          </div>
-          <div class="chooser-card" id="chooser-classes">
-            <span class="chooser-card-icon">\u2694</span>
-            <div class="chooser-card-title">Classes</div>
-            <div class="chooser-card-desc">Unlock new classes or level up existing ones to gain abilities and stat boosts.</div>
-          </div>
-        </div>
-      `;
-      document.getElementById("chooser-breakthroughs").addEventListener("click", () => {
-        document.getElementById("full-modal-overlay")?.remove();
-        openBreakthroughBrowser(char, save);
-      });
-      document.getElementById("chooser-classes").addEventListener("click", () => {
-        document.getElementById("full-modal-overlay")?.remove();
-        openClassBrowser(char, save);
+  let spendExpClassBrowser = null;
+
+  function openSpendExpModal(char, save, defaultTab) {
+    const startTab = defaultTab || "breakthroughs";
+    let currentTab = startTab;
+    let classesConfirmed = false;
+
+    // Snapshot character state for revert on cancel
+    const snapshot = {
+      classes: JSON.parse(JSON.stringify(char.classes || [])),
+      totalExp: char.totalExp,
+      clim: char.clim,
+      mainStats: char.mainStats ? JSON.parse(JSON.stringify(char.mainStats)) : undefined,
+      subStats: char.subStats ? JSON.parse(JSON.stringify(char.subStats)) : undefined,
+      effectiveMainStats: char.effectiveMainStats ? JSON.parse(JSON.stringify(char.effectiveMainStats)) : undefined,
+      effectiveSubStats: char.effectiveSubStats ? JSON.parse(JSON.stringify(char.effectiveSubStats)) : undefined,
+      statSources: char.statSources ? JSON.parse(JSON.stringify(char.statSources)) : undefined,
+      interludeActions: char.interludeActions ? JSON.parse(JSON.stringify(char.interludeActions)) : undefined,
+    };
+
+    ApiClient.getBreakthroughs().then(allBts => {
+      openFullModal("\u2726 Spend EXP", (body, close) => {
+        function renderTabbedContent() {
+          if (spendExpClassBrowser) {
+            spendExpClassBrowser.destroy();
+            spendExpClassBrowser = null;
+          }
+
+          body.innerHTML = `
+            <div class="spend-exp-tabs" id="spend-exp-tabs">
+              <button class="spend-exp-tab ${currentTab === 'breakthroughs' ? 'active' : ''}" data-exp-tab="breakthroughs">\u2726 Breakthroughs</button>
+              <button class="spend-exp-tab ${currentTab === 'classes' ? 'active' : ''}" data-exp-tab="classes">\u2694 Classes</button>
+            </div>
+            <div class="spend-exp-body" id="spend-exp-body"></div>
+          `;
+
+          const tabBody = document.getElementById("spend-exp-body");
+
+          if (currentTab === "breakthroughs") {
+            renderBtBrowser(tabBody, close, allBts, char, save);
+          } else {
+            tabBody.innerHTML = '<div class="cs-tip-loading" style="padding:60px;text-align:center;">Loading classes...</div>';
+
+            spendExpClassBrowser = ClassBrowser.create({
+              containerEl: tabBody,
+              character: char,
+              budgetBase: getUnspentExp(char),
+              humanBonus: 0,
+              ipMax: 3,
+              showBudget: true,
+              showInterlude: false,
+              deferSync: true,
+              showConfirmButton: true,
+              idPrefix: "spendexp",
+              characterModule: Character,
+              apiClient: ApiClient,
+              stripHtml: function (s) { return (s || "").replace(/<[^>]*>/g, ""); },
+              onMessage: function (text) {
+                // Show toast notification (skip empty strings from dismissAndFlash)
+                if (!text) return;
+                let toast = document.getElementById('spendexp-toast');
+                if (!toast) {
+                  toast = document.createElement('div');
+                  toast.id = 'spendexp-toast';
+                  toast.className = 'spendexp-toast';
+                  document.body.appendChild(toast);
+                }
+                toast.textContent = text;
+                toast.classList.remove('show');
+                void toast.offsetWidth; // force reflow
+                toast.classList.add('show');
+                clearTimeout(toast._timer);
+                toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+              },
+              onClassesChanged: function () {
+                refreshSheetAfterExpChange(char, save);
+              },
+              onSave: function () {
+                save();
+              },
+              onConfirm: function () {
+                classesConfirmed = true;
+                refreshSheetAfterExpChange(char, save);
+                close();
+              },
+            });
+
+            spendExpClassBrowser.init().catch(function (err) {
+              console.error("[SpendEXP ClassBrowser] init failed:", err);
+              tabBody.innerHTML = '<div class="cs-tip-loading" style="padding:60px;text-align:center;">Failed to load classes.</div>';
+            });
+          }
+
+          document.querySelectorAll(".spend-exp-tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+              const newTab = tab.dataset.expTab;
+              if (newTab === currentTab) return;
+              currentTab = newTab;
+              renderTabbedContent();
+            });
+          });
+        }
+
+        renderTabbedContent();
+      }, () => {
+        // On modal close
+        if (spendExpClassBrowser) {
+          // If not confirmed, revert character state
+          if (!classesConfirmed) {
+            char.classes = snapshot.classes;
+            char.totalExp = snapshot.totalExp;
+            char.clim = snapshot.clim;
+            if (snapshot.mainStats !== undefined) char.mainStats = snapshot.mainStats;
+            if (snapshot.subStats !== undefined) char.subStats = snapshot.subStats;
+            if (snapshot.effectiveMainStats !== undefined) char.effectiveMainStats = snapshot.effectiveMainStats;
+            if (snapshot.effectiveSubStats !== undefined) char.effectiveSubStats = snapshot.effectiveSubStats;
+            if (snapshot.statSources !== undefined) char.statSources = snapshot.statSources;
+            if (snapshot.interludeActions !== undefined) char.interludeActions = snapshot.interludeActions;
+            save();
+          }
+          spendExpClassBrowser.destroy();
+          spendExpClassBrowser = null;
+        }
+        refreshSheetAfterExpChange(char, save);
       });
     });
   }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     BREAKTHROUGH BROWSER
-     ═══════════════════════════════════════════════════════════════════ */
+  function openSpendExpChooser(char, save, refreshExpDisplay) {
+    openSpendExpModal(char, save, "breakthroughs");
+  }
 
   async function openBreakthroughBrowser(char, save) {
-    const allBts = await ApiClient.getBreakthroughs();
+    openSpendExpModal(char, save, "breakthroughs");
+  }
 
-    openFullModal("\u2726 Breakthrough Browser", (body, close) => {
-      renderBtBrowser(body, close, allBts, char, save);
-    }, () => refreshSheetAfterExpChange(char, save));
+  async function openClassBrowser(char, save) {
+    openSpendExpModal(char, save, "classes");
   }
 
   /* ── Breakthrough requirement checker ─────────────────────────── */
   let btOverrideMode = false;
+  let btMiraneMode = true;
+  let btAvailableOnly = false;
+
+  /** Breakthroughs banned under Mirane Expedition rules (from miraneban.txt) */
+  const BT_MIRANE_BAN_LIST = [
+    "Angelblooded (Human) (Restricted)",
+    "Curse of Vampirism",
+  ];
 
   function checkBtRequirement(bt, char) {
     const req = (bt.requirements || "").replace(/<[^>]+>/g, "").trim();
@@ -2114,8 +2653,21 @@
       ].filter(Boolean).map(r => r.toLowerCase());
       
       // Multi-race check: "Must be a Nio, Bullfolk or Bearfolk"
+      const PRIMARY_RACES = ["human", "fae", "demon", "chimera", "youkai"];
       const raceOptions = reqRace.split(/,\s*|\s+or\s+/i).map(r => r.trim().toLowerCase());
-      const raceMatched = raceOptions.some(opt => charRaces.some(cr => cr.includes(opt) || opt.includes(cr)));
+      const raceMatched = raceOptions.some(opt => {
+        const words = opt.split(/\s+/).filter(w => w.length > 0);
+        if (words.length > 1) {
+          // Compound match: "sylph fae" → strip primary race, check only subrace
+          const subraceWords = words.filter(w => !PRIMARY_RACES.includes(w));
+          if (subraceWords.length > 0) {
+            return subraceWords.every(word => charRaces.some(cr => cr.includes(word)));
+          }
+          return false;
+        }
+        // Single-word: simple match
+        return charRaces.some(cr => cr.includes(opt) || opt.includes(cr));
+      });
       if (!raceMatched && !lower.includes("gm approval")) {
         reasons.push(`Requires race: ${reqRace}`);
       }
@@ -2164,39 +2716,129 @@
     const unique = [...new Set(reasons)];
     return { met: false, reason: unique.join("; ") };
   }
+  /* ── Multi-take breakthrough support ──────────────────────────── */
+  function isMultiTakeBt(bt) {
+    const text = ((bt.description || '') + ' ' + (bt.name || '')).toLowerCase();
+    return text.includes('multiple times') || text.includes('taken multiple') ||
+           (text.includes('can be taken') && text.includes('times'));
+  }
+
+  /**
+   * Choice configuration for multi-take breakthroughs.
+   * type: "buttons" (≤10 discrete choices) | "text" (free-form input) | "none" (just stacks)
+   */
+  const MULTI_TAKE_CHOICES = {
+    "Primary Stat Training": {
+      type: "buttons",
+      label: "Choose a primary stat",
+      options: ["Focus", "Power", "Agility", "Toughness"],
+      escalatingCost: { base: 400, increment: 100, max: 700 },
+    },
+    "Secondary Stat Training": {
+      type: "buttons",
+      label: "Choose a secondary stat",
+      options: ["Fitness", "Cunning", "Reason", "Awareness", "Presence"],
+    },
+    "Weapon Training": {
+      type: "text",
+      label: "Enter weapon group name",
+      placeholder: "e.g. Swords, Axes, Bows...",
+      unique: true,
+    },
+    "Speciality Weapon Training": {
+      type: "text",
+      label: "Enter speciality weapon group",
+      placeholder: "e.g. Whips, Flails...",
+      unique: true,
+    },
+    "Language Training": {
+      type: "text",
+      label: "Enter language name",
+      placeholder: "e.g. Elvish, Draconic...",
+      unique: true,
+    },
+    "Skill Training": {
+      type: "text",
+      label: "Enter skill name (not crafting)",
+      placeholder: "e.g. Athletics, Perception...",
+    },
+    "Blend In II (Slimefolk)": {
+      type: "text",
+      label: "Enter race to disguise as",
+      placeholder: "e.g. Elf, Dwarf...",
+      unique: true,
+    },
+    "Universal Training": {
+      type: "none",
+      label: "Stat & skill choices are applied manually",
+    },
+    "Wide Circuits IV": {
+      type: "none",
+      label: "+1 maximum Mana (stacks)",
+    },
+    "Fae Flash Acrobat (Fae)": {
+      type: "none",
+      label: "Already owned — this does not stack",
+      maxCount: 1,
+    },
+  };
 
   function renderBtBrowser(body, close, allBts, char, save) {
     const unspent = getUnspentExp(char);
-    const owned = new Set((char.breakthroughs || []).map(b => b.breakthroughId));
+    // Count how many times each BT is owned
+    const ownedCounts = new Map();
+    (char.breakthroughs || []).forEach(b => {
+      ownedCounts.set(b.breakthroughId, (ownedCounts.get(b.breakthroughId) || 0) + 1);
+    });
 
     let html = `
       <div class="browser-budget">
         <span class="browser-budget-label">Unspent EXP</span>
         <span class="browser-budget-value ${unspent < 0 ? 'over-budget' : ''}" id="bt-browser-budget">${unspent}</span>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-        <input class="browser-search" id="bt-browser-search" type="text" placeholder="Search breakthroughs..." style="flex:1;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+        <input class="browser-search" id="bt-browser-search" type="text" placeholder="Search breakthroughs..." style="flex:1;min-width:140px;">
         <button class="browser-filter-btn ${btOverrideMode ? 'active-orange' : ''}" id="bt-override-btn" title="Override: bypass requirement checks">⚡ Override</button>
+        <button class="cls-mirane-btn ${btMiraneMode ? 'active' : ''}" id="bt-mirane-btn" title="Mirane: filter out banned breakthroughs"><span class="cls-mirane-indicator"></span><span class="cls-mirane-label">Mirane</span></button>
+        <button class="cls-mirane-btn ${btAvailableOnly ? 'active' : ''}" id="bt-available-btn" title="Show only available breakthroughs"><span class="cls-mirane-indicator"></span><span>Available</span></button>
       </div>
       <div class="browser-grid" id="bt-browser-grid">
     `;
 
-    for (const bt of allBts) {
+    // Apply Mirane and Available filters
+    let filteredBts = allBts;
+    if (btMiraneMode) {
+      filteredBts = filteredBts.filter(bt => !BT_MIRANE_BAN_LIST.includes(bt.name));
+    }
+    if (btAvailableOnly && !btOverrideMode) {
+      filteredBts = filteredBts.filter(bt => {
+        const reqCheck = checkBtRequirement(bt, char);
+        return reqCheck.met;
+      });
+    }
+
+    for (const bt of filteredBts) {
       const cost = parseInt(bt.cost) || 0;
-      const isOwned = owned.has(bt.breakthroughId);
+      const ownCount = ownedCounts.get(bt.breakthroughId) || 0;
+      const isOwned = ownCount > 0;
+      const multiTake = isMultiTakeBt(bt);
+      const choiceCfg = MULTI_TAKE_CHOICES[bt.name] || null;
+      const maxCount = choiceCfg && choiceCfg.maxCount ? choiceCfg.maxCount : Infinity;
+      const canBuyMore = multiTake && ownCount < maxCount;
       const reqCheck = checkBtRequirement(bt, char);
       const isLocked = !reqCheck.met && !btOverrideMode && !isOwned;
+      const isBtBanned = btMiraneMode && BT_MIRANE_BAN_LIST.includes(bt.name);
       const desc = (bt.description || "").replace(/<[^>]+>/g, "").substring(0, 120);
 
       html += `
-        <div class="browser-card ${isOwned ? 'owned' : ''} ${isLocked ? 'locked' : ''}" data-bt-id="${bt.breakthroughId}" data-name="${(bt.name||'').toLowerCase()}">
+        <div class="browser-card ${isOwned ? 'owned' : ''} ${isLocked ? 'locked' : ''} ${multiTake && isOwned ? 'multi-owned' : ''}" data-bt-id="${bt.breakthroughId}" data-name="${(bt.name||'').toLowerCase()}">
           <div class="browser-card-name">${bt.name}</div>
           <div class="browser-card-meta">${bt.requirements || "No requirements"}</div>
           ${isLocked ? `<div class="browser-card-lock-reason">\u26A0 ${reqCheck.reason}</div>` : ''}
           <div class="browser-card-desc">${desc}${desc.length >= 120 ? '...' : ''}</div>
-          <div class="browser-card-cost">${cost} EXP</div>
-          ${!isOwned && !isLocked ? `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-bt-id="${bt.breakthroughId}">Purchase</button></div>` : ''}
-          ${isOwned ? '<div class="browser-card-owned-badge">\u2714 Owned</div>' : ''}
+          <div class="browser-card-cost">${cost} EXP${multiTake ? ' <small style="opacity:0.6">(repeatable)</small>' : ''}</div>
+          ${((!isOwned && !isLocked) || (canBuyMore && !isLocked)) ? `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-bt-id="${bt.breakthroughId}">Purchase</button></div>` : ''}
+          ${isOwned ? '<div class="browser-card-owned-badge">\u2714 Owned' + (multiTake ? ' \u00d7' + ownCount : '') + '</div>' : ''}
         </div>
       `;
     }
@@ -2209,6 +2851,18 @@
       renderBtBrowser(body, close, allBts, char, save);
     });
 
+    // Mirane toggle
+    document.getElementById("bt-mirane-btn")?.addEventListener("click", () => {
+      btMiraneMode = !btMiraneMode;
+      renderBtBrowser(body, close, allBts, char, save);
+    });
+
+    // Available Only toggle
+    document.getElementById("bt-available-btn")?.addEventListener("click", () => {
+      btAvailableOnly = !btAvailableOnly;
+      renderBtBrowser(body, close, allBts, char, save);
+    });
+
     // Search
     document.getElementById("bt-browser-search")?.addEventListener("input", (e) => {
       const q = e.target.value.toLowerCase();
@@ -2217,13 +2871,21 @@
       });
     });
 
-    // Purchase
+    // Purchase — for multi-take BTs, open detail modal for choice picking
     body.querySelectorAll(".browser-action-btn.unlock").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const btId = btn.dataset.btId;
         const bt = allBts.find(b => b.breakthroughId === btId);
         if (!bt) return;
+        const multiTake = isMultiTakeBt(bt);
+        const choiceCfg = MULTI_TAKE_CHOICES[bt.name] || null;
+        // Multi-take BTs with choices → open detail modal instead
+        if (multiTake && choiceCfg && choiceCfg.type !== 'none') {
+          const card = btn.closest('.browser-card');
+          if (card) card.click(); // triggers the detail modal
+          return;
+        }
         const cost = parseInt(bt.cost) || 0;
         if (cost > getUnspentExp(char)) {
           showUseConfirmSimple("Not Enough EXP", `You need ${cost} EXP but only have ${getUnspentExp(char)} unspent.`, null);
@@ -2246,712 +2908,145 @@
       });
     });
 
-    // Card click -> detail tooltip
+    // Card click -> full detail overlay
     body.querySelectorAll(".browser-card").forEach(card => {
-      card.addEventListener("click", () => {
+      card.addEventListener("click", (e) => {
+        // Don't open detail if they clicked the purchase button
+        if (e.target.closest(".browser-action-btn")) return;
         const btId = card.dataset.btId;
         const bt = allBts.find(b => b.breakthroughId === btId);
-        if (bt) {
-          showBrowserDetail(bt.name, bt.description || "No description.", bt.requirements ? `<strong>Requirements:</strong> ${bt.requirements}` : "");
+        if (!bt) return;
+
+        let cost = parseInt(bt.cost) || 0;
+        const ownCount = ownedCounts.get(bt.breakthroughId) || 0;
+        // Escalating cost for breakthroughs like Primary Stat Training
+        const _choiceCfg = MULTI_TAKE_CHOICES[bt.name] || null;
+        if (_choiceCfg && _choiceCfg.escalatingCost) {
+          cost = Math.min(_choiceCfg.escalatingCost.base + (ownCount * _choiceCfg.escalatingCost.increment), _choiceCfg.escalatingCost.max);
+        }
+        const isOwned = ownCount > 0;
+        const multiTake = isMultiTakeBt(bt);
+        const choiceCfg = MULTI_TAKE_CHOICES[bt.name] || null;
+        const reqCheck = checkBtRequirement(bt, char);
+        const isLocked = !reqCheck.met && !btOverrideMode && !isOwned;
+        const fullDesc = (bt.description || "No description.").replace(/<[^>]+>/g, "");
+        const reqText = bt.requirements ? bt.requirements.replace(/<[^>]+>/g, "") : "None";
+
+        // Create overlay
+        let overlay = document.getElementById("bt-detail-overlay");
+        if (overlay) overlay.remove();
+        overlay = document.createElement("div");
+        overlay.id = "bt-detail-overlay";
+        overlay.className = "bt-detail-overlay";
+        overlay.innerHTML = `
+          <div class="bt-detail-box">
+            <button class="bt-detail-close" id="bt-detail-close">\u2715</button>
+            <h2 class="bt-detail-title">${bt.name}</h2>
+            <div class="bt-detail-req">
+              <span class="bt-detail-req-label">Requirements:</span>
+              <span class="bt-detail-req-text">${reqText}</span>
+            </div>
+            ${isLocked ? `<div class="bt-detail-lock-reason">\u26A0 ${reqCheck.reason}</div>` : ''}
+            <div class="bt-detail-desc">${fullDesc}</div>
+            ${multiTake ? '<div class="bt-detail-multi-info">' + (isOwned ? '<div class="bt-detail-own-count">Owned \u00d7' + ownCount + '</div>' : '') + '<div class="bt-detail-choice-area" id="bt-detail-choice-area"></div></div>' : ''}
+            <div class="bt-detail-footer">
+              <span class="bt-detail-cost">${cost} EXP</span>
+              ${isOwned && !multiTake
+                ? '<span class="bt-detail-owned">\u2714 Owned</span> <button class="bt-detail-remove-btn" id="bt-detail-remove">\u2212 Unlearn</button>'
+                : isOwned && multiTake
+                  ? '<span class="bt-detail-owned">\\u2714 Owned \\u00d7' + ownCount + '</span> <button class="bt-detail-remove-btn" id="bt-detail-remove">\\u2212 Unlearn</button> <button class="bt-detail-purchase-btn" id="bt-detail-purchase">\\u2726 Purchase Again</button>'
+                : (!isLocked
+                  ? '<button class="bt-detail-purchase-btn" id="bt-detail-purchase">\u2726 Purchase</button>'
+                  : '<span class="bt-detail-locked">\uD83D\uDD12 Locked</span>')}
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        // Force reflow then animate in
+        void overlay.offsetWidth;
+        overlay.classList.add("active");
+
+        // Populate choice picker for multi-take BTs
+        if (multiTake && choiceCfg) {
+          const choiceArea = document.getElementById('bt-detail-choice-area');
+          if (choiceArea) {
+            if (choiceCfg.type === 'buttons') {
+              choiceArea.innerHTML = '<div class="bt-choice-label">' + choiceCfg.label + '</div><div class="bt-choice-btns">' +
+                choiceCfg.options.map(opt => '<button class="bt-choice-btn" data-choice="' + opt + '">' + opt + '</button>').join('') + '</div>';
+              choiceArea.querySelectorAll('.bt-choice-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                  choiceArea.querySelectorAll('.bt-choice-btn').forEach(b => b.classList.remove('selected'));
+                  btn.classList.add('selected');
+                });
+              });
+            } else if (choiceCfg.type === 'text') {
+              choiceArea.innerHTML = '<div class="bt-choice-label">' + choiceCfg.label + '</div>' +
+                '<input type="text" class="bt-choice-input" id="bt-detail-choice-input" placeholder="' + (choiceCfg.placeholder || '') + '">';
+            } else {
+              choiceArea.innerHTML = '<div class="bt-choice-label" style="opacity:0.6;font-style:italic">' + choiceCfg.label + '</div>';
+            }
+          }
+        }
+
+        // Close
+        const closeDetail = () => { overlay.classList.remove("active"); setTimeout(() => overlay.remove(), 200); };
+        document.getElementById("bt-detail-close").addEventListener("click", closeDetail);
+        overlay.addEventListener("click", (ev) => { if (ev.target === overlay) closeDetail(); });
+
+        // Purchase from detail
+        const purchaseBtn = document.getElementById("bt-detail-purchase");
+        if (purchaseBtn) {
+          purchaseBtn.addEventListener("click", () => {
+            if (cost > getUnspentExp(char)) {
+              showUseConfirmSimple("Not Enough EXP", `You need ${cost} EXP but only have ${getUnspentExp(char)} unspent.`, null);
+              return;
+            }
+            showUseConfirmSimple("Purchase Breakthrough", `Spend ${cost} EXP on <strong>${bt.name}</strong>?`, () => {
+              char.breakthroughs = char.breakthroughs || [];
+              const choiceEl = document.getElementById('bt-detail-choice-input') || document.querySelector('.bt-choice-btn.selected');
+              const choiceVal = choiceEl ? (choiceEl.value || choiceEl.dataset.choice || '').trim() : '';
+              char.breakthroughs.push({
+                breakthroughId: btId,
+                name: bt.name + (choiceVal ? ': ' + choiceVal : ''),
+                cost: cost,
+                requirements: bt.requirements || "",
+                description: fullDesc,
+                abilityId: bt.ability || null,
+                fromCreation: false,
+                choice: choiceVal || null,
+              });
+              closeDetail();
+              refreshSheetAfterExpChange(char, save);
+              renderBtBrowser(body, close, allBts, char, save);
+            });
+          });
+        }
+
+        // Remove / Unlearn from detail
+        const removeBtn = document.getElementById("bt-detail-remove");
+        if (removeBtn) {
+          removeBtn.addEventListener("click", () => {
+            showUseConfirmSimple("Unlearn Breakthrough", `Remove <strong>${bt.name}</strong> and refund ${cost} EXP?`, () => {
+              // For multi-take, remove only ONE instance; for single, remove all
+              if (multiTake) {
+                const idx = (char.breakthroughs || []).findIndex(b => b.breakthroughId === btId);
+                if (idx !== -1) char.breakthroughs.splice(idx, 1);
+              } else {
+                char.breakthroughs = (char.breakthroughs || []).filter(b => b.breakthroughId !== btId);
+              }
+              closeDetail();
+              refreshSheetAfterExpChange(char, save);
+              renderBtBrowser(body, close, allBts, char, save);
+            });
+          });
         }
       });
     });
   }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     CLASS BROWSER
-     ═══════════════════════════════════════════════════════════════════ */
 
-  /* ── Spell-granting classes (from builder) ────────────────────── */
-  const SPELL_GRANTING_CLASSES = new Set([
-    "mage", "sorcerer", "acolyte", "pyromancer", "hydromancer", "cryomancer",
-    "electromancer", "aeromancer", "mycomancer", "sage", "archsage",
-    "battle-mage", "mage-knight", "aerial-mage", "warding-mage",
-    "abjurer", "sanctioner", "elementalist", "phosphomancer",
-    "spellblade", "spell-blademaster", "starcaller", "daionmyoji",
-    "high-priest", "onmyoji", "necromancer", "necromaster",
-    "pyromaster", "aeromaster", "shadow-thief", "shadowbringer",
-    "windbringer", "zephyr-warder", "venomancer",
-  ]);
 
-  /* ── Requirement checker (ported from builder.js) ──────────────── */
-  function checkClassRequirementSheet(cls, char) {
-    const req = (cls.requirements || "").trim();
-    if (!req || req === "None" || req === "None.") return { met: true, reason: "" };
 
-    const reqLower = req.toLowerCase();
-    const results = [];
-
-    // ─── Race gate ────────────────────────────────────────────
-    const raceChecks = [
-      { pattern: /\bhuman\b/i,      raceId: "human" },
-      { pattern: /\bfae\b/i,        raceId: "fae" },
-      { pattern: /\bdemon\b/i,      raceId: "demon" },
-      { pattern: /\bchimera\b/i,    raceId: "chimera" },
-      { pattern: /\byoukai\b/i,     raceId: "youkai" },
-      { pattern: /\brabbitfolk\b/i,  raceId: "rabbitfolk" },
-      { pattern: /\boni\b/i,        raceId: "oni" },
-      { pattern: /\bjiangshi\b/i,   raceId: "jiangshi" },
-    ];
-    for (const rc of raceChecks) {
-      if (rc.pattern.test(req)) {
-        const playerRace = (char.race?.primaryRaceId || "").toLowerCase();
-        const playerAncestry = (char.race?.ancestryId || "").toLowerCase();
-        const hybridPool = (char.race?.hybridSubracePool || "").toLowerCase(); // hybrids count as both races
-        const isRace = playerRace === rc.raceId || playerAncestry === rc.raceId || hybridPool === rc.raceId;
-
-        const raceMatch = rc.pattern.exec(reqLower);
-        const racePos = raceMatch ? raceMatch.index : -1;
-        const orPositions = [];
-        const orRegex = /\bor\b/gi;
-        let orMatch;
-        while ((orMatch = orRegex.exec(reqLower)) !== null) orPositions.push(orMatch.index);
-        const raceHasOr = orPositions.some(pos => Math.abs(racePos - pos) < 30);
-
-        if (raceHasOr && reqLower.includes("mastered")) {
-          if (isRace) return { met: true, reason: "" };
-        } else if (raceHasOr && !reqLower.includes("mastered")) {
-          if (isRace) return { met: true, reason: "" };
-        } else {
-          if (!isRace) {
-            return { met: false, reason: `Requires ${rc.raceId.charAt(0).toUpperCase() + rc.raceId.slice(1)} race.` };
-          }
-        }
-        break;
-      }
-    }
-
-    // ─── Breakthrough gate ────────────────────────────────────
-    const breakthroughPatterns = [
-      { regex: /must have the (.+?) breakthrough/i },
-      { regex: /have the (.+?) breakthrough/i },
-    ];
-    for (const bp of breakthroughPatterns) {
-      const match = req.match(bp.regex);
-      if (match) {
-        const needed = match[1].toLowerCase().trim();
-        const has = char.breakthroughs?.some(b => {
-          const bName = (b.name || "").toLowerCase();
-          const bId = (b.breakthroughId || "").toLowerCase();
-          return bName.includes(needed) || bId.includes(needed.replace(/\s+/g, "-"));
-        });
-        if (!has) return { met: false, reason: `Requires the "${match[1]}" breakthrough.` };
-      }
-    }
-
-    // ─── Touched by Death ─────────────────────────────────────
-    if (reqLower.includes("touched by death")) {
-      const has = char.breakthroughs?.some(b =>
-        (b.name || "").toLowerCase().includes("touched by death") ||
-        (b.breakthroughId || "") === "touched-by-death"
-      );
-      if (!has) return { met: false, reason: 'Requires the "Touched by Death" breakthrough.' };
-    }
-
-    // ─── Spell gate ───────────────────────────────────────────
-    if (reqLower.includes("at least 1 spell") || reqLower.includes("at least one spell") || reqLower.includes("possess at least 1 spell")) {
-      const hasSpellClass = (char.classes || []).some(c => SPELL_GRANTING_CLASSES.has(c.classId));
-      if (!hasSpellClass) {
-        results.push({ met: false, reason: "Requires at least 1 spell (unlock a caster class)." });
-      }
-    }
-
-    // ─── Elemental mastery ────────────────────────────────────
-    const ELEMENT_NAMES = ["fire", "water", "wind", "earth", "lightning", "ice", "frost", "dark", "holy"];
-    const normalizeElement = s => s.replace("frost", "ice");
-    const elementRegex = /(?:^|or\s+)(?:have\s+)?(\w+)(?:\s+element)?\s+(?:mastery|mastered)/gi;
-    let elementMatch;
-    let hasElementalReq = false;
-    let elementalSatisfied = false;
-
-    while ((elementMatch = elementRegex.exec(reqLower)) !== null) {
-      const rawElement = elementMatch[1].trim();
-      if (!ELEMENT_NAMES.includes(rawElement)) continue;
-      hasElementalReq = true;
-      const normalizedEl = normalizeElement(rawElement);
-      const raceElement = (char.race?.elementalMastery || "").toLowerCase();
-      if (raceElement && raceElement === normalizedEl) { elementalSatisfied = true; break; }
-      const hasBT = char.breakthroughs?.some(b => {
-        const bName = (b.name || "").toLowerCase();
-        return bName.includes(normalizedEl) || bName.includes(rawElement);
-      });
-      if (hasBT) { elementalSatisfied = true; break; }
-    }
-
-    if (reqLower.includes("one element mastered") || (reqLower.includes("element mastered") && !hasElementalReq)) {
-      hasElementalReq = true;
-      const raceElement = (char.race?.elementalMastery || "");
-      const hasElementBT = char.breakthroughs?.some(b => {
-        const bName = (b.name || "").toLowerCase();
-        return ELEMENT_NAMES.some(el => bName.includes(el));
-      });
-      if (raceElement || hasElementBT) elementalSatisfied = true;
-    }
-
-    if (!(hasElementalReq && elementalSatisfied)) {
-      if (reqLower.includes("two classes mastered")) {
-        const masteredCount = (char.classes || []).filter(c => c.levels >= 8).length;
-        if (masteredCount < 2) results.push({ met: false, reason: "Requires two classes mastered." });
-      }
-
-      const masteredMatch = reqLower.match(/(.+)\s+mastered/);
-      const hasAnyClassReq = reqLower.includes("any class mastered") || reqLower.includes("at least 1 class mastered") || reqLower.includes("any mastered class");
-
-      let specificClassMet = false;
-      if (masteredMatch && !reqLower.includes("two classes mastered")) {
-        const classNames = masteredMatch[1]
-          .split(/[,.]\s*|\s+or\s+/i)
-          .map(n => n.trim().replace(/\s*mastered\s*/g, "").replace(/^(?:be\s+a\s+|have\s+|be\s+|a\s+)/i, "").trim().toLowerCase())
-          .filter(n => {
-            if (!n) return false;
-            const skip = ["any class", "any tier 2 class", "any", "two classes",
-              "human", "fae", "demon", "chimera", "youkai", "oni", "rabbitfolk", "jiangshi"];
-            return !skip.includes(n);
-          });
-        specificClassMet = classNames.some(cn =>
-          (char.classes || []).some(c => c.name.toLowerCase() === cn && c.levels >= 8)
-        );
-      }
-
-      let anyClassMet = false;
-      if (hasAnyClassReq) {
-        anyClassMet = (char.classes || []).some(c => c.levels >= 8);
-        const hasEarlyAscension = char.breakthroughs?.some(b =>
-          b.breakthroughId === "early-ascension" || b.name?.toLowerCase() === "early ascension"
-        );
-        if (hasEarlyAscension) anyClassMet = true;
-      }
-
-      const hasMasteredGate = (masteredMatch && !reqLower.includes("two classes mastered")) || hasAnyClassReq;
-      if (hasMasteredGate) {
-        const masteredGatePassed = specificClassMet || (hasAnyClassReq && anyClassMet);
-        if (hasElementalReq) {
-          if (!masteredGatePassed && !elementalSatisfied) results.push({ met: false, reason: `Requires: ${req}` });
-        } else {
-          if (!masteredGatePassed) results.push({ met: false, reason: `Requires: ${req}` });
-        }
-      }
-
-      if (hasElementalReq && !reqLower.includes("mastered")) {
-        if (!elementalSatisfied) results.push({ met: false, reason: `Requires: ${req}` });
-      }
-    }
-
-    const failed = results.filter(r => !r.met);
-    if (failed.length > 0) return { met: false, reason: failed.map(f => f.reason).join(" ") };
-    return { met: true, reason: "" };
-  }
-
-  async function openClassBrowser(char, save) {
-    const allClasses = await ApiClient.getClassesFull();
-
-    openFullModal("\u2694 Class Browser", (body, close) => {
-      renderClsBrowser(body, close, allClasses, char, save);
-    }, () => refreshSheetAfterExpChange(char, save));
-  }
-
-  const MIRANE_BAN_LIST = new Set([
-    "angelblooded", "shinigami-eyes", "vampire", "vampire-lord", "true-shinigami-eyes",
-  ]);
-
-  /* ─── Free Class Grants (mirror of builder.js) ────────────────────── */
-  const SHEET_FREE_CLASS_GRANTS = [
-    { match: { race: "demon", demonHouseId: "wi"  }, classId: "saboteur",                  level: 1, source: "House Wi" },
-    { match: { race: "demon", demonHouseId: "un"  }, classId: "maid",                      level: 1, source: "House Un" },
-    { match: { race: "demon", demonHouseId: "vi"  }, classId: "medic",                     level: 1, source: "House Vi" },
-    { match: { race: "fae",   ancestryId: "gnome"  }, classId: "miner",                    level: 1, source: "Gnome" },
-    { match: { race: "fae",   ancestryId: "selkie" }, classId: "hydromancer",               level: 2, source: "Selkie" },
-    { match: { race: "youkai", ancestryId: "raijin" }, classId: "flash-star-blade-style-",  level: 1, source: "Raijin" },
-  ];
-
-  function getCharFreeClassIds(char) {
-    const freeIds = new Set();
-    const race = (char.race?.primaryRaceName || "").toLowerCase();
-    const houseId = (char.race?.demonHouseId || "").toLowerCase();
-    const ancestryId = (char.race?.ancestryId || "").toLowerCase();
-    for (const grant of SHEET_FREE_CLASS_GRANTS) {
-      const m = grant.match;
-      if (m.race && m.race !== race) continue;
-      if (m.demonHouseId && m.demonHouseId !== houseId) continue;
-      if (m.ancestryId && m.ancestryId !== ancestryId) continue;
-      freeIds.add(grant.classId);
-    }
-    return freeIds;
-  }
-
-  function renderClsBrowser(body, close, allClasses, char, save) {
-    const ownedMap = {};
-    (char.classes || []).forEach(c => { ownedMap[c.classId] = c; });
-    const freeClassIds = getCharFreeClassIds(char);
-    let currentTier = "all";
-    let miraneOn = true;
-    let availableOn = false;
-    let overrideOn = false;
-
-    function render(filter) {
-      let filtered = allClasses;
-      if (filter !== "all") filtered = filtered.filter(c => c.tier === parseInt(filter));
-      // Mirane filter: hide banned classes
-      if (miraneOn) filtered = filtered.filter(c => !MIRANE_BAN_LIST.has(c.classId));
-      // Available filter: only show classes whose requirements are met (or already owned)
-      if (availableOn && !overrideOn) filtered = filtered.filter(c => ownedMap[c.classId] || checkClassRequirementSheet(c, char).met);
-
-      let html = `
-        <div class="browser-budget">
-          <span class="browser-budget-label">Unspent EXP</span>
-          <span class="browser-budget-value ${getUnspentExp(char) < 0 ? 'over-budget' : ''}" id="cls-browser-budget">${getUnspentExp(char)}</span>
-        </div>
-        <div class="browser-tabs" id="cls-browser-tabs">
-          ${["all","1","2","3"].map(t => `<button class="browser-tab ${t === currentTier ? 'active' : ''}" data-tier="${t}">${t === "all" ? "All" : "Tier " + t}</button>`).join("")}
-        </div>
-        <div class="browser-filters">
-          <button class="browser-filter-btn ${miraneOn ? 'active-green' : ''}" id="cls-filter-mirane" title="Hide Mirane-banned classes">Mirane</button>
-          <button class="browser-filter-btn ${availableOn ? 'active-green' : ''}" id="cls-filter-available" title="Show only classes you can unlock">Available</button>
-          <button class="browser-filter-btn ${overrideOn ? 'active-orange' : ''}" id="cls-filter-override" title="Bypass all restrictions">Override</button>
-        </div>
-        <input class="browser-search" id="cls-browser-search" type="text" placeholder="Search classes...">
-        <div class="browser-grid" id="cls-browser-grid">
-      `;
-
-      for (const cls of filtered) {
-        const owned = ownedMap[cls.classId];
-        const unlockCost = cls.tier * 100;
-        const tierClass = `t${cls.tier}`;
-        const lvl = owned ? owned.levels : 0;
-        const reqCheck = checkClassRequirementSheet(cls, char);
-        const isMastered = lvl >= 8;
-
-        let dots = '';
-        for (let i = 1; i <= 8; i++) {
-          dots += `<div class="browser-card-level-dot ${i <= lvl ? 'filled' : ''}"></div>`;
-        }
-
-        // Status badge
-        let statusBadge = '';
-        if (owned && isMastered) {
-          statusBadge = '<span class="browser-card-badge mastered">\u2605 Mastered</span>';
-        } else if (owned) {
-          statusBadge = '<span class="browser-card-badge owned-badge">\u2713 Owned</span>';
-        } else if (reqCheck.met) {
-          statusBadge = '<span class="browser-card-badge available">\u2713 Available</span>';
-        } else {
-          statusBadge = '<span class="browser-card-badge locked">\u2717 Locked</span>';
-        }
-
-        // Actions — override makes locked classes unlockable
-        const canUnlock = reqCheck.met || overrideOn;
-        const isFreeClass = freeClassIds.has(cls.classId);
-        const freeGrant = isFreeClass ? SHEET_FREE_CLASS_GRANTS.find(g => g.classId === cls.classId) : null;
-        let actions = '';
-        if (!owned && canUnlock) {
-          actions = `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-class-id="${cls.classId}">Unlock (${unlockCost} EXP)</button></div>`;
-        } else if (!owned && !canUnlock) {
-          actions = `<div class="browser-card-actions"><button class="browser-action-btn unlock" data-class-id="${cls.classId}" disabled title="${reqCheck.reason}">Locked</button></div>`;
-        } else if (owned && lvl < 8) {
-          actions = `<div class="browser-card-actions">
-            <button class="browser-action-btn levelup" data-class-id="${cls.classId}">Level Up (100 EXP)</button>
-            <button class="browser-action-btn maxlevel" data-class-id="${cls.classId}" title="Level to max or next milestone">⚡ Max</button>
-            ${!isFreeClass ? `<button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>` : `<span class="cls-free-badge-inline">FREE (${freeGrant?.source || 'Race'})</span>`}
-          </div>`;
-        } else if (owned && isMastered) {
-          actions = `<div class="browser-card-actions">
-            ${!isFreeClass ? `<button class="browser-action-btn remove" data-class-id="${cls.classId}">\u2715 Remove</button>` : `<span class="cls-free-badge-inline">FREE (${freeGrant?.source || 'Race'})</span>`}
-          </div>`;
-        }
-
-        const reqText = cls.requirements || "No requirements";
-        const reqClass = !owned && !canUnlock ? 'browser-card-meta req-failed' : 'browser-card-meta';
-
-        html += `
-          <div class="browser-card ${owned ? 'owned' : ''} ${!owned && !canUnlock ? 'locked-card' : ''}" data-class-id="${cls.classId}" data-name="${(cls.name||'').toLowerCase()}">
-            <div class="browser-card-top-row">
-              <span class="browser-card-tier ${tierClass}">Tier ${cls.tier}</span>
-              ${statusBadge}
-            </div>
-            <div class="browser-card-name">${cls.name}</div>
-            <div class="${reqClass}">${reqText}</div>
-            ${owned ? `<div class="browser-card-level">${dots}</div>` : ''}
-            <div class="browser-card-cost">${owned ? `Level ${lvl}/8` : `${unlockCost} EXP`}</div>
-            ${actions}
-          </div>
-        `;
-      }
-      html += `</div>`;
-      body.innerHTML = html;
-
-      // Tier tabs
-      body.querySelectorAll(".browser-tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          currentTier = tab.dataset.tier;
-          render(currentTier);
-        });
-      });
-
-      // Filter toggles
-      document.getElementById("cls-filter-mirane")?.addEventListener("click", () => {
-        miraneOn = !miraneOn;
-        render(currentTier);
-      });
-      document.getElementById("cls-filter-available")?.addEventListener("click", () => {
-        availableOn = !availableOn;
-        render(currentTier);
-      });
-      document.getElementById("cls-filter-override")?.addEventListener("click", () => {
-        overrideOn = !overrideOn;
-        render(currentTier);
-      });
-
-      // Search
-      document.getElementById("cls-browser-search")?.addEventListener("input", (e) => {
-        const q = e.target.value.toLowerCase();
-        body.querySelectorAll(".browser-card").forEach(card => {
-          card.style.display = card.dataset.name.includes(q) ? "" : "none";
-        });
-      });
-
-      // Unlock (only enabled cards)
-      body.querySelectorAll(".browser-action-btn.unlock:not([disabled])").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const classId = btn.dataset.classId;
-          const cls = allClasses.find(c => c.classId === classId);
-          if (!cls) return;
-          const cost = cls.tier * 100;
-          if (cost > getUnspentExp(char)) {
-            showUseConfirmSimple("Not Enough EXP", `You need ${cost} EXP but only have ${getUnspentExp(char)} unspent.`, null);
-            return;
-          }
-          showUseConfirmSimple("Unlock Class", `Spend ${cost} EXP to unlock <strong>${cls.name}</strong>?`, () => {
-            char.classes = char.classes || [];
-            char.classes.push({
-              classId: cls.classId,
-              name: cls.name,
-              tier: cls.tier,
-              levels: 1,
-              mastered: false,
-            });
-            ownedMap[cls.classId] = char.classes[char.classes.length - 1];
-            refreshSheetAfterExpChange(char, save);
-            render(currentTier);
-          });
-        });
-      });
-
-      // Level up
-      body.querySelectorAll(".browser-action-btn.levelup").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const classId = btn.dataset.classId;
-          const cls = allClasses.find(c => c.classId === classId);
-          const owned = ownedMap[classId];
-          if (!cls || !owned || owned.levels >= 8) return;
-          if (100 > getUnspentExp(char)) {
-            showUseConfirmSimple("Not Enough EXP", `You need 100 EXP but only have ${getUnspentExp(char)} unspent.`, null);
-            return;
-          }
-          const newLevel = owned.levels + 1;
-
-          // Level 3 → Skill points
-          if (newLevel === 3) {
-            showUseConfirmSimple("Level Up", `Spend 100 EXP to level <strong>${cls.name}</strong> to level ${newLevel}?<br><br><em>You will then choose skill points from: ${cls.skills || 'N/A'}</em>`, () => {
-              owned.levels = newLevel;
-              owned.mastered = newLevel >= 8;
-              owned.levelBonuses = owned.levelBonuses || [];
-              refreshSheetAfterExpChange(char, save);
-              render(currentTier);
-              // Open skill picker after leveling
-              showClassSkillPicker(cls, char, owned, save, () => {
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-            });
-            return;
-          }
-
-          // Level 5 (Heart) → Sub stat
-          if (newLevel === 5) {
-            const text = cls.heart;
-            const choices = parseStatChoicesSheet(text, "sub");
-            if (choices.length > 1) {
-              showStatPickerModal(cls.name, true, text, choices, (picked) => {
-                owned.levels = newLevel;
-                owned.mastered = newLevel >= 8;
-                owned.levelBonuses = owned.levelBonuses || [];
-                owned.levelBonuses.push({ level: 5, type: "sub", statKey: picked });
-                if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
-                char.effectiveSubStats[picked] = (char.effectiveSubStats[picked] || 0) + 1;
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-              return;
-            } else if (choices.length === 1) {
-              // Single choice in "or" list, auto-pick
-              const autoKey = choices[0].key;
-              showUseConfirmSimple("Level Up — Heart", `Level <strong>${cls.name}</strong> to 5 and gain <strong>+1 ${Character.SUB_STAT_NAMES[autoKey]}</strong>?`, () => {
-                owned.levels = newLevel;
-                owned.mastered = newLevel >= 8;
-                owned.levelBonuses = owned.levelBonuses || [];
-                owned.levelBonuses.push({ level: 5, type: "sub", statKey: autoKey });
-                if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
-                char.effectiveSubStats[autoKey] = (char.effectiveSubStats[autoKey] || 0) + 1;
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-              return;
-            } else if (text) {
-              // Single stat (no "or"), auto-pick
-              const allNames = Object.values(Character.SUB_STAT_NAMES);
-              const allKeys = Character.SUB_STAT_KEYS;
-              const nameToKey = {};
-              allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
-              let autoKey = null;
-              for (const name of allNames) {
-                if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
-              }
-              if (autoKey) {
-                showUseConfirmSimple("Level Up — Heart", `Level <strong>${cls.name}</strong> to 5 and gain <strong>+1 ${Character.SUB_STAT_NAMES[autoKey]}</strong>?`, () => {
-                  owned.levels = newLevel;
-                  owned.mastered = newLevel >= 8;
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 5, type: "sub", statKey: autoKey });
-                  if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
-                  char.effectiveSubStats[autoKey] = (char.effectiveSubStats[autoKey] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                });
-                return;
-              }
-            }
-          }
-
-          // Level 7 (Soul) → Main stat
-          if (newLevel === 7) {
-            const text = cls.soul;
-            const choices = parseStatChoicesSheet(text, "main");
-            if (choices.length > 1) {
-              showStatPickerModal(cls.name, false, text, choices, (picked) => {
-                owned.levels = newLevel;
-                owned.mastered = newLevel >= 8;
-                owned.levelBonuses = owned.levelBonuses || [];
-                owned.levelBonuses.push({ level: 7, type: "main", statKey: picked });
-                if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
-                char.effectiveMainStats[picked] = (char.effectiveMainStats[picked] || 0) + 1;
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-              return;
-            } else if (choices.length === 1) {
-              const autoKey = choices[0].key;
-              showUseConfirmSimple("Level Up — Soul", `Level <strong>${cls.name}</strong> to 7 and gain <strong>+1 ${Character.MAIN_STAT_NAMES[autoKey]}</strong>?`, () => {
-                owned.levels = newLevel;
-                owned.mastered = newLevel >= 8;
-                owned.levelBonuses = owned.levelBonuses || [];
-                owned.levelBonuses.push({ level: 7, type: "main", statKey: autoKey });
-                if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
-                char.effectiveMainStats[autoKey] = (char.effectiveMainStats[autoKey] || 0) + 1;
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-              return;
-            } else if (text) {
-              // Single stat, auto-pick
-              const allNames = Object.values(Character.MAIN_STAT_NAMES);
-              const allKeys = Character.MAIN_STAT_KEYS;
-              const nameToKey = {};
-              allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
-              let autoKey = null;
-              for (const name of allNames) {
-                if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
-              }
-              if (autoKey) {
-                showUseConfirmSimple("Level Up — Soul", `Level <strong>${cls.name}</strong> to 7 and gain <strong>+1 ${Character.MAIN_STAT_NAMES[autoKey]}</strong>?`, () => {
-                  owned.levels = newLevel;
-                  owned.mastered = newLevel >= 8;
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 7, type: "main", statKey: autoKey });
-                  if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
-                  char.effectiveMainStats[autoKey] = (char.effectiveMainStats[autoKey] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                });
-                return;
-              }
-            }
-          }
-
-          showUseConfirmSimple("Level Up", `Spend 100 EXP to level <strong>${cls.name}</strong> to level ${newLevel}?`, () => {
-            owned.levels = newLevel;
-            owned.mastered = newLevel >= 8;
-            refreshSheetAfterExpChange(char, save);
-            render(currentTier);
-          });
-        });
-      });
-
-      // Remove class
-      // Max level
-      body.querySelectorAll(".browser-action-btn.maxlevel").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const classId = btn.dataset.classId;
-          const cls = allClasses.find(c => c.classId === classId);
-          const owned = ownedMap[classId];
-          if (!cls || !owned || owned.levels >= 8) return;
-
-          // Find the next milestone that needs a pick, or go to 8
-          const milestones = [3, 5, 7]; // levels that need player picks
-          let targetLevel = 8;
-          for (const ml of milestones) {
-            if (owned.levels < ml) {
-              // Check if this milestone already has a bonus picked
-              const hasBonus = (owned.levelBonuses || []).some(lb => lb.level === ml);
-              if (!hasBonus) {
-                targetLevel = ml;
-                break;
-              }
-            }
-          }
-
-          const levelsToGain = targetLevel - owned.levels;
-          const totalCost = levelsToGain * 100;
-          const unspent = getUnspentExp(char);
-          if (totalCost > unspent) {
-            showUseConfirmSimple("Not Enough EXP", `Leveling to ${targetLevel} costs ${totalCost} EXP but you only have ${unspent}.`, null);
-            return;
-          }
-
-          showUseConfirmSimple("Max Level", `Spend <strong>${totalCost} EXP</strong> to level <strong>${cls.name}</strong> from ${owned.levels} → ${targetLevel}?${targetLevel < 8 ? '<br><br><em>Stopping at level ' + targetLevel + ' for milestone pick.</em>' : ''}`, () => {
-            owned.levels = targetLevel;
-            owned.mastered = targetLevel >= 8;
-            refreshSheetAfterExpChange(char, save);
-            render(currentTier);
-
-            // If we stopped at a milestone, trigger the pick
-            if (targetLevel === 3) {
-              showClassSkillPicker(cls, char, owned, save, () => {
-                refreshSheetAfterExpChange(char, save);
-                render(currentTier);
-              });
-            } else if (targetLevel === 5) {
-              // Trigger heart pick
-              const text = cls.heart;
-              const choices = parseStatChoicesSheet(text, "sub");
-              if (choices.length > 1) {
-                showStatPickerModal(cls.name, true, text, choices, (picked) => {
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 5, type: "sub", statKey: picked });
-                  if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
-                  char.effectiveSubStats[picked] = (char.effectiveSubStats[picked] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                });
-              } else {
-                // Auto-pick single stat
-                const allNames = Object.values(Character.SUB_STAT_NAMES);
-                const allKeys = Character.SUB_STAT_KEYS;
-                const nameToKey = {};
-                allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
-                let autoKey = choices.length === 1 ? choices[0].key : null;
-                if (!autoKey && text) {
-                  for (const name of allNames) {
-                    if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
-                  }
-                }
-                if (autoKey) {
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 5, type: "sub", statKey: autoKey });
-                  if (!char.effectiveSubStats) char.effectiveSubStats = { ...char.subStats };
-                  char.effectiveSubStats[autoKey] = (char.effectiveSubStats[autoKey] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                }
-              }
-            } else if (targetLevel === 7) {
-              const text = cls.soul;
-              const choices = parseStatChoicesSheet(text, "main");
-              if (choices.length > 1) {
-                showStatPickerModal(cls.name, false, text, choices, (picked) => {
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 7, type: "main", statKey: picked });
-                  if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
-                  char.effectiveMainStats[picked] = (char.effectiveMainStats[picked] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                });
-              } else {
-                const allNames = Object.values(Character.MAIN_STAT_NAMES);
-                const allKeys = Character.MAIN_STAT_KEYS;
-                const nameToKey = {};
-                allKeys.forEach((k, i) => { nameToKey[allNames[i].toLowerCase()] = k; });
-                let autoKey = choices.length === 1 ? choices[0].key : null;
-                if (!autoKey && text) {
-                  for (const name of allNames) {
-                    if (text.toLowerCase().includes(name.toLowerCase())) { autoKey = nameToKey[name.toLowerCase()]; break; }
-                  }
-                }
-                if (autoKey) {
-                  owned.levelBonuses = owned.levelBonuses || [];
-                  owned.levelBonuses.push({ level: 7, type: "main", statKey: autoKey });
-                  if (!char.effectiveMainStats) char.effectiveMainStats = { ...char.mainStats };
-                  char.effectiveMainStats[autoKey] = (char.effectiveMainStats[autoKey] || 0) + 1;
-                  refreshSheetAfterExpChange(char, save);
-                  render(currentTier);
-                }
-              }
-            }
-          });
-        });
-      });
-
-      body.querySelectorAll(".browser-action-btn.remove").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const classId = btn.dataset.classId;
-          const owned = ownedMap[classId];
-          if (!owned) return;
-          const refund = (owned.tier * 100) + ((owned.levels - 1) * 100);
-          showUseConfirmSimple("Remove Class", `Remove <strong>${owned.name}</strong> and refund <strong>${refund} EXP</strong>?<br><em>All stat and skill bonuses from this class will be removed.</em>`, () => {
-            // Reverse stat bonuses
-            for (const lb of (owned.levelBonuses || [])) {
-              if (lb.type === "main" && lb.statKey && char.effectiveMainStats) {
-                char.effectiveMainStats[lb.statKey] = Math.max(0, (char.effectiveMainStats[lb.statKey] || 0) - 1);
-              } else if (lb.type === "sub" && lb.statKey && char.effectiveSubStats) {
-                char.effectiveSubStats[lb.statKey] = Math.max(0, (char.effectiveSubStats[lb.statKey] || 0) - 1);
-              } else if (lb.type === "skill" && lb.skillName && char.skills?.[lb.skillName]) {
-                char.skills[lb.skillName].points = Math.max(0, (char.skills[lb.skillName].points || 0) - lb.points);
-                if (char.skills[lb.skillName].points <= 0 && (!char.skills[lb.skillName].expertise || char.skills[lb.skillName].expertise.length === 0)) {
-                  delete char.skills[lb.skillName];
-                }
-              }
-            }
-            const idx = char.classes.findIndex(c => c.classId === classId);
-            if (idx >= 0) char.classes.splice(idx, 1);
-            delete ownedMap[classId];
-            refreshSheetAfterExpChange(char, save);
-            render(currentTier);
-          });
-        });
-      });
-
-      // Card click -> detail
-      body.querySelectorAll(".browser-card").forEach(card => {
-        card.addEventListener("click", () => {
-          const classId = card.dataset.classId;
-          const cls = allClasses.find(c => c.classId === classId);
-          if (cls) {
-            const reqCheck = checkClassRequirementSheet(cls, char);
-            const reqStatus = reqCheck.met
-              ? '<span style="color:#2ecc71;">\u2713 Requirements met</span>'
-              : `<span style="color:#e74c3c;">\u2717 ${reqCheck.reason}</span>`;
-            showBrowserDetail(cls.name, cls.description || "No description.",
-              `<strong>Requirements:</strong> ${cls.requirements || "None"}<br>${reqStatus}<br><strong>Key Ability:</strong> ${cls.keyAbilityName || "\u2014"}`);
-          }
-        });
-      });
-    }
-
-    render("all");
-  }
 
   /* ── Skill definitions (ported from builder) ────────────────────── */
   const SHEET_SKILL_CATEGORIES = [

@@ -348,7 +348,6 @@ body::before {
   overflow: hidden;
   margin-bottom: 20px;
   user-select: none;
-  -webkit-user-select: none;
 }
 
 /* Flash animation — draws attention to Aniela's message */
@@ -860,41 +859,6 @@ body::before {
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════
-   STAT SECTIONS
-   Clear headers with gold title + muted description text.
-   ══════════════════════════════════════════════════════════════════════ */
-.stat-section {
-  margin-top: 32px;
-}
-
-.stat-section-header {
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--clr-border);
-}
-
-.stat-section-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-  font-weight: 700;
-  color: var(--clr-gold);
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
-  text-shadow: 0 0 24px rgba(223, 184, 88, 0.12);
-}
-
-.stat-section-desc {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--clr-text-muted);
-  line-height: 1.6;
-}
-
-.stat-section-desc strong {
-  color: var(--clr-gold);
-  font-weight: 600;
-}
 
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1164,10 +1128,6 @@ body::before {
   margin-top: 40px;
   padding-top: 32px;
   border-top: 1px solid var(--clr-border);
-}
-
-.derived-stats .stat-section-title {
-  margin-bottom: 20px;
 }
 
 .derived-grid {
@@ -1998,7 +1958,6 @@ body::before {
   .step-progress {
     padding: 14px 16px 10px;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .step-track {
@@ -2073,9 +2032,6 @@ body::before {
     font-size: 1.3rem;
   }
 
-  .stat-section-title {
-    font-size: 1.15rem;
-  }
 }
 
 /* ─── Large screens ─────────────────────────────────────────────────── */
@@ -2435,7 +2391,6 @@ body::before {
 
 .cls-filter-bar select {
   appearance: none;
-  -webkit-appearance: none;
   font-family: var(--font-body);
   font-size: 0.78rem;
   color: var(--clr-text-bright);
@@ -2747,6 +2702,74 @@ body::before {
 @keyframes clsProgPulse {
   0%, 100% { border-left-color: var(--clr-gold, #dfb858); box-shadow: inset 3px 0 8px rgba(223, 184, 88, 0.08); }
   50%      { border-left-color: rgba(223, 184, 88, 0.4); box-shadow: inset 3px 0 16px rgba(223, 184, 88, 0.15); }
+}
+
+/* ── Clickable ability rows in progression ── */
+.cls-prog-ability-link {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.cls-prog-row:hover .cls-prog-ability-link {
+  color: var(--clr-gold);
+}
+.cls-prog-expand-icon {
+  font-size: 0.65rem;
+  opacity: 0.4;
+  margin-left: 4px;
+  transition: opacity 0.15s;
+}
+.cls-prog-row:hover .cls-prog-expand-icon {
+  opacity: 0.8;
+}
+
+/* ── Ability detail in tooltip ── */
+.cls-ability-benefit {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--clr-text);
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.cls-ability-benefit:last-child {
+  border-bottom: none;
+}
+.cls-ability-assoc {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cls-ability-assoc-name {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--clr-gold);
+  margin-bottom: 8px;
+}
+.cls-ability-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 4px 6px 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.7rem;
+  color: var(--clr-text-dim);
+  font-weight: 600;
+}
+.cls-ability-req {
+  font-size: 0.72rem;
+  color: #ef9a9a;
+  margin-bottom: 6px;
+  font-style: italic;
+}
+.cls-ability-desc {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--clr-text);
+  margin-top: 6px;
+}
+.cls-ability-desc p {
+  margin: 0 0 8px;
 }
 
 /* ── Strategy Guide (collapsible) ── */
@@ -3099,226 +3122,6 @@ body::before {
   opacity: 0.9;
 }
 
-/* ═══════════════════════════════════════════════════════�/* ─── 4. Skill Button ─────────────────────────────────────────────── */
-.skill-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  min-height: 44px;
-  background: var(--clr-bg-card);
-  border: 1px solid var(--clr-border);
-  border-radius: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease,
-    transform 0.15s ease,
-    padding 0.25s ease;
-  overflow: visible;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.skill-btn:hover {
-  border-color: var(--clr-border-hover);
-  background: rgba(20, 22, 36, 0.9);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-}
-
-/* Greyed-out / disabled when skill is not in the allowed list */
-.skill-btn.disabled {
-  opacity: 0.35;
-  pointer-events: none;
-  filter: grayscale(0.6);
-  cursor: default;
-}
-
-/* Subtle glow when points are allocated */
-.skill-btn.has-points {
-  border-color: rgba(223, 184, 88, 0.25);
-  box-shadow:
-    0 0 14px rgba(223, 184, 88, 0.06),
-    inset 0 0 20px rgba(223, 184, 88, 0.03);
-}
-
-.skill-btn.has-points .skill-value {
-  color: var(--clr-gold);
-  text-shadow: 0 0 8px rgba(223, 184, 88, 0.3);
-}
-
-/* ── Expanded state ── */
-.skill-btn.expanded {
-  border-color: rgba(223, 184, 88, 0.4);
-  background: rgba(20, 22, 36, 0.95);
-  box-shadow:
-    0 0 20px rgba(223, 184, 88, 0.1),
-    0 6px 24px rgba(0, 0, 0, 0.3);
-  cursor: default;
-  z-index: 5;
-  transform: scale(1.02);
-}
-
-/* ── Minus / Plus controls — hidden by default ── */
-.skill-minus,
-.skill-plus {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 0;
-  height: 28px;
-  padding: 0;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--clr-text-muted);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  opacity: 0;
-  overflow: hidden;
-  transition:
-    width 0.25s ease,
-    opacity 0.2s ease,
-    padding 0.25s ease,
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.1s ease;
-  user-select: none;
-  -webkit-user-select: none;
-  pointer-events: none;
-}
-
-/* Show controls when expanded */
-.skill-btn.expanded .skill-minus,
-.skill-btn.expanded .skill-plus {
-  width: 28px;
-  padding: 0 2px;
-  opacity: 1;
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  pointer-events: auto;
-}
-
-.skill-btn.expanded .skill-plus:hover {
-  border-color: rgba(223, 184, 88, 0.35);
-  color: var(--clr-gold);
-  background: rgba(223, 184, 88, 0.1);
-}
-
-.skill-btn.expanded .skill-minus:hover {
-  border-color: rgba(239, 83, 80, 0.35);
-  color: #ef5350;
-  background: rgba(239, 83, 80, 0.1);
-}
-
-.skill-minus:active,
-.skill-plus:active {
-  transform: scale(0.9);
-}
-
-.skill-minus[disabled],
-.skill-plus[disabled] {
-  opacity: 0.2;
-  pointer-events: none;
-}
-
-/* Show disabled controls still visible when expanded */
-.skill-btn.expanded .skill-minus[disabled],
-.skill-btn.expanded .skill-plus[disabled] {
-  width: 28px;
-  padding: 0 2px;
-  opacity: 0.2;
-  border-color: rgba(255, 255, 255, 0.04);
-  pointer-events: none;
-}
-
-/* ── Name & Value (centre area) ── */
-.skill-center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-width: 0;
-  padding: 0 6px;
-}
-
-.skill-name {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--clr-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  line-height: 1.3;
-}
-
-.skill-value {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--clr-text-dim);
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-  line-height: 1.2;
-}
-
-/* Hide value "0" to keep collapsed state clean */
-.skill-btn:not(.has-points) .skill-value {
-  opacity: 0.3;
-}
-
-
-/* ─── 5. Expertise Arrow ──────────────────────────────────────────── */
-.skill-expertise-arrow {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-8px);
-  opacity: 0;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 20px;
-  font-size: 0.7rem;
-  color: var(--clr-gold);
-  background: rgba(20, 22, 36, 0.95);
-  border: 1px solid rgba(223, 184, 88, 0.3);
-  border-radius: 5px 5px 3px 3px;
-  cursor: pointer;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s var(--ease-out-expo, ease-out);
-  z-index: 10;
-}
-
-/* Only show arrow when expanded and hovered */
-.skill-btn.expanded:hover .skill-expertise-arrow {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-  pointer-events: auto;
-}
-
-.skill-expertise-arrow:hover {
-  background: rgba(223, 184, 88, 0.15);
-  border-color: rgba(223, 184, 88, 0.5);
-  color: var(--clr-text-bright);
-  box-shadow: 0 2px 10px rgba(223, 184, 88, 0.2);
-}
-
-.skill-expertise-arrow::after {
-  content: '▲';
-}
 
 /* ─── Elemental Affinity Picker ────────────────────────────────────── */
 
@@ -3714,7 +3517,6 @@ body::before {
     border-color 0.15s ease,
     transform 0.1s ease;
   user-select: none;
-  -webkit-user-select: none;
 }
 
 .skill-minus:hover,
@@ -3989,7 +3791,6 @@ body::before {
     border-color 0.15s ease,
     transform 0.1s ease;
   user-select: none;
-  -webkit-user-select: none;
 }
 
 .expertise-minus:hover { border-color: rgba(239, 83, 80, 0.35); color: #ef5350; background: rgba(239, 83, 80, 0.1); }
@@ -5499,6 +5300,26 @@ body::before {
   font-weight: 600;
 }
 
+/* ─── Gender Collapse ───────────────────────────────────────────────── */
+.cs-gender-chosen {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--clr-gold);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.cs-gender-chosen:hover {
+  background: rgba(223, 184, 88, 0.1);
+  text-decoration: underline;
+}
+
+.cs-gender-options.collapsed {
+  display: none;
+}
 
 /* ─── Stat Groups ───────────────────────────────────────────────────── */
 .cs-stat-group {
@@ -6678,6 +6499,292 @@ body::before {
   transform: translateY(0);
 }
 
+.stat-pick-btn:disabled,
+.stat-pick-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Skill Point Allocation Picker ───────────────────────────────── */
+.skill-pick-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.skill-pick-remaining {
+  font-size: 0.82rem;
+  color: var(--clr-text-mid);
+}
+.skill-pick-remaining strong {
+  color: var(--clr-gold);
+}
+.skill-pick-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.skill-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+.skill-pick-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.skill-pick-name {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+.skill-pick-existing {
+  font-size: 0.68rem;
+  color: var(--clr-text-dim);
+  min-width: 24px;
+  text-align: right;
+}
+.skill-pick-value {
+  min-width: 22px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--clr-gold);
+}
+.skill-pick-minus,
+.skill-pick-plus {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--clr-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  padding: 0;
+  line-height: 1;
+}
+.skill-pick-minus:hover:not(:disabled),
+.skill-pick-plus:hover:not(:disabled) {
+  border-color: var(--clr-gold-soft);
+  background: rgba(223, 184, 88, 0.1);
+  color: var(--clr-gold);
+}
+.skill-pick-minus:disabled,
+.skill-pick-plus:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+.skill-pick-confirm {
+  min-width: 180px;
+}
+
+/* ── Expertise exchange buttons ── */
+.skill-pick-exp-sep {
+  color: rgba(255, 255, 255, 0.1);
+  font-size: 0.75rem;
+  margin: 0 2px;
+}
+.skill-pick-exp-value {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: #81d4fa;
+}
+.skill-pick-exp-minus,
+.skill-pick-exp-plus {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(129, 212, 250, 0.2);
+  background: rgba(129, 212, 250, 0.06);
+  color: #81d4fa;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  padding: 0;
+  line-height: 1;
+}
+.skill-pick-exp-minus:hover:not(:disabled),
+.skill-pick-exp-plus:hover:not(:disabled) {
+  border-color: rgba(129, 212, 250, 0.5);
+  background: rgba(129, 212, 250, 0.15);
+}
+.skill-pick-exp-minus:disabled,
+.skill-pick-exp-plus:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* ── Skill Picker Modal Overlay ──────────────────────────────────── */
+.skill-picker-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.skill-picker-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.skill-picker-modal {
+  background: var(--clr-surface, #0f1225);
+  border: 1px solid var(--clr-border, rgba(255,255,255,0.06));
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  width: 90vw;
+  max-width: 720px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+  transform: translateY(12px);
+  transition: transform 0.2s ease;
+}
+.skill-picker-modal-overlay.open .skill-picker-modal {
+  transform: translateY(0);
+}
+.skill-picker-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.skill-picker-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--clr-gold);
+  margin: 0;
+}
+.skill-picker-modal-close {
+  background: none;
+  border: none;
+  color: var(--clr-text-dim);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.skill-picker-modal-close:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--clr-text);
+}
+.skill-picker-modal-desc {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--clr-text-mid);
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.skill-picker-modal .skill-source-box {
+  margin-bottom: 14px;
+}
+.skill-picker-modal .skill-layout {
+  margin-bottom: 0;
+}
+.skill-picker-modal .skill-grid {
+  max-height: none;
+}
+
+/* ── Ability Hover Tooltip (progression rows) ────────────────────── */
+.cls-ability-hover-tip {
+  position: fixed;
+  z-index: 100000;
+  pointer-events: none;
+  max-width: 380px;
+  min-width: 200px;
+  padding: 12px 16px;
+  background: rgba(12, 14, 30, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(223, 184, 88, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(223, 184, 88, 0.06);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--clr-text-mid);
+}
+.cls-ability-hover-tip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cls-htip-benefit {
+  margin-bottom: 6px;
+  color: var(--clr-text);
+}
+.cls-htip-assoc {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cls-htip-assoc-name {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  color: var(--clr-gold);
+  margin-bottom: 4px;
+}
+.cls-htip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.cls-htip-tag {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--clr-text-mid);
+}
+.cls-htip-keywords {
+  font-size: 0.7rem;
+  color: var(--clr-gold-soft);
+  margin-bottom: 4px;
+  font-style: italic;
+}
+.cls-htip-req {
+  font-size: 0.7rem;
+  color: #e57373;
+  margin-bottom: 4px;
+}
+.cls-htip-desc {
+  color: var(--clr-text);
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
 /* ─── Stat Source Hover Popup ──────────────────────────────────────── */
 
 .cs-stat-source-popup {
@@ -6982,4 +7089,294 @@ body::before {
   padding: 2px 6px;
   background: rgba(190, 120, 255, 0.08);
   border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   OVERRIDE MODE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Override toggle button (amber accent, similar to spend-exp-btn) ── */
+.override-btn {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 14px;
+  border: 1px solid rgba(230, 160, 50, 0.4);
+  border-radius: 6px;
+  background: rgba(230, 160, 50, 0.08);
+  color: #e6a032;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.override-btn:hover {
+  background: rgba(230, 160, 50, 0.16);
+  border-color: #e6a032;
+  box-shadow: 0 0 12px rgba(230, 160, 50, 0.12);
+}
+.override-btn.active {
+  background: rgba(220, 60, 60, 0.25);
+  border-color: #e54545;
+  color: #ff6b6b;
+  box-shadow: 0 0 16px rgba(220, 60, 60, 0.3), inset 0 0 6px rgba(220, 60, 60, 0.12);
+  text-shadow: 0 0 6px rgba(220, 60, 60, 0.5);
+}
+
+/* ── Editable stat/skill values when override is active ── */
+.cs-override-active .cs-stat-value[contenteditable="true"] {
+  border: 1px dashed rgba(230, 160, 50, 0.45);
+  border-radius: 4px;
+  padding: 1px 4px;
+  min-width: 1.6em;
+  text-align: center;
+  outline: none;
+  cursor: text;
+}
+.cs-override-active .cs-stat-value[contenteditable="true"]:focus {
+  border-color: #e6a032;
+  background: rgba(230, 160, 50, 0.08);
+  box-shadow: 0 0 8px rgba(230, 160, 50, 0.15);
+}
+
+.cs-override-active .cs-skill-value[contenteditable="true"] {
+  border: 1px dashed rgba(230, 160, 50, 0.45);
+  border-radius: 4px;
+  padding: 1px 6px;
+  min-width: 2em;
+  outline: none;
+  cursor: text;
+}
+.cs-override-active .cs-skill-value[contenteditable="true"]:focus {
+  border-color: #e6a032;
+  background: rgba(230, 160, 50, 0.08);
+  box-shadow: 0 0 8px rgba(230, 160, 50, 0.15);
+}
+
+/* ── Add Skill button ── */
+.cs-override-add-skill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 1px dashed rgba(230, 160, 50, 0.4);
+  border-radius: 8px;
+  background: rgba(230, 160, 50, 0.06);
+  color: #e6a032;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+}
+.cs-override-add-skill-btn:hover {
+  background: rgba(230, 160, 50, 0.14);
+  border-color: #e6a032;
+}
+
+/* ── Add Expertise button (small, per-skill) ── */
+.cs-override-add-exp-btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border: 1px dashed rgba(230, 160, 50, 0.35);
+  border-radius: 4px;
+  background: rgba(230, 160, 50, 0.05);
+  color: rgba(230, 160, 50, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.cs-override-add-exp-btn:hover {
+  background: rgba(230, 160, 50, 0.14);
+  border-color: #e6a032;
+  color: #e6a032;
+}
+
+/* ── Override inline input (add skill form) ── */
+.cs-override-inline-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 0;
+  margin-top: 4px;
+}
+.cs-override-inline-form input {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border: 1px solid rgba(230, 160, 50, 0.35);
+  border-radius: 5px;
+  background: rgba(10, 10, 18, 0.7);
+  color: var(--clr-text-bright);
+  outline: none;
+}
+.cs-override-inline-form input:focus {
+  border-color: #e6a032;
+  box-shadow: 0 0 6px rgba(230, 160, 50, 0.15);
+}
+.cs-override-inline-form input[type="text"] {
+  width: 120px;
+}
+.cs-override-inline-form input[type="number"] {
+  width: 50px;
+}
+.cs-override-inline-form button {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border: 1px solid rgba(230, 160, 50, 0.4);
+  border-radius: 5px;
+  background: rgba(230, 160, 50, 0.12);
+  color: #e6a032;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.cs-override-inline-form button:hover {
+  background: rgba(230, 160, 50, 0.22);
+}
+
+/* ── Override input row (add skill / add expertise form) ── */
+.cs-override-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 0;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.cs-override-text-input,
+.cs-override-num-input {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border: 1px solid rgba(230, 160, 50, 0.35);
+  border-radius: 5px;
+  background: rgba(10, 10, 18, 0.7);
+  color: var(--clr-text-bright);
+  outline: none;
+}
+.cs-override-text-input:focus,
+.cs-override-num-input:focus {
+  border-color: #e6a032;
+  box-shadow: 0 0 6px rgba(230, 160, 50, 0.15);
+}
+.cs-override-text-input {
+  width: 120px;
+}
+.cs-override-num-input {
+  width: 50px;
+}
+.cs-override-confirm-btn,
+.cs-override-cancel-btn {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border: 1px solid rgba(230, 160, 50, 0.4);
+  border-radius: 5px;
+  background: rgba(230, 160, 50, 0.12);
+  color: #e6a032;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.cs-override-confirm-btn:hover {
+  background: rgba(230, 160, 50, 0.22);
+}
+.cs-override-cancel-btn {
+  border-color: rgba(255, 100, 100, 0.3);
+  color: #e57373;
+  background: rgba(255, 100, 100, 0.06);
+}
+.cs-override-cancel-btn:hover {
+  background: rgba(255, 100, 100, 0.15);
+}
+
+/* ── Delete skill button (× in header) ── */
+.cs-override-del-skill-btn {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 80, 80, 0.08);
+  color: #e57373;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 6px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-override-del-skill-btn:hover {
+  background: rgba(255, 80, 80, 0.25);
+  border-color: #e57373;
+  color: #ff8a80;
+}
+
+/* ── Delete expertise button (× on tag) ── */
+.cs-override-del-exp-btn {
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: rgba(255, 80, 80, 0.15);
+  color: #e57373;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.cs-override-del-exp-btn:hover {
+  background: rgba(255, 80, 80, 0.35);
+  color: #ff8a80;
+}
+
+/* ── Delete source button in stat tooltip ── */
+.cs-override-del-source-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  border-radius: 3px;
+  background: rgba(255, 80, 80, 0.08);
+  color: #e57373;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.cs-override-del-source-btn:hover {
+  background: rgba(255, 80, 80, 0.25);
+  border-color: #e57373;
+  color: #ff8a80;
+}
+
+.cs-tip-custom-source {
+  color: #e6a032;
 }

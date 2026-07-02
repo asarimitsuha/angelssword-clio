@@ -210,6 +210,14 @@ const Character = (() => {
 
   function clear() { localStorage.removeItem(STORAGE_KEY); }
 
+  /* ─── Game Constants (single source of truth) ────────────────────── */
+  const BT_BUDGET = 300;
+  const CLS_BUDGET_BASE = 1000;
+  const CLS_HUMAN_BONUS = 100;
+  const CLS_IP_MAX = 3;
+  const STARTING_CLIM = 3000;
+  const VAULT_KEY = "angelssword_vault";
+
   /* ─── Public API ──────────────────────────────────────────────────── */
   return {
     createDefault,
@@ -225,5 +233,7 @@ const Character = (() => {
     MAIN_STAT_ARRAY, SUB_STAT_ARRAY,
     MAIN_STAT_KEYS, SUB_STAT_KEYS,
     MAIN_STAT_NAMES, SUB_STAT_NAMES,
+    BT_BUDGET, CLS_BUDGET_BASE, CLS_HUMAN_BONUS,
+    CLS_IP_MAX, STARTING_CLIM, VAULT_KEY,
   };
 })();

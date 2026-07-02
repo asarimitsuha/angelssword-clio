@@ -2084,6 +2084,8 @@
       const isMastered = levels >= 8;
       const freeGrant = FREE_CLASS_GRANTS.find(g => g.classId === classId);
       const freeLabel = isFree && freeGrant ? `<small class="cls-cart-free-badge">FREE (${freeGrant.source})</small>` : '';
+      const freeMinLevel = isFree && freeGrant ? freeGrant.level : 0;
+      const canLevelDown = !isFree || levels > freeMinLevel;
       const item = document.createElement("div");
       item.className = `bt-cart-item cls-cart-item${isFree ? ' cls-cart-free' : ''}`;
       item.innerHTML = `
@@ -2093,12 +2095,12 @@
           ${freeLabel}
         </span>
         <span class="bt-cart-item-cost">${isFree ? 'FREE' : cost}</span>
-        ${!isFree ? '<button class="bt-cart-item-remove" title="Remove">✕</button>' : ''}
+        ${canLevelDown ? '<button class="bt-cart-item-remove" title="Remove Level">−</button>' : ''}
       `;
-      if (!isFree) {
+      if (canLevelDown) {
         item.querySelector(".bt-cart-item-remove").addEventListener("click", (e) => {
           e.stopPropagation();
-          removeClass(data);
+          levelDownClass(data);
         });
       }
       // Click to open detail
@@ -2217,6 +2219,12 @@
       return;
     }
 
+    const reqCheck = checkClassRequirement(cls);
+    if (!reqCheck.met && !clsOverrideMode) {
+      Aniela.say({ text: `You do not meet the requirements for this class.`, sprite: "4", dismissable: true });
+      return;
+    }
+
     const newLevel = sel.levels + 1;
 
     // Level 5 = Heart (sub stat), Level 7 = Soul (main stat)
@@ -2326,38 +2334,54 @@
     }
   }
 
-  function removeClass(cls) {
-    // Prevent removal of free-granted classes
+  function levelDownClass(cls) {
+    const sel = clsSelected.get(cls.classId);
+    if (!sel) return;
+
+    // Prevent removal of free-granted classes below their grant level
     if (clsFreeClasses.has(cls.classId)) {
       const grant = FREE_CLASS_GRANTS.find(g => g.classId === cls.classId);
-      Aniela.say({ text: `${cls.name} was granted free from ${grant?.source || 'your race'}. It cannot be removed.`, sprite: "4", dismissable: true });
-      return;
+      const minLevel = grant?.level || 1;
+      if (sel.levels <= minLevel) {
+        Aniela.say({ text: `${cls.name} was granted free from ${grant?.source || 'your race'}. It cannot be removed below Lv. ${minLevel}.`, sprite: "4", dismissable: true });
+        return;
+      }
     }
-    const sel = clsSelected.get(cls.classId);
 
-    // Undo heart/soul stat boosts from this class
-    if (character.statSources) {
+    const removingLevel = sel.levels;
+
+    // Undo stat boost if removing Heart (L5) or Soul (L7)
+    if ((removingLevel === 5 || removingLevel === 7) && character.statSources) {
+      const sourceLabel = cls.name;
+      const sourceType = removingLevel === 5 ? "Heart" : "Soul";
       for (const key of Object.keys(character.statSources)) {
-        const before = character.statSources[key].length;
-        const removed = character.statSources[key].filter(s => s.label === cls.name);
-        character.statSources[key] = character.statSources[key].filter(s => s.label !== cls.name);
-        // Undo the stat increases
-        for (const r of removed) {
-          // Heart → sub stat, Soul → main stat
+        const idx = character.statSources[key].findIndex(s => s.label === sourceLabel && s.source === sourceType);
+        if (idx !== -1) {
+          const r = character.statSources[key][idx];
           if (r.source === "Heart") {
             character.subStats[key] = Math.max(0, (character.subStats[key] || 0) - r.amount);
           } else if (r.source === "Soul") {
             character.mainStats[key] = Math.max(0, (character.mainStats[key] || 0) - r.amount);
           }
-        }
-        if (character.statSources[key].length === 0) {
-          delete character.statSources[key];
+          character.statSources[key].splice(idx, 1);
+          if (character.statSources[key].length === 0) {
+            delete character.statSources[key];
+          }
+          break; // Only remove one stat source per level-down
         }
       }
       Character.save(character);
     }
 
-    clsSelected.delete(cls.classId);
+    if (sel.levels <= 1) {
+      // At level 1 → remove the class entirely
+      clsSelected.delete(cls.classId);
+      Aniela.say({ text: `${cls.name} removed.`, sprite: "2", dismissable: true });
+    } else {
+      sel.levels--;
+      Aniela.say({ text: `${cls.name} reduced to Lv. ${sel.levels}.`, sprite: "2", dismissable: true });
+    }
+
     updateClsBudget();
     updateClsCart();
     syncClassesToCharacter();
@@ -2761,11 +2785,12 @@
       levelBtn.disabled = true;
     } else if (sel.levels < 8) {
       // Unlocked, can level up
+      const isFreeAtMin = clsFreeClasses.has(cls.classId) && sel.levels <= (FREE_CLASS_GRANTS.find(g => g.classId === cls.classId)?.level || 1);
       unlockBtn.style.display = "inline-flex";
-      unlockBtn.textContent = "Remove Class";
+      unlockBtn.textContent = sel.levels <= 1 ? "Remove Class" : `Remove Level (Lv. ${sel.levels} → ${sel.levels - 1})`;
       unlockBtn.className = "cls-detail-unlock-btn is-remove";
-      unlockBtn.disabled = false;
-      unlockBtn.onclick = (e) => { e.stopPropagation(); removeClass(cls); };
+      unlockBtn.disabled = isFreeAtMin;
+      unlockBtn.onclick = isFreeAtMin ? null : (e) => { e.stopPropagation(); levelDownClass(cls); };
       levelBtn.style.display = "inline-flex";
       levelBtn.textContent = `Level Up → Lv. ${sel.levels + 1} (100 EXP)`;
       levelBtn.disabled = false;
@@ -2774,10 +2799,10 @@
     } else {
       // Mastered!
       unlockBtn.style.display = "inline-flex";
-      unlockBtn.textContent = "Remove Class";
+      unlockBtn.textContent = `Remove Level (Lv. 8 → 7)`;
       unlockBtn.className = "cls-detail-unlock-btn is-remove";
       unlockBtn.disabled = false;
-      unlockBtn.onclick = (e) => { e.stopPropagation(); removeClass(cls); };
+      unlockBtn.onclick = (e) => { e.stopPropagation(); levelDownClass(cls); };
       levelBtn.style.display = "inline-flex";
       levelBtn.textContent = "★ MASTERED ★";
       levelBtn.disabled = true;
@@ -2986,34 +3011,22 @@
 
   /* ─── Utility ─────────────────────────────────────────────────────── */
   function stripHtml(html) {
-    const tmp = document.createElement("div");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
+    return Utils.stripHtml(html);
   }
 
   /* ═══════════════════════════════════════════════════════════════════
      SKILLS
      ═══════════════════════════════════════════════════════════════════ */
 
-  /* ─── Skill Definitions ───────────────────────────────────────────── */
-  const SKILL_CAP = 15;
-  const EXPERTISE_CAP = 15;
-  const ARTISAN_SKILL_CAP = 10;
-  const ARTISAN_EXPERTISE_CAP = 10;
-
-  const SKILL_CATEGORIES = [
-    { stat: "Fitness",   skills: ["Athletics", "Riding"] },
-    { stat: "Cunning",   skills: ["Deception", "Roguecraft", "Stealth"] },
-    { stat: "Reason",    skills: ["Artifice", "Appraise", "Common Knowledge", "Flight", "History", "Linguistics", "Magic", "Medicine", "Religion"] },
-    { stat: "Awareness", skills: ["Animal Husbandry", "Insight", "Perception", "Survival"] },
-    { stat: "Presence",  skills: ["Art", "Intimidation", "Negotiation"] },
-  ];
-
-  const ALL_SKILL_NAMES = SKILL_CATEGORIES.flatMap((c) => c.skills);
-
-  const ARTISAN_SKILLS = ["Alchemy", "Blacksmith", "Farming", "Carpentry", "Armorsmithing", "Artificer"];
-
-  const GATHERING_SKILLS = ["Mining", "Herbalism", "Foraging", "Fishing", "Hunting", "Logging"];
+  /* ─── Skill Definitions (from shared SkillParser module) ──────────── */
+  const SKILL_CAP = SkillParser.SKILL_CAP;
+  const EXPERTISE_CAP = SkillParser.EXPERTISE_CAP;
+  const ARTISAN_SKILL_CAP = SkillParser.ARTISAN_SKILL_CAP;
+  const ARTISAN_EXPERTISE_CAP = SkillParser.ARTISAN_EXPERTISE_CAP;
+  const SKILL_CATEGORIES = SkillParser.SKILL_CATEGORIES;
+  const ALL_SKILL_NAMES = SkillParser.ALL_SKILL_NAMES;
+  const ARTISAN_SKILLS = SkillParser.ARTISAN_SKILLS;
+  const GATHERING_SKILLS = SkillParser.GATHERING_SKILLS;
 
   /* ─── Skills State ────────────────────────────────────────────────── */
   let skillSources = [];       // array of { name, points, remaining, allowedSkills, isArtisan }
@@ -3021,82 +3034,9 @@
   // skill allocations: skillId → { total, perSource: { sourceIdx: count }, expertise: [{ name, points }] }
   let skillAllocations = {};
 
-  /* ─── Skill Source Parser ─────────────────────────────────────────── */
+  /* ─── Skill Source Parser (delegates to shared module) ──────────── */
   function parseClassSkillGrant(skillsText, className) {
-    if (!skillsText) return [];
-    const clean = stripHtml(skillsText).trim();
-    const grants = [];
-
-    // Split on sentences that start new grants: "You also gain" or "You gain"
-    const parts = clean.split(/(?=You also gain|You gain)/i).filter((s) => s.trim());
-
-    for (const part of parts) {
-      // Try to extract point count: "+5 skill points" or "5 skill points" or "+5 skill"
-      const pointMatch = part.match(/\+?(\d+)\s+(?:skill\s+point|skill\b|Transmuter\s+point)/i);
-      if (!pointMatch) continue;
-      const points = parseInt(pointMatch[1]);
-
-      // Determine allowed skills
-      let allowedSkills = [];
-      let isArtisan = false;
-
-      // Check for artisan/crafting specific grants
-      const artisanMatch = part.match(/(?:in|on)\s+(Alchemy|Blacksmith(?:ing)?|Farming|Carpentry|Armorsmithing|Artificer)/i);
-      if (artisanMatch) {
-        const artName = artisanMatch[1].replace(/ing$/i, "");
-        // Normalize
-        const normalized = ARTISAN_SKILLS.find((a) => a.toLowerCase().startsWith(artName.toLowerCase())) || artisanMatch[1];
-        allowedSkills = [normalized];
-        isArtisan = true;
-      }
-      // "any non crafting skill" or "any non-crafting and non-gathering skill" or "any normal skill"
-      else if (/any\s+(?:non[- ]?craft|normal\s+skill|non[- ]?gathering)/i.test(part) || /any\s+(?:non[- ]?crafting\s+(?:and\s+non[- ]?gathering\s+)?skill)/i.test(part)) {
-        allowedSkills = [...ALL_SKILL_NAMES];
-      }
-      // Specific skill list
-      else {
-        // Extract skill list after "spend in/on" or "points in/on"
-        const listMatch = part.match(/(?:spend\s+(?:in|on)|points\s+(?:in|on))\s+(.+?)(?:\.\s*You\s+can|\.$|$)/i);
-        if (listMatch) {
-          const rawList = listMatch[1];
-          // Split by comma, "or", "and"
-          const names = rawList
-            .split(/,\s*|\s+or\s+|\s+and\s+/i)
-            .map((n) => n.trim().replace(/\.$/, ""))
-            .filter((n) => n.length > 0);
-
-          // Match each to known skills
-          for (const name of names) {
-            const match = ALL_SKILL_NAMES.find((s) => s.toLowerCase() === name.toLowerCase());
-            if (match) {
-              allowedSkills.push(match);
-            } else {
-              // Check artisan skills
-              const artMatch = ARTISAN_SKILLS.find((a) => a.toLowerCase() === name.toLowerCase());
-              if (artMatch) {
-                allowedSkills.push(artMatch);
-                isArtisan = true;
-              }
-            }
-          }
-        }
-
-        // If we couldn't parse any skills, default to all
-        if (allowedSkills.length === 0) {
-          allowedSkills = [...ALL_SKILL_NAMES];
-        }
-      }
-
-      grants.push({
-        name: `${className}`,
-        points: points,
-        remaining: points,
-        allowedSkills: allowedSkills,
-        isArtisan: isArtisan,
-      });
-    }
-
-    return grants;
+    return SkillParser.parseClassSkillGrant(skillsText, className);
   }
 
   /* ─── Build Sources ───────────────────────────────────────────────── */
@@ -4091,6 +4031,8 @@
   let portraitLastX = 0;
   let portraitLastY = 0;
 
+  let reviewBound = false;
+
   function loadReview() {
     // Snapshot stats if not already done
     if (!character.effectiveMainStats) {
@@ -4107,31 +4049,44 @@
     populateBreakthroughs();
     populateSkills();
     populateEquipment();
-    bindPortraitEvents();
-    bindTooltipEvents();
 
-    // Complete Character button
-    document.getElementById("cs-complete-btn").addEventListener("click", completeCharacter);
+    // Only bind event listeners once to prevent leaks
+    if (!reviewBound) {
+      bindPortraitEvents();
+      bindTooltipEvents();
 
-    // Restore name if saved
-    const nameInput = document.getElementById("cs-char-name");
-    if (character.name) nameInput.value = character.name;
-    nameInput.addEventListener("input", () => {
-      character.name = nameInput.value;
-      Character.save(character);
-    });
+      // Complete Character button
+      document.getElementById("cs-complete-btn").addEventListener("click", completeCharacter);
 
-    // Gender selector
-    const genderBtns = document.querySelectorAll(".cs-gender-btn");
-    genderBtns.forEach((btn) => {
-      // Restore saved gender
-      if (character.gender === btn.dataset.gender) btn.classList.add("active");
-      btn.addEventListener("click", () => {
-        genderBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        character.gender = btn.dataset.gender;
+      // Name input
+      const nameInput = document.getElementById("cs-char-name");
+      nameInput.addEventListener("input", () => {
+        character.name = nameInput.value;
         Character.save(character);
       });
+
+      // Gender selector
+      const genderBtns = document.querySelectorAll(".cs-gender-btn");
+      genderBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          genderBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          character.gender = btn.dataset.gender;
+          Character.save(character);
+        });
+      });
+
+      reviewBound = true;
+    }
+
+    // Restore name and gender state (always runs)
+    const nameInput = document.getElementById("cs-char-name");
+    if (character.name) nameInput.value = character.name;
+
+    const genderBtns = document.querySelectorAll(".cs-gender-btn");
+    genderBtns.forEach((btn) => {
+      if (character.gender === btn.dataset.gender) btn.classList.add("active");
+      else btn.classList.remove("active");
     });
   }
 
